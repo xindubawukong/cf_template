@@ -1,3 +1,5 @@
-71.756151 7.532275
--48.634784 100.159986
-91.778633 158.107739
+3
+#define mul  x*y
+#define bad  x/mul
+#define good x/(mul)
+good
