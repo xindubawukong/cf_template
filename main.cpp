@@ -1,7 +1,10 @@
+#define LOCAL
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <queue>
@@ -14,7 +17,12 @@
 
 using namespace std;
 
+void XiangyunDingWork() {}
+
 int main() {
-  // freopen("../input.txt", "r", stdin);
+#ifdef LOCAL
+  freopen("../input.txt", "r", stdin);
+#endif
+  XiangyunDingWork();
   return 0;
 }
