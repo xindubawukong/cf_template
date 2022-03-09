@@ -17,12 +17,12 @@
 
 using namespace std;
 
-void XiangyunDingWork() {}
+void Main() {}
 
 int main() {
 #ifdef LOCAL
   freopen("../input.txt", "r", stdin);
 #endif
-  XiangyunDingWork();
+  Main();
   return 0;
 }
