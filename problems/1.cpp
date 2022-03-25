@@ -28,7 +28,10 @@ using uint64 = unsigned long long;
 
 // --------------------------- xindubawukong ---------------------------
 
-void Main() {}
+void Main() {
+  long long n, d, m, l;
+  cin >> n >> d >> m >> l;
+}
 
 int main() {
 #ifdef LOCAL
