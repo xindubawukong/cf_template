@@ -9,6 +9,21 @@
 
 #define debug(x) std::cout << #x << ": " << (x) << endl
 
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& a);
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::set<T>& a);
+
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const std::map<K, V>& a);
+
+template <typename T1, typename T2>
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& a);
+
+template <typename... T>
+std::ostream& operator<<(std::ostream& os, const std::tuple<T...>& a);
+
 template <std::size_t...>
 struct index_seq {};
 
@@ -60,9 +75,6 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& a) {
   os << "pair(" << a.first << ", " << a.second << ")";
   return os;
 }
-
-template <typename... T>
-std::ostream& operator<<(std::ostream& os, const std::tuple<T...>& a);
 
 namespace tuple_helper {
 
