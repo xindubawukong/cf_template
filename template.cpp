@@ -32,6 +32,7 @@ using int64 = long long;
 #if _WIN64 || __x86_64__
 using int128 = __int128_t;
 #endif
+using uint = unsigned int;
 using uint64 = unsigned long long;
 
 // --------------------------- xindubawukong ---------------------------
