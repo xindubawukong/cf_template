@@ -45,9 +45,14 @@ class BigInt {
   BigInt(T x = 0) : a({x}) { Normalize(); }
 
   operator string() const {
+    string t = to_string(base - 1);
     string s;
     for (int i = a.size() - 1; i >= 0; i--) {
-      s += to_string(a[i]);
+      string now = to_string(a[i]);
+      if (i < a.size() - 1) {
+        while (now.length() < t.length()) now = '0' + now;
+      }
+      s += now;
     }
     return s;
   }
@@ -79,11 +84,11 @@ class BigInt {
     return false;
   }
 
-  bool operator<=(const BigInt<T, base>& b) const {
-    return (*this) < b || a == b.a;
-  }
+  bool operator<=(const BigInt<T, base>& b) const { return !(b < *this); }
 
-  bool operator>=(const BigInt<T, base>& b) const { return !((*this) < b); }
+  bool operator>(const BigInt<T, base>& b) const { return b < *this; }
+
+  bool operator>=(const BigInt<T, base>& b) const { return b <= *this; }
 
   BigInt operator+(const BigInt<T, base>& b) const {
     int n = a.size(), m = b.a.size();
