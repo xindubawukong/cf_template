@@ -9,6 +9,9 @@
 
 #define debug(x) std::cout << #x << ": " << (x) << endl
 
+template <typename T, size_t size>
+std::ostream& operator<<(std::ostream& os, const std::array<T, size>& a);
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& a);
 
@@ -33,12 +36,23 @@ struct make_index_seq : make_index_seq<N - 1, N - 1, Is...> {};
 template <std::size_t... Is>
 struct make_index_seq<0, Is...> : index_seq<Is...> {};
 
+template <typename T, size_t size>
+std::ostream& operator<<(std::ostream& os, const std::array<T, size>& a) {
+  os << "array[";
+  for (int i = 0; i < size; i++) {
+    os << a[i];
+    if (i < size - 1) os << ", ";
+  }
+  os << "]";
+  return os;
+}
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& a) {
   os << "vector[";
   for (int i = 0; i < a.size(); i++) {
     os << a[i];
-    if (i < a.size() - 1) os << " ";
+    if (i < a.size() - 1) os << ", ";
   }
   os << "]";
   return os;
