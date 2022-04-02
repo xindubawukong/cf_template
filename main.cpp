@@ -29,7 +29,8 @@
 
 using namespace std;
 
-using float64 = long double;
+using float64 = double;
+using float128 = long double;
 using int64 = long long;
 #if _WIN64 || __x86_64__
 using int128 = __int128_t;

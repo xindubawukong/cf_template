@@ -1,12 +1,6 @@
+import subprocess
 
-import random
+PIPE = subprocess.PIPE
 
-def add_edge(lines, x, y):
-    lines.append(str(x) + ' ' + str(y) + '\n')
-
-with open('input.txt', 'w') as f:
-    n = 100000
-    lines = [str(n) + '\n']
-    for i in range(2, n + 1, 1):
-        add_edge(lines, i, random.randint(1, i - 1))
-    f.writelines(lines)
+p2 = subprocess.Popen('python3 ./build/local_testing_tool.py', shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+p1 = subprocess.Popen('./build/main', shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
