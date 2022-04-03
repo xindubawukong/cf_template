@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <any>
 #include <array>
+#include <bitset>
 #include <cassert>
 #include <climits>
 #include <cmath>
