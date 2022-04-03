@@ -34,7 +34,7 @@ using uint64 = unsigned long long;
 
 // --------------------------- xindubawukong ---------------------------
 
-// https://codeforces.com/contest/19/problem/C
+// suffix array problem: https://codeforces.com/contest/19/problem/C
 
 struct SuffixArray {
   int n;
@@ -131,54 +131,60 @@ struct SparseTable {
   }
 };
 
-void Main() {
-  int n;
-  cin >> n;
-  vector<int> a(n);
-  map<int, vector<int>> pos;
-  for (int i = 0; i < n; i++) {
-    cin >> a[i];
-    pos[a[i]].push_back(i);
-  }
-  SuffixArray sa;
-  sa.Build(a);
-  SparseTable st;
-  st.Build(sa.height);
-  vector<pair<int, int>> all;
-  for (auto& it : pos) {
-    auto& b = it.second;
-    sort(b.begin(), b.end());
-    for (int i = 0; i < b.size(); i++) {
-      for (int j = i + 1; j < b.size(); j++) {
-        int p1 = b[i], p2 = b[j];
-        int l = sa.rank[p1], r = sa.rank[p2];
-        if (l > r) swap(l, r);
-        int len = st.Query(l + 1, r);
-        if (len >= p2 - p1) {
-          all.push_back(make_pair(p1, p2));
-        }
+// string hash
+
+const vector<pair<int, int>> hash_config = {{29, 1000000007}, {31, 1000000009}};
+
+vector<vector<int>> fact;
+
+struct HashString {
+  vector<vector<int>> hash;
+
+  HashString(const string& s) {
+    hash.resize(hash_config.size());
+    for (int i = 0; i < hash.size(); i++) {
+      hash[i].resize(s.length());
+      auto [p, mod] = hash_config[i];
+      hash[i][0] = s[0] - 'a' + 1;
+      for (int j = 1; j < s.length(); j++) {
+        hash[i][j] = (int64)hash[i][j - 1] * p % mod;
+        hash[i][j] = (hash[i][j] + s[j] - 'a' + 1) % mod;
       }
     }
   }
-  sort(all.begin(), all.end(),
-       [](const pair<int, int>& a, const pair<int, int>& b) {
-         int l1 = a.second - a.first + 1;
-         int l2 = b.second - b.first + 1;
-         if (l1 != l2) return l1 < l2;
-         return a < b;
-       });
-  int now = 0;
-  for (auto p : all) {
-    int p1 = p.first, p2 = p.second;
-    if (now > p1) continue;
-    now = p2;
+
+  vector<int> GetHash(int l, int r) const {
+    assert(0 <= l);
+    assert(l <= r);
+    assert(r < hash[0].size());
+    vector<int> res(hash_config.size());
+    for (int i = 0; i < hash_config.size(); i++) {
+      int mod = hash_config[i].second;
+      int a = hash[i][r];
+      int b = (int64)(l == 0 ? 0 : hash[i][l - 1]) * fact[i][r - l + 1] % mod;
+      res[i] = (a - b + mod) % mod;
+    }
+    return res;
   }
-  cout << n - now << endl;
-  for (int i = now; i < n; i++) {
-    cout << a[i] << " ";
+
+  int Length() const {
+    return hash[0].size();
   }
-  cout << endl;
-}
+
+  static void Prepare(int n) {
+    fact.resize(hash_config.size());
+    for (int i = 0; i < fact.size(); i++) {
+      fact[i].resize(n + 1);
+      auto [p, mod] = hash_config[i];
+      fact[i][0] = 1;
+      for (int j = 1; j <= n; j++) {
+        fact[i][j] = (int64)fact[i][j - 1] * p % mod;
+      }
+    }
+  }
+};
+
+void Main() {}
 
 int main() {
 #ifdef LOCAL

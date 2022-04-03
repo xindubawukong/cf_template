@@ -29,6 +29,8 @@
 
 using namespace std;
 
+using float64 = double;
+using float128 = long double;
 using int64 = long long;
 #if _WIN64 || __x86_64__
 using int128 = __int128_t;
@@ -37,6 +39,24 @@ using uint = unsigned int;
 using uint64 = unsigned long long;
 
 // --------------------------- xindubawukong ---------------------------
+
+
+vector<int> GetPrimes(int n) {
+  vector<int> primes;
+  vector<bool> is_prime(n + 1, true);
+  for (int i = 2; i <= n; i++) {
+    if (is_prime[i]) {
+      primes.push_back(i);
+    }
+    for (int p: primes) {
+      int x = p * i;
+      if (x > n) break;
+      is_prime[x] = false;
+      if (i % p == 0) break;
+    }
+  }
+  return primes;
+}
 
 void Main() {}
 
