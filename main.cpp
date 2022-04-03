@@ -14,6 +14,7 @@
 #include <ctime>
 #include <iostream>
 #include <map>
+#include <optional>
 #include <queue>
 #include <random>
 #include <set>
