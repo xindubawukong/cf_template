@@ -34,6 +34,34 @@ using uint64 = unsigned long long;
 
 // --------------------------- xindubawukong ---------------------------
 
+vector<int> Manacher(const string& s) {
+  string t;
+  vector<int> p;
+  t.reserve(s.length() * 2 + 1);
+  t += '!';
+  for (int i = 0; i < s.length(); i++) {
+    t += s[i];
+    if (i < s.length() - 1) t += '#';
+  }
+  t += '@';
+  p.resize(t.length());
+  p[0] = 0;
+  int now = 0, right = 0;
+  for (int i = 1; i < p.size() - 1; i++) {
+    if (right > i) {
+      p[i] = min(p[now * 2 - i], right - i);
+    } else {
+      p[i] = 0;
+    }
+    while (t[i - p[i] - 1] == t[i + p[i] + 1]) p[i]++;
+    if (i + p[i] > right) {
+      now = i;
+      right = i + p[i];
+    }
+  }
+  return p;
+}
+
 // suffix array problem: https://codeforces.com/contest/19/problem/C
 
 struct SuffixArray {
