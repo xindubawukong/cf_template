@@ -1,5 +1,5 @@
 Template for writing algorithms in C++.
 
-Author: xiangyun
+https://github.com/xindubawukong/cf_template
 
 Please use C++17.
