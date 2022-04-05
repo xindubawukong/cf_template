@@ -69,14 +69,19 @@ struct Point {
 
 struct Line {
   Point p, u;
-  Line(Point p_ = Point(), Point u_ = Point()) : p(p_), u(u_) {
+  Line(Point p_ = Point(0, 0), Point u_ = Point(1, 0)) : p(p_), u(u_) {
     assert(u.Length() > eps);
+  }
+
+  bool Contains(const Point& a) const {
+    if (Dist(p, a) < eps) return true;
+    return u | (a - p);
   }
 };
 
 struct HalfLine {
   Point p, u;
-  HalfLine(Point p_ = Point(), Point u_ = Point()) : p(p_), u(u_) {
+  HalfLine(Point p_ = Point(0, 0), Point u_ = Point(1, 0)) : p(p_), u(u_) {
     assert(u.Length() > eps);
   }
 
@@ -88,7 +93,7 @@ struct HalfLine {
 
 struct Segment {
   Point a, b;
-  Segment(Point a_ = Point(), Point b_ = Point()) : a(a_), b(b_) {
+  Segment(Point a_ = Point(0, 0), Point b_ = Point(1, 0)) : a(a_), b(b_) {
     assert(Dist(a, b) > eps);
   }
 
@@ -98,14 +103,25 @@ struct Segment {
   }
 };
 
+struct Circle {
+  Point c;
+  real r;
+  Circle(Point c_ = Point(), real r_ = 1): c(c_), r(r_) {
+    assert(r_ > eps);
+  }
+
+  friend bool IsInside(const Point& a, const Circle& c) {
+    auto d = Dist(a, c.c);
+    return d - c.r < eps;
+  }
+};
+
 Point GetIntersection(const Line& l1, const Line& l2) {
   real t = (l1.p - l2.p) % l1.u / (l2.u % l1.u);
   return l2.p + t * l2.u;
 }
 
 optional<Point> GetIntersection(const HalfLine& l, const Segment& s) {
-  // cout << "GetIntersection " << l.p << " " << l.u << " " << s.a << " " << s.b
-  // << endl;
   if (s.Contains(l.p)) return l.p;
   if (l.u | (s.b - s.a)) {
     if (l.Contains(s.a)) {
@@ -117,6 +133,19 @@ optional<Point> GetIntersection(const HalfLine& l, const Segment& s) {
   }
   Point c = GetIntersection(Line(l.p, l.u), Line(s.a, s.b - s.a));
   if (l.Contains(c) && s.Contains(c)) return c;
+  return {};
+}
+
+optional<Point> GetIntersection(const Segment& s1, const Segment& s2) {
+  if ((s1.b - s1.a) | (s2.b - s2.a)) {
+    if (s1.Contains(s2.a)) return s2.a;
+    if (s1.Contains(s2.b)) return s2.b;
+    if (s2.Contains(s1.a)) return s1.a;
+    if (s2.Contains(s1.b)) return s1.b;
+    return {};
+  }
+  Point c = GetIntersection(Line(s1.a, s1.b - s1.a), Line(s2.a, s2.b - s2.a));
+  if (s1.Contains(c) && s2.Contains(c)) return c;
   return {};
 }
 
@@ -132,9 +161,12 @@ real GetAngle(const Point& u, const Point& v) {
   return acos(alpha);
 }
 
-int n;
-Point A, V, U;
-real vz, uz, fd;
+Point GetSymetricPoint(const Point& a, const Line& l) {
+  if (l.Contains(a)) return a;
+  auto v = Rotate(l.u, pi / 2);
+  auto b = GetIntersection(l, Line(a, v));
+  return b * 2 - a;
+}
 
 void Main() {}
 

@@ -44,6 +44,8 @@ using uint64 = unsigned long long;
 void Main() {}
 
 int main() {
+  // std::ios::sync_with_stdio(false);
+  // std::cin.tie(nullptr);
 #ifdef LOCAL
   freopen("../input.txt", "r", stdin);
   // freopen("../output.txt", "w", stdout);
