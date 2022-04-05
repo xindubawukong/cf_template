@@ -4,28 +4,163 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <string>
 #include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
-#define debug(x) std::cout << #x << ": " << (x) << endl
-
-template <typename T, size_t size>
-std::ostream& operator<<(std::ostream& os, const std::array<T, size>& a);
-
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& a);
+#define debug(...)                             \
+  std::cout << "\033[0;36m"                    \
+            << "[ " << #__VA_ARGS__ << " ]: ", \
+      DebugPrint(__VA_ARGS__)
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::set<T>& a);
+struct DebugPrinter {
+  T x;
+  operator std::string() { return static_cast<std::string>(x); }
+};
 
-template <typename K, typename V>
-std::ostream& operator<<(std::ostream& os, const std::map<K, V>& a);
+template <typename A>
+void DebugPrint(A a) {
+  std::cout << static_cast<std::string>(DebugPrinter<A>({a})) << "\033[0m"
+            << std::endl;
+}
 
-template <typename T1, typename T2>
-std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& a);
+template <typename A, typename... B>
+void DebugPrint(A a, B... b) {
+  std::cout << static_cast<std::string>(DebugPrinter<A>({a})) << ", ";
+  DebugPrint(b...);
+}
 
-template <typename... T>
-std::ostream& operator<<(std::ostream& os, const std::tuple<T...>& a);
+// DebugPrinter specializations
+
+template <>
+struct DebugPrinter<int> {
+  int x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
+struct DebugPrinter<bool> {
+  bool x;
+  operator std::string() { return x ? "true" : "false"; }
+};
+
+template <>
+struct DebugPrinter<double> {
+  double x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
+struct DebugPrinter<long double> {
+  long double x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <typename A, typename B>
+struct DebugPrinter<std::pair<A, B>> {
+  std::pair<A, B> x;
+  operator std::string() {
+    std::string s = "pair(";
+    s += static_cast<std::string>(DebugPrinter<A>({x.first}));
+    s += ", ";
+    s += static_cast<std::string>(DebugPrinter<B>({x.second}));
+    s += ")";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::vector<T>> {
+  std::vector<T> x;
+  operator std::string() {
+    std::string s = "vector[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::set<T>> {
+  std::set<T> x;
+  operator std::string() {
+    std::string s = "set[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::unordered_set<T>> {
+  std::unordered_set<T> x;
+  operator std::string() {
+    std::string s = "unordered_set[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::multiset<T>> {
+  std::multiset<T> x;
+  operator std::string() {
+    std::string s = "multiset[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename A, typename B>
+struct DebugPrinter<std::map<A, B>> {
+  std::map<A, B> x;
+  operator std::string() {
+    std::string s = "map{";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<A>({it->first}));
+      s += " -> ";
+      s += static_cast<std::string>(DebugPrinter<B>({it->second}));
+    }
+    s += "}";
+    return s;
+  }
+};
+
+template <typename A, typename B>
+struct DebugPrinter<std::unordered_map<A, B>> {
+  std::unordered_map<A, B> x;
+  operator std::string() {
+    std::string s = "unordered_map{";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<A>({it->first}));
+      s += " -> ";
+      s += static_cast<std::string>(DebugPrinter<B>({it->second}));
+    }
+    s += "}";
+    return s;
+  }
+};
+
+namespace tuple_helper {
 
 template <std::size_t...>
 struct index_seq {};
@@ -36,87 +171,35 @@ struct make_index_seq : make_index_seq<N - 1, N - 1, Is...> {};
 template <std::size_t... Is>
 struct make_index_seq<0, Is...> : index_seq<Is...> {};
 
-template <typename T, size_t size>
-std::ostream& operator<<(std::ostream& os, const std::array<T, size>& a) {
-  os << "array[";
-  for (int i = 0; i < size; i++) {
-    os << a[i];
-    if (i < size - 1) os << ", ";
-  }
-  os << "]";
-  return os;
-}
-
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& a) {
-  os << "vector[";
-  for (int i = 0; i < a.size(); i++) {
-    os << a[i];
-    if (i < a.size() - 1) os << ", ";
-  }
-  os << "]";
-  return os;
-}
-
-template <typename T>
-std::ostream& operator<<(std::ostream& os, const std::set<T>& a) {
-  os << "set[";
-  int cnt = 0;
-  for (const T& x : a) {
-    os << x;
-    cnt++;
-    if (cnt < a.size()) os << ", ";
-  }
-  os << "]";
-  return os;
-}
-
-template <typename K, typename V>
-std::ostream& operator<<(std::ostream& os, const std::map<K, V>& a) {
-  os << "map{";
-  for (auto it = a.begin(); it != a.end(); it++) {
-    os << it->first << " -> " << it->second;
-    if (it != --a.end()) {
-      os << ", ";
-    }
-  }
-  os << "}";
-  return os;
-}
-
-template <typename T1, typename T2>
-std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& a) {
-  os << "pair(" << a.first << ", " << a.second << ")";
-  return os;
-}
-
-namespace tuple_helper {
-
-template <typename T>
-void PrintTupleElements(std::ostream& os, const T& t) {
-  os << t;
+std::string PrintTupleElements(const T& t) {
+  return DebugPrinter<T>({t});
 }
 
 template <typename T, typename... Args>
-void PrintTupleElements(std::ostream& os, const T& t, const Args&... rest) {
-  os << t << ", ";
-  PrintTupleElements(os, rest...);
+std::string PrintTupleElements(const T& t, const Args&... rest) {
+  std::string s = static_cast<std::string>(DebugPrinter<T>({t})) + ", ";
+  s += PrintTupleElements(rest...);
+  return s;
 }
 
 template <typename T, std::size_t... Is>
-void PrintTuple(std::ostream& os, const T& a, index_seq<Is...> s) {
-  PrintTupleElements(os, std::get<Is>(a)...);
+std::string PrintTuple(const T& a, index_seq<Is...> s) {
+  return PrintTupleElements(std::get<Is>(a)...);
 }
 
 }  // namespace tuple_helper
 
 template <typename... T>
-std::ostream& operator<<(std::ostream& os, const std::tuple<T...>& a) {
-  os << "tuple(";
-  auto seq = make_index_seq<sizeof...(T)>();
-  tuple_helper::PrintTuple(os, a, seq);
-  os << ")";
-  return os;
-}
+struct DebugPrinter<std::tuple<T...>> {
+  std::tuple<T...> x;
+  operator std::string() {
+    std::string s = "tuple(";
+    auto seq = tuple_helper::make_index_seq<sizeof...(T)>();
+    s += tuple_helper::PrintTuple(x, seq);
+    s += ")";
+    return s;
+  }
+};
 
 #endif  // DEBUG_H_

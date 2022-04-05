@@ -28,6 +28,8 @@
 
 #ifdef LOCAL
 #include "debug.h"
+#else
+#define debug(...) 42  // orz
 #endif
 
 using namespace std;
