@@ -41,6 +41,9 @@ using int128 = __int128_t;
 using uint = unsigned int;
 using uint64 = unsigned long long;
 
+mt19937 rng(19980723);
+mt19937_64 rng64(19980723);
+
 // --------------------------- xindubawukong ---------------------------
 
 void Main() {}
