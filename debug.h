@@ -36,6 +36,16 @@ void DebugPrint(A a, B... b) {
 // DebugPrinter specializations
 
 template <>
+struct DebugPrinter<char> {
+  char x;
+  operator std::string() {
+    std::string s;
+    s += x;
+    return s;
+  }
+};
+
+template <>
 struct DebugPrinter<int> {
   int x;
   operator std::string() { return std::to_string(x); }
@@ -77,6 +87,20 @@ struct DebugPrinter<std::vector<T>> {
   std::vector<T> x;
   operator std::string() {
     std::string s = "vector[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T, std::size_t N>
+struct DebugPrinter<std::array<T, N>> {
+  std::array<T, N> x;
+  operator std::string() {
+    std::string s = "array[";
     for (auto it = x.begin(); it != x.end(); it++) {
       if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
