@@ -29,7 +29,7 @@
 #ifdef LOCAL
 #include "debug.h"
 #else
-#define debug(...) 42
+#define debug(...) 19980723
 #endif
 
 using namespace std;

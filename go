@@ -10,6 +10,8 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
 set(CMAKE_CXX_STANDARD 17)
+
+add_executable(template template.cpp debug.h debug.cpp)
 "
 
 if [ -z $1 ]; then
@@ -18,7 +20,7 @@ if [ -z $1 ]; then
 fi
 
 if [ $1 == "clean" ]; then
-  echo -n "Enter yes to clean: "
+  echo "Enter yes to clean: "
   read op
   if [ $op == "yes" ];
   then

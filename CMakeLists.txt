@@ -10,3 +10,5 @@ include(CPack)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_executable(template template.cpp debug.h debug.cpp)
+
