@@ -39,10 +39,10 @@ if [ ! -d "problem_$1" ]; then
   echo $buildstr >> CmakeLists.txt
 
   mkdir "problem_$1"
-  touch problem_$1/input.txt
-  touch problem_$1/output.txt
+  touch problem_$1/$1.in
+  touch problem_$1/$1.out
   cp template.cpp problem_$1/$1.cpp
-  replace="s/debug.h/..\/debug.h/g; s/input.txt/problem_$1\/input.txt/g; s/output.txt/problem_$1\/output.txt/g"
+  replace="s/debug.h/..\/debug.h/g; s/input.txt/problem_$1\/$1.in/g; s/output.txt/problem_$1\/$1.out/g"
   sed -i '' "$replace"  ./problem_$1/$1.cpp
 fi
 
