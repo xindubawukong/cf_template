@@ -10,9 +10,12 @@
 #include <unordered_set>
 #include <vector>
 
-#define debug(...)                             \
-  std::cout << "\033[0;36m"                    \
-            << "[ " << #__VA_ARGS__ << " ]: ", \
+#define COLOR_START_STR "\033[0;31m"
+#define COLOR_END_STR "\033[0m"
+
+#define debug(...)                                     \
+  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
+            << " ]: " << COLOR_END_STR,                \
       DebugPrint(__VA_ARGS__)
 
 template <typename T>
@@ -23,13 +26,14 @@ struct DebugPrinter {
 
 template <typename A>
 void DebugPrint(A a) {
-  std::cout << static_cast<std::string>(DebugPrinter<A>({a})) << "\033[0m"
-            << std::endl;
+  std::cout << COLOR_START_STR << static_cast<std::string>(DebugPrinter<A>({a}))
+            << COLOR_END_STR << std::endl;
 }
 
 template <typename A, typename... B>
 void DebugPrint(A a, B... b) {
-  std::cout << static_cast<std::string>(DebugPrinter<A>({a})) << ", ";
+  std::cout << COLOR_START_STR << static_cast<std::string>(DebugPrinter<A>({a}))
+            << ", " << COLOR_END_STR;
   DebugPrint(b...);
 }
 
