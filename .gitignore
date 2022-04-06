@@ -1,3 +1,4 @@
 .vscode/
+.history/
 .DS_Store
 build/
