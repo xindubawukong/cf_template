@@ -50,6 +50,12 @@ struct DebugPrinter<char> {
 };
 
 template <>
+struct DebugPrinter<short> {
+  short x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
 struct DebugPrinter<int> {
   int x;
   operator std::string() { return std::to_string(x); }
