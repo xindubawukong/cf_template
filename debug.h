@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <stack>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -16,7 +17,7 @@
 #define debug(...)                                     \
   std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
             << " ]: " << COLOR_END_STR,                \
-      DebugPrint(__VA_ARGS__)
+      DebugPrint(__VA_ARGS__);
 
 template <typename T>
 struct DebugPrinter {
@@ -58,6 +59,12 @@ struct DebugPrinter<short> {
 template <>
 struct DebugPrinter<int> {
   int x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
+struct DebugPrinter<long long> {
+  long long x;
   operator std::string() { return std::to_string(x); }
 };
 
@@ -106,6 +113,28 @@ struct DebugPrinter<std::vector<T>> {
   }
 };
 
+template <typename T>
+struct DebugPrinter<std::stack<T>> {
+  std::stack<T> x;
+  operator std::string() {
+    std::string s = "stack[";
+    std::vector<T> a;
+    while (!x.empty()) {
+      T t = x.top();
+      a.push_back(t);
+      x.pop();
+    }
+    for (int i = a.size() - 1; i >= 0; i--) {
+      T t = a[i];
+      if (i != a.size() - 1) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({t}));
+      x.push(t);
+    }
+    s += "]";
+    return s;
+  }
+};
+
 template <typename T, std::size_t N>
 struct DebugPrinter<std::array<T, N>> {
   std::array<T, N> x;
@@ -120,9 +149,9 @@ struct DebugPrinter<std::array<T, N>> {
   }
 };
 
-template <typename T>
-struct DebugPrinter<std::set<T>> {
-  std::set<T> x;
+template <typename T, typename Cmp>
+struct DebugPrinter<std::set<T, Cmp>> {
+  std::set<T, Cmp> x;
   operator std::string() {
     std::string s = "set[";
     for (auto it = x.begin(); it != x.end(); it++) {

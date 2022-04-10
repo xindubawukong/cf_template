@@ -61,8 +61,11 @@ struct Point {
   // parallel
   bool operator|(const Point& b) const { return abs((*this) % b) < eps; }
 
+  operator string() const {
+    return "Point(" + to_string(x) + ", " + to_string(y) + ")";
+  }
   friend ostream& operator<<(ostream& os, const Point& c) {
-    os << "Point(" + to_string(c.x) + ", " + to_string(c.y) + ")";
+    os << static_cast<string>(c);
     return os;
   }
 };
@@ -106,9 +109,7 @@ struct Segment {
 struct Circle {
   Point c;
   real r;
-  Circle(Point c_ = Point(), real r_ = 1): c(c_), r(r_) {
-    assert(r_ > eps);
-  }
+  Circle(Point c_ = Point(), real r_ = 1) : c(c_), r(r_) { assert(r_ > eps); }
 
   friend bool IsInside(const Point& a, const Circle& c) {
     auto d = Dist(a, c.c);
