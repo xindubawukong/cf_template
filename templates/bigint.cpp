@@ -39,10 +39,12 @@ using uint64 = unsigned long long;
 
 template <typename T, T base>
 class BigInt {
-  vector<T> a;
+  static_assert(base > 0);
 
  public:
+  vector<T> a;
   BigInt(T x = 0) : a({x}) { Normalize(); }
+  BigInt(const BigInt<T, base>& b) : a(b.a) {}
 
   operator string() const {
     string t = to_string(base - 1);
@@ -62,15 +64,39 @@ class BigInt {
     return os;
   }
 
+  friend std::istream& operator>>(std::istream& is, BigInt<T, base>& a) {
+    static_assert(base == 10 || base == 100 || base == 1000 || base == 10000 ||
+                  base == 100000 || base == 1000000);
+    string s;
+    is >> s;
+    int len = to_string(base - 1).length();
+    std::reverse(s.begin(), s.end());
+    a.a.clear();
+    for (int i = 0; i < s.length(); i += len) {
+      T x = 0;
+      for (int j = min((int)s.length() - 1, i + len - 1); j >= i; j--) {
+        x = x * 10 + s[j] - '0';
+      }
+      a.a.push_back(x);
+    }
+    a.Normalize();
+    return is;
+  }
+
   void Normalize() {
-    while (a.size() > 1 && a.back() == 0) a.pop_back();
     for (int i = 0; i < a.size(); i++) {
       if (a[i] >= base) {
         if (i == a.size() - 1) a.push_back(0);
         a[i + 1] += a[i] / base;
         a[i] %= base;
       }
+      while (a[i] < 0) {
+        assert(i < a.size() - 1);
+        a[i] += base;
+        a[i + 1]--;
+      }
     }
+    while (a.size() > 1 && a.back() == 0) a.pop_back();
   }
 
   bool operator<(const BigInt<T, base>& b) const {
@@ -90,6 +116,16 @@ class BigInt {
 
   bool operator>=(const BigInt<T, base>& b) const { return b <= *this; }
 
+  bool operator==(const BigInt<T, base>& b) const {
+    if (a.size() != b.a.size()) return false;
+    for (int i = 0; i < a.size(); i++) {
+      if (a[i] != b.a[i]) return false;
+    }
+    return true;
+  }
+
+  bool operator!=(const BigInt<T, base>& b) const { return !(*this == b); }
+
   BigInt operator+(const BigInt<T, base>& b) const {
     int n = a.size(), m = b.a.size();
     int len = max(n, m);
@@ -105,12 +141,9 @@ class BigInt {
   BigInt operator-(const BigInt<T, base>& b) const {
     int m = b.a.size();
     BigInt c = *this;
+    assert(c > b);
     for (int i = 0; i < m; i++) {
       c.a[i] -= b.a[i];
-      if (c.a[i] < 0) {
-        c.a[i] += base;
-        c.a[i + 1]--;
-      }
     }
     c.Normalize();
     return c;
@@ -170,6 +203,8 @@ class BigInt {
     return make_pair(ans, rest);
   }
 };
+
+using bigint = BigInt<int, 1000>;
 
 void Main() {
   BigInt<int, 100> p = 12345678;

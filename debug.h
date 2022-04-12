@@ -63,6 +63,12 @@ struct DebugPrinter<int> {
 };
 
 template <>
+struct DebugPrinter<unsigned long> {
+  unsigned long x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
 struct DebugPrinter<long long> {
   long long x;
   operator std::string() { return std::to_string(x); }
@@ -191,9 +197,9 @@ struct DebugPrinter<std::multiset<T>> {
   }
 };
 
-template <typename A, typename B>
-struct DebugPrinter<std::map<A, B>> {
-  std::map<A, B> x;
+template <typename A, typename B, typename Cmp>
+struct DebugPrinter<std::map<A, B, Cmp>> {
+  std::map<A, B, Cmp> x;
   operator std::string() {
     std::string s = "map{";
     for (auto it = x.begin(); it != x.end(); it++) {
