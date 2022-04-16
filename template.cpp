@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <optional>
