@@ -17,7 +17,7 @@
 #define debug(...)                                     \
   std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
             << " ]: " << COLOR_END_STR,                \
-      DebugPrint(__VA_ARGS__);
+      DebugPrint(__VA_ARGS__)
 
 template <typename T>
 struct DebugPrinter {
