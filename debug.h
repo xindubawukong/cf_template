@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <map>
+#include <optional>
+#include <queue>
 #include <set>
 #include <stack>
 #include <string>
@@ -45,7 +47,9 @@ struct DebugPrinter<char> {
   char x;
   operator std::string() {
     std::string s;
+    s += '\'';
     s += x;
+    s += '\'';
     return s;
   }
 };
@@ -93,6 +97,12 @@ struct DebugPrinter<bool> {
 };
 
 template <>
+struct DebugPrinter<float> {
+  float x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
 struct DebugPrinter<double> {
   double x;
   operator std::string() { return std::to_string(x); }
@@ -102,6 +112,30 @@ template <>
 struct DebugPrinter<long double> {
   long double x;
   operator std::string() { return std::to_string(x); }
+};
+
+template <size_t N>
+struct DebugPrinter<std::bitset<N>> {
+  std::bitset<N> x;
+  operator std::string() {
+    std::string s = "bitset<" + std::to_string(N) + ">(";
+    s += x.to_string();
+    s += ")";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::optional<T>> {
+  std::optional<T> x;
+  operator std::string() {
+    std::string s = "optional(";
+    if (x.has_value()) {
+      s += static_cast<std::string>(DebugPrinter<T>({x.value()}));
+    }
+    s += ")";
+    return s;
+  }
 };
 
 template <typename A, typename B>
@@ -158,6 +192,38 @@ struct DebugPrinter<std::array<T, N>> {
   std::array<T, N> x;
   operator std::string() {
     std::string s = "array[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::queue<T>> {
+  std::queue<T> x;
+  operator std::string() {
+    std::string s = "queue[";
+    int n = x.size();
+    for (int i = 0; i < n; i++) {
+      auto t = x.front();
+      if (i > 0) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({t}));
+      x.pop();
+      x.push(t);
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::deque<T>> {
+  std::deque<T> x;
+  operator std::string() {
+    std::string s = "deque[";
     for (auto it = x.begin(); it != x.end(); it++) {
       if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
