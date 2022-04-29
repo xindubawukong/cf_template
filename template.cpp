@@ -13,6 +13,7 @@
 #include <cstring>
 #include <ctime>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <optional>
@@ -50,8 +51,8 @@ mt19937_64 rng64(19980723);
 void Main() {}
 
 int main() {
-  // std::ios::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 #ifdef LOCAL
   freopen("../input.txt", "r", stdin);
   // freopen("../output.txt", "w", stdout);
