@@ -13,8 +13,9 @@
 #include <unordered_set>
 #include <vector>
 
-#define COLOR_START_STR "\033[0;31m"
-#define COLOR_END_STR "\033[0m"
+// https://xdevs.com/guide/color_serial/
+const std::string COLOR_START_STR = "\033[0;31m";
+const std::string COLOR_END_STR = "\033[0m";
 
 #define debug(...)                                     \
   std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
