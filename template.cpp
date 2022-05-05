@@ -10,11 +10,14 @@
 #include <climits>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
+#include <list>
 #include <map>
 #include <optional>
 #include <queue>
