@@ -212,6 +212,35 @@ struct HashString {
   }
 };
 
+// KMP
+
+struct KMP {
+  string s;
+  vector<int> next;
+
+  KMP(const string& s_) : s(s_) {
+    next.resize(s.length());
+    std::fill(next.begin(), next.end(), -1);
+    int j = -1;
+    for (int i = 1; i < s.length(); i++) {
+      while (j != -1 && s[j + 1] != s[i]) j = next[j];
+      if (s[j + 1] == s[i]) j++;
+      next[i] = j;
+    }
+  }
+
+  vector<int> Match(const string& t) {
+    int j = -1;
+    vector<int> res;
+    for (int i = 0; i < t.length(); i++) {
+      while (j != -1 && s[j + 1] != t[i]) j = next[j];
+      if (s[j + 1] == t[i]) j++;
+      if (j == s.length() - 1) res.push_back(i - s.length() + 1);
+    }
+    return res;
+  }
+};
+
 void Main() {}
 
 int main() {
