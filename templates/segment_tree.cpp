@@ -49,35 +49,38 @@ mt19937_64 rng64(19980723);
 
 struct SegmentTree {
   struct Node {
-    int64 sum, tag;
+    int64 sum_a, sum_b, add_a, add_b;
     Node *lch, *rch;
 
-    Node() : sum(0), tag(0), lch(nullptr), rch(nullptr) {}
+    Node()
+        : sum_a(0), sum_b(0), add_a(0), add_b(0), lch(nullptr), rch(nullptr) {}
 
-    void Add(int64 val, int l, int r) {
-      tag += val;
-      sum += val * (r - l + 1);
+    void Add(int l, int r, int64 da, int64 db) {
+      add_a += da;
+      add_b += db;
+      sum_a += da * (r - l + 1);
+      sum_b += db * (r - l + 1);
     }
 
     void PushDown(int l, int r) {
-      if (tag == 0) return;
+      if (add_a == 0 && add_b == 0) return;
+      if (!lch) lch = new Node();
+      if (!rch) rch = new Node();
       int m = l + (r - l) / 2;
-      if (lch) {
-        lch->Add(tag, l, m);
-      }
-      if (rch) {
-        rch->Add(tag, m + 1, r);
-      }
-      tag = 0;
+      lch->Add(l, m, add_a, add_b);
+      rch->Add(m + 1, r, add_a, add_b);
+      add_a = add_b = 0;
     }
 
     void Update() {
-      sum = 0;
+      sum_a = sum_b = 0;
       if (lch) {
-        sum += lch->sum;
+        sum_a += lch->sum_a;
+        sum_b += lch->sum_b;
       }
       if (rch) {
-        sum += rch->sum;
+        sum_a += rch->sum_a;
+        sum_b += rch->sum_b;
       }
     }
   };
@@ -87,48 +90,52 @@ struct SegmentTree {
 
   SegmentTree(int l, int r) : l_range(l), r_range(r), root(nullptr) {}
 
-  Node* Change(Node* x, int l, int r, int from, int to, int64 val) {
+  Node* Change(Node* x, int l, int r, int from, int to, int64 da, int64 db) {
     if (!x) {
       x = new Node();
     }
     if (from <= l && r <= to) {
-      x->Add(val, l, r);
+      x->Add(l, r, da, db);
       return x;
     }
     x->PushDown(l, r);
     int m = l + (r - l) / 2;
     if (from <= m) {
-      x->lch = Change(x->lch, l, m, from, to, val);
+      x->lch = Change(x->lch, l, m, from, to, da, db);
     }
     if (to > m) {
-      x->rch = Change(x->rch, m + 1, r, from, to, val);
+      x->rch = Change(x->rch, m + 1, r, from, to, da, db);
     }
     x->Update();
     return x;
   }
 
-  void Change(int from, int to, int64 val) {
-    root = Change(root, l_range, r_range, from, to, val);
+  void Change(int from, int to, int64 da, int64 db) {
+    root = Change(root, l_range, r_range, from, to, da, db);
   }
 
-  int64 GetSum(Node* x, int l, int r, int from, int to) {
-    if (!x) return 0;
+  pair<int64, int64> GetSum(Node* x, int l, int r, int from, int to) {
+    if (!x) return {0, 0};
     if (from <= l && r <= to) {
-      return x->sum;
+      return {x->sum_a, x->sum_b};
     }
     x->PushDown(l, r);
     int m = l + (r - l) / 2;
-    int64 res = 0;
+    pair<int64, int64> res = {0, 0};
     if (from <= m) {
-      res += GetSum(x->lch, l, m, from, to);
+      auto [a, b] = GetSum(x->lch, l, m, from, to);
+      res.first += a;
+      res.second += b;
     }
     if (to > m) {
-      res += GetSum(x->rch, m + 1, r, from, to);
+      auto [a, b] = GetSum(x->rch, m + 1, r, from, to);
+      res.first += a;
+      res.second += b;
     }
     return res;
   }
 
-  int64 GetSum(int from, int to) {
+  pair<int64, int64> GetSum(int from, int to) {
     return GetSum(root, l_range, r_range, from, to);
   }
 };
