@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <any>
 #include <array>
+#include <bit>
 #include <bitset>
 #include <cassert>
 #include <climits>
@@ -19,6 +20,7 @@
 #include <iterator>
 #include <list>
 #include <map>
+#include <numeric>
 #include <optional>
 #include <queue>
 #include <random>
