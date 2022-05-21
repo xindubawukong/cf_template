@@ -38,7 +38,7 @@ fi
 
 if [ ! -d "problem_$1" ]; then
   buildstr="add_executable(problem_$1 problem_$1/$1.cpp debug.h debug.cpp)"
-  echo $buildstr >> CmakeLists.txt
+  echo $buildstr >> CMakeLists.txt
 
   mkdir "problem_$1"
   touch problem_$1/$1.in

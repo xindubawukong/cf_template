@@ -12,3 +12,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(template template.cpp debug.h debug.cpp)
 
+add_executable(problem_A problem_A/A.cpp debug.h debug.cpp)
