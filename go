@@ -25,7 +25,7 @@ if [ $1 == "clean" ]; then
   if [ $op == "yes" ];
   then
     echo "Cleaning."
-    echo "$cmakecontent" > CmakeLists.txt
+    echo "$cmakecontent" > CMakeLists.txt
     now=$(date +"%Y-%m-%d-%r")
     mkdir -p ".history/$now"
     cp -r problem_* CmakeLists.txt "./.history/$now"
