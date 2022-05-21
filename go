@@ -28,7 +28,7 @@ if [ $1 == "clean" ]; then
     echo "$cmakecontent" > CMakeLists.txt
     now=$(date +"%Y-%m-%d-%r")
     mkdir -p ".history/$now"
-    cp -r problem_* CmakeLists.txt "./.history/$now"
+    cp -r problem_* CMakeLists.txt "./.history/$now"
     rm -rf problem_*
   else
     echo "Not cleaning. Exit."
