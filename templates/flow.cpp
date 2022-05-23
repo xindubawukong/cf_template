@@ -80,12 +80,13 @@ struct MaxFlow {
     e2->back = e1;
   }
 
-  int64 Solve(int s, int t) {
+  int64 Solve(int s, int t, int64 new_flow) {
     assert(0 <= s && s < n && 0 <= t && t < n);
     vector<int> dep(n);
     vector<int> cur(n);
     auto Bfs = [&]() -> bool {
       std::fill(dep.begin(), dep.end(), -1);
+      std::fill(cur.begin(), cur.end(), 0);
       dep[s] = 0;
       queue<int> q;
       q.push(s);
@@ -118,9 +119,8 @@ struct MaxFlow {
       return res;
     };
     int64 ans = 0;
-    while (Bfs()) {
-      std::fill(cur.begin(), cur.end(), 0);
-      ans += Dfs(Dfs, s, 1e18);
+    while (Bfs() && ans < new_flow) {
+      ans += Dfs(Dfs, s, new_flow - ans);
     }
     return ans;
   }
