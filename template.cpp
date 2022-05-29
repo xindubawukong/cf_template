@@ -2,10 +2,14 @@
 #define LOCAL
 #endif
 
-#include <algorithm>
+#if __cplusplus >= 202001L
 #include <any>
-#include <array>
 #include <bit>
+#include <optional>
+#endif
+
+#include <algorithm>
+#include <array>
 #include <bitset>
 #include <cassert>
 #include <climits>
@@ -21,7 +25,6 @@
 #include <list>
 #include <map>
 #include <numeric>
-#include <optional>
 #include <queue>
 #include <random>
 #include <set>

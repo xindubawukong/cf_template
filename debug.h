@@ -132,6 +132,7 @@ struct DebugPrinter<std::bitset<N>> {
   }
 };
 
+#if __cplusplus >= 202001L
 template <typename T>
 struct DebugPrinter<std::optional<T>> {
   std::optional<T> x;
@@ -144,6 +145,7 @@ struct DebugPrinter<std::optional<T>> {
     return s;
   }
 };
+#endif
 
 template <typename A, typename B>
 struct DebugPrinter<std::pair<A, B>> {
