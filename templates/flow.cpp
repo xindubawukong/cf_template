@@ -102,13 +102,13 @@ struct MaxFlow {
       }
       return dep[t] != -1;
     };
-    auto Dfs = [&](auto self, int x, int64 flow) -> int64 {
+    std::function<int64(int, int64)> Dfs = [&](int x, int64 flow) {
       if (x == t) return flow;
       int64 res = 0;
       for (int& i = cur[x]; i < go[x].size(); i++) {
         auto& [y, cap, back] = *go[x][i];
         if (cap == 0 || dep[y] != dep[x] + 1) continue;
-        int64 df = self(self, y, min(cap, flow));
+        int64 df = Dfs(y, min(cap, flow));
         flow -= df;
         cap -= df;
         back->cap += df;
@@ -120,7 +120,7 @@ struct MaxFlow {
     };
     int64 ans = 0;
     while (Bfs() && ans < new_flow) {
-      ans += Dfs(Dfs, s, new_flow - ans);
+      ans += Dfs(s, new_flow - ans);
     }
     return ans;
   }
