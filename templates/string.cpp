@@ -221,8 +221,7 @@ struct KMP {
   KMP(const string& s_) : s(s_) {
     next.resize(s.length());
     std::fill(next.begin(), next.end(), 0);
-    int j = 0;
-    for (int i = 1; i < s.length(); i++) {
+    for (int i = 1, j = 0; i < s.length(); i++) {
       while (j && s[j] != s[i]) j = next[j - 1];
       if (s[j] == s[i]) j++;
       next[i] = j;
@@ -230,9 +229,8 @@ struct KMP {
   }
 
   vector<int> Match(const string& t) {
-    int j = 0;
     vector<int> res;
-    for (int i = 0; i < t.length(); i++) {
+    for (int i = 0, j = 0; i < t.length(); i++) {
       while (j && s[j] != t[i]) j = next[j - 1];
       if (s[j] == t[i]) j++;
       if (j == s.length()) {
