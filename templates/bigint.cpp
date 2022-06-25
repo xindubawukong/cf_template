@@ -141,7 +141,7 @@ class BigInt {
   BigInt operator-(const BigInt<T, base>& b) const {
     int m = b.a.size();
     BigInt c = *this;
-    assert(c > b);
+    assert(c >= b);
     for (int i = 0; i < m; i++) {
       c.a[i] -= b.a[i];
     }
