@@ -55,6 +55,8 @@ using uint64 = unsigned long long;
 
 // ----------------------------------------------------------------------
 
+// https://www.luogu.com.cn/problem/P4148
+
 const double alpha = 0.75;
 
 struct Point {
