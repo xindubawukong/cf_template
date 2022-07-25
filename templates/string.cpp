@@ -76,19 +76,16 @@ struct SuffixArray {
     }
   }
 
-  void Resort(const vector<pair<int, int>>& key) {
-    vector<vector<int>> b(n + 1);
-    for (int i = 0; i < n; i++) b[key[i].second + 1].push_back(i);
-    sa.clear();
-    for (int i = 0; i <= n; i++) {
-      for (int id : b[i]) sa.push_back(id);
-    }
-    for (int i = 0; i <= n; i++) b[i].clear();
-    for (int i = 0; i < n; i++) b[key[sa[i]].first + 1].push_back(sa[i]);
-    sa.clear();
-    for (int i = 0; i <= n; i++) {
-      for (int id : b[i]) sa.push_back(id);
-    }
+  void Resort(vector<array<int, 2>>& key) {
+    for (int i = 0; i < n; i++) key[i][0]++, key[i][1]++;
+    vector<int> b(n + 1), sum(n + 2), at(n);
+    for (int i = 0; i < n; i++) at[i] = b[key[i][1]]++;
+    for (int i = 0; i <= n; i++) sum[i + 1] = sum[i] + b[i];
+    for (int i = 0; i < n; i++) sa[sum[key[i][1]] + at[i]] = i;
+    for (int i = 0; i <= n; i++) b[i] = 0;
+    for (int i = 0; i < n; i++) at[sa[i]] = b[key[sa[i]][0]]++;
+    for (int i = 0; i <= n; i++) sum[i + 1] = sum[i] + b[i];
+    for (int i = 0; i < n; i++) sa[sum[key[i][0]] + at[i]] = i;
     for (int i = 0, r = 0; i < n; i++) {
       if (i > 0 && key[sa[i]] > key[sa[i - 1]]) r++;
       rank[sa[i]] = r;
@@ -102,14 +99,14 @@ struct SuffixArray {
     a.resize(n * 2, INT_MIN);
     sa.resize(n);
     rank.resize(n);
-    vector<pair<int, int>> key(n);
-    for (int i = 0; i < n; i++) key[i] = make_pair(a[i], -1);
+    vector<array<int, 2>> key(n);
+    for (int i = 0; i < n; i++) key[i] = {a[i], -1};
     Resort(key);
     for (int len = 1; len <= n; len *= 2) {
       for (int i = 0; i < n; i++) {
         int r1 = rank[i];
         int r2 = i + len < n ? rank[i + len] : -1;
-        key[i] = make_pair(r1, r2);
+        key[i] = {r1, r2};
       }
       Resort(key);
     }
