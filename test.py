@@ -1,5 +1,5 @@
 from math import *
-import os
+import subprocess
 from random import *
 
 
@@ -19,9 +19,9 @@ def make_data():
 
 
 def test():
-    make_data()
-    os.system('cd build && ./problem_A')
-    os.system('cd build && ./problem_B')
+    subprocess.call('cd build && ./problem_C', shell=True)
+    subprocess.call('cd build && ./problem_A', shell=True)
+    subprocess.call('cd build && ./problem_B', shell=True)
     f1 = open('problem_A/A.out', 'r')
     f2 = open('problem_B/B.out', 'r')
     s1 = f1.read()
