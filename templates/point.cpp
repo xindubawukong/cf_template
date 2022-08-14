@@ -68,8 +68,12 @@ struct Point {
   bool operator!=(const Point& b) const { return !(*this == b); }
 
   real Length() const { return sqrt(x * x + y * y); }
-  friend real Dist(const Point& a, const Point& b) { return (a - b).Length(); }
+  friend real Dist(const Point& a, const Point& b) {
+    auto x = a.x - b.x, y = a.y - b.y;
+    return sqrt(x * x + y * y);
+  }
   Point operator+(const Point& b) const { return Point(x + b.x, y + b.y); }
+  void operator+=(const Point& b) { x += b.x, y += b.y; }
   Point operator-(const Point& b) const { return Point(x - b.x, y - b.y); }
   Point operator*(real t) const { return Point(x * t, y * t); }
   friend Point operator*(real t, const Point& a) { return a * t; }
@@ -226,6 +230,26 @@ Point GetSymetricPoint(const Point& a, const Line& l) {
   assert(bs.size() == 1);
   auto b = bs[0];
   return b * 2 - a;
+}
+
+// 0 - pi
+real GetTriangularAngle(real a, real b, real c) {
+  real t = (a * a + b * b - c * c) / (2 * a * b);
+  if (t < -1) t = -1;
+  if (t > 1) t = 1;
+  return acos(t);
+}
+
+bool IsTriangularSame(const vector<Point>& a, const vector<Point>& b) {
+  assert(a.size() == 3 && b.size() == 3);
+  vector<real> p = {Dist(a[0], a[1]), Dist(a[1], a[2]), Dist(a[0], a[2])};
+  vector<real> q = {Dist(b[0], b[1]), Dist(b[1], b[2]), Dist(b[0], b[2])};
+  sort(p.begin(), p.end());
+  sort(q.begin(), q.end());
+  for (int i = 0; i < 3; i++) {
+    if (abs(p[i] - q[i]) > eps) return false;
+  }
+  return true;
 }
 
 struct Polygon {
