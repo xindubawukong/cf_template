@@ -1,8 +1,8 @@
-class DSU {
+class Dsu {
  public:
   vector<int> fa;
 
-  DSU(int n) {
+  Dsu(int n) {
     fa.resize(n);
     for (int i = 0; i < n; i++) fa[i] = i;
   }
