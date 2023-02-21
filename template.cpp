@@ -54,6 +54,9 @@ using uint128 = __uint128_t;
 using uint = unsigned int;
 using uint64 = unsigned long long;
 
+// mt19937 rng(0);
+// mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
 // ----------------------------------------------------------------------
 
 void Main() {}

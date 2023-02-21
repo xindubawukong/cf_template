@@ -13,11 +13,15 @@
 #include <unordered_set>
 #include <vector>
 
+const bool SHOULD_PRINT = true;
+// const bool SHOULD_PRINT = false;
+
 // https://xdevs.com/guide/color_serial/
 const std::string COLOR_START_STR = "\033[0;31m";
 const std::string COLOR_END_STR = "\033[0m";
 
 #define debug(...)                                     \
+  if (SHOULD_PRINT)                                    \
   std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
             << " ]: " << COLOR_END_STR,                \
       DebugPrint(__VA_ARGS__)

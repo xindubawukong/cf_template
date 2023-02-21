@@ -1,22 +1,5 @@
 from math import *
 import subprocess
-from random import *
-
-
-def make_data():
-    lines = []
-    n = 6
-    lines.append(str(n) + '\n')
-    for i in range(n):
-        s = ''
-        for j in range(4):
-            s += str(randint(0, 10)) + ' '
-        s += '\n'
-        lines.append(s)
-    f = open('problem_A/A.in', 'w')
-    f.writelines(lines)
-    f.close()
-
 
 def test():
     subprocess.call('cd build && ./problem_C', shell=True)
@@ -28,14 +11,20 @@ def test():
     s2 = f2.read()
     f1.close()
     f2.close()
-    if s1 != s2:
+    t1 = float(s1)
+    t2 = float(s2)
+    print(t1, t2)
+    if abs(t1 - t2) / abs(t1) > 1e-3:
         print('error!')
         return False
     return True
 
 
-for i in range(1000):
-    res = test()
-    print(res)
-    if not res:
-        break
+if __name__ == '__main__':
+    subprocess.call('cd build && cmake .. && make', shell=True)
+
+    for i in range(1000):
+        res = test()
+        print(res)
+        if not res:
+            break
