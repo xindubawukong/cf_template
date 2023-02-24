@@ -10,6 +10,7 @@ def init_problem(name):
         f'touch problem_{name}/{name}.cpp && touch problem_{name}/{name}.in && touch problem_{name}/{name}.out', shell=True)
     with open('main.cpp', 'r') as f:
         template = f.read()
+    template = template.replace('debug.h', '../debug.h')
     template = template.replace('main.in', f'../problem_{name}/{name}.in')
     template = template.replace('main.out', f'../problem_{name}/{name}.out')
     with open(f'problem_{name}/{name}.cpp', 'w') as f:

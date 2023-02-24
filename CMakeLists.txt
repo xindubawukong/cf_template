@@ -5,10 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-DLOCAL)
 
-file(GLOB Problems true problem_*)
-# message("Problems: ${Problems}")
+add_executable(main main.cpp)
 
-foreach(Problem ${Problems})
-  # message("Problem: ${Problem}")
-  add_subdirectory(${Problem})
+file(GLOB problems true problem_*)
+
+foreach(problem ${problems})
+  add_subdirectory(${problem})
 endforeach()
