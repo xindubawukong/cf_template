@@ -20,12 +20,12 @@ const std::string COLOR_START_STR = "\033[0;31m";
 const std::string COLOR_END_STR = "\033[0m";
 
 #ifdef SHOULD_PRINT
-#define debug(...)                                     \
-  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
-            << " ]: " << COLOR_END_STR,                \
-      DebugPrint(__VA_ARGS__)
+#define debug(...)                                                   \
+  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__               \
+            << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR \
+            << std::endl
 #else
-#define debug(...)
+#define debug(...) 19980723
 #endif
 
 template <typename T>
@@ -35,16 +35,14 @@ struct DebugPrinter {
 };
 
 template <typename A>
-void DebugPrint(A a) {
-  std::cout << COLOR_START_STR << static_cast<std::string>(DebugPrinter<A>({a}))
-            << COLOR_END_STR << std::endl;
+std::string ToDebugString(A a) {
+  return static_cast<std::string>(DebugPrinter<A>({a}));
 }
 
 template <typename A, typename... B>
-void DebugPrint(A a, B... b) {
-  std::cout << COLOR_START_STR << static_cast<std::string>(DebugPrinter<A>({a}))
-            << ", " << COLOR_END_STR;
-  DebugPrint(b...);
+std::string ToDebugString(A a, B... b) {
+  return static_cast<std::string>(DebugPrinter<A>({a})) + ", " +
+         ToDebugString(b...);
 }
 
 // DebugPrinter specializations
