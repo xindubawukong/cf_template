@@ -5,10 +5,15 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-DLOCAL)
 
-add_executable(main main.cpp)
+option(ENABLE_TEST "" OFF)
+if(${ENABLE_TEST})
+  enable_testing()
+  add_subdirectory(googletest)
+  include_directories(templates)
+  add_subdirectory(tests)
+endif()
 
 file(GLOB problems true problem_*)
-
 foreach(problem ${problems})
   add_subdirectory(${problem})
 endforeach()
