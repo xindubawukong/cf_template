@@ -11,7 +11,7 @@ struct Treap {
     Node *lch, *rch;
     Info info;
 
-    Node(Info info) : lch(nullptr), rch(nullptr), info(info) {
+    Node(Info info_) : lch(nullptr), rch(nullptr), info(info_) {
       info.node = this;
       static std::mt19937 rng(0);
       priority = rng();
@@ -76,10 +76,8 @@ struct Treap {
 
   void Insert(Info info) {
     auto [x, y, z] = Split(root, info.GetKey());
-    if (!y) {
-      y = new Node(info);
-    }
-    root = Merge(x, y, z);
+    auto t = new Node(info);
+    root = Merge(Merge(x, y, t), z);
   }
 
   void Delete(typename Info::key_t key) {
