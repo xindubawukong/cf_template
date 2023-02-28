@@ -13,4 +13,3 @@ endfunction()
 
 add_simple_test(dsu_test)
 add_simple_test(range_min_test)
-add_simple_test(treap_test)

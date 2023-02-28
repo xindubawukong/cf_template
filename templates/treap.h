@@ -1,28 +1,24 @@
 #ifndef TREAP_H_
 #define TREAP_H_
 
-#include <optional>
 #include <random>
-#include <vector>
+#include <tuple>
 
-#include "debug.h"
-
-namespace treap {
-
-template <typename T>
+template <typename Info>
 struct Treap {
   struct Node {
     unsigned int priority;
     Node *lch, *rch;
-    T entry;
+    Info info;
 
-    Node(T entry) : lch(nullptr), rch(nullptr), entry(entry) {
+    Node(Info info) : lch(nullptr), rch(nullptr), info(info) {
+      info.node = this;
       static std::mt19937 rng(0);
       priority = rng();
     }
 
     Node* Update() {
-      entry.Update(lch ? &lch->entry : nullptr, rch ? &rch->entry : nullptr);
+      info.Update();
       return this;
     }
   };
@@ -56,15 +52,15 @@ struct Treap {
     }
   }
 
-  std::tuple<Node*, Node*, Node*> Split(Node* x, typename T::key_t key) {
+  std::tuple<Node*, Node*, Node*> Split(Node* x, typename Info::key_t key) {
     if (x == nullptr) {
       return {nullptr, nullptr, nullptr};
     }
-    if (T::Less(key, x->entry.GetKey())) {
+    if (Info::Less(key, x->info.GetKey())) {
       auto [w, y, z] = Split(x->lch, key);
       x->lch = nullptr;
       return {w, y, Merge(z, x->Update())};
-    } else if (T::Less(x->entry.GetKey(), key)) {
+    } else if (Info::Less(x->info.GetKey(), key)) {
       auto [w, y, z] = Split(x->rch, key);
       x->rch = nullptr;
       return {Merge(x->Update(), w), y, z};
@@ -78,99 +74,42 @@ struct Treap {
   Node* root;
   Treap(Node* root = nullptr) : root(root) {}
 
-  void Insert(T entry) {
-    auto [x, y, z] = Split(root, entry.GetKey());
+  void Insert(Info info) {
+    auto [x, y, z] = Split(root, info.GetKey());
     if (!y) {
-      y = new Node(entry);
+      y = new Node(info);
     }
     root = Merge(x, y, z);
   }
 
-  void Delete(typename T::key_t key) {
+  void Delete(typename Info::key_t key) {
     auto [x, y, z] = Split(root, key);
     if (y) delete y;
     root = Merge(x, z);
   }
-
-  int GetRank(typename T::key_t key) {
-    auto x = root;
-    int less = 0;
-    while (x) {
-      if (T::Less(key, x->entry.GetKey())) {
-        x = x->lch;
-      } else {
-        less += x->lch ? x->lch->entry.size : 0;
-        if (T::Less(x->entry.GetKey(), key)) {
-          less++;
-          x = x->rch;
-        } else {
-          break;
-        }
-      }
-    }
-    return less + 1;
-  }
-
-  std::optional<T> GetKth(int k) {
-    if (!root || root->entry.size < k) return {};
-    auto x = root;
-    while (x) {
-      int left = x->lch ? x->lch->entry.size : 0;
-      if (k <= left) {
-        x = x->lch;
-      } else {
-        k -= left;
-        if (k == 1) return x->entry;
-        k--;
-        x = x->rch;
-      }
-    }
-    assert(false);
-  }
-
-  std::optional<T> GetPrev(typename T::key_t key) {
-    auto [x, y, z] = Split(root, key);
-    auto t = x;
-    std::optional<T> res = {};
-    if (t) {
-      while (t->rch) t = t->rch;
-      res = t->entry;
-    }
-    root = Merge(x, y, z);
-    return res;
-  }
-
-  std::optional<T> GetNext(typename T::key_t key) {
-    auto [x, y, z] = Split(root, key);
-    auto t = z;
-    std::optional<T> res = {};
-    if (t) {
-      while (t->lch) t = t->lch;
-      res = t->entry;
-    }
-    root = Merge(x, y, z);
-    return res;
-  }
 };
 
-}  // namespace treap
+/*
 
-// struct Entry {
-//   using key_t = int;
-//   int val;
-//   int size;
+struct Info {
+  using key_t = int;
+  Treap<Info>::Node* node;
+  int val;
+  int size;
 
-//   Entry(int val) : val(val), size(1) {}
+  Info(int val) : val(val), size(1) {}
 
-//   key_t GetKey() { return val; }
+  key_t GetKey() { return val; }
 
-//   void Update(Entry* l, Entry* r) {
-//     size = 1;
-//     if (l) size += l->size;
-//     if (r) size += r->size;
-//   }
+  void Update() {
+    size = 1;
+    if (node->lch) size += node->lch->info.size;
+    if (node->rch) size += node->rch->info.size;
+  }
 
-//   static bool Less(const key_t& a, const key_t& b) { return a < b; }
-// };
+  static bool Less(const key_t& a, const key_t& b) { return a < b; }
+};
+
+*/
 
 #endif  // TREAP_H_
