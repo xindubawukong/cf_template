@@ -7,29 +7,6 @@
 
 #include "debug.h"
 
-/*
-
-struct Entry {
-  using key_t = pair<int, int>;
-  int val;
-  int id;
-  int size;
-
-  Entry(int val, int id) : val(val), id(id), size(1) {}
-
-  key_t GetKey() { return make_pair(val, id); }
-
-  void Update(Entry* l, Entry* r) {
-    size = 1;
-    if (l) size += l->size;
-    if (r) size += r->size;
-  }
-
-  static bool Less(const key_t& a, const key_t& b) { return a < b; }
-};
-
-*/
-
 namespace treap {
 
 template <typename T>
@@ -177,5 +154,23 @@ struct Treap {
 };
 
 }  // namespace treap
+
+// struct Entry {
+//   using key_t = int;
+//   int val;
+//   int size;
+
+//   Entry(int val) : val(val), size(1) {}
+
+//   key_t GetKey() { return val; }
+
+//   void Update(Entry* l, Entry* r) {
+//     size = 1;
+//     if (l) size += l->size;
+//     if (r) size += r->size;
+//   }
+
+//   static bool Less(const key_t& a, const key_t& b) { return a < b; }
+// };
 
 #endif  // TREAP_H_
