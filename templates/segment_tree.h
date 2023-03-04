@@ -6,27 +6,66 @@
 template <typename Info>
 struct SegmentTree {
   struct Node {
+    int l, r;
     Node *lch, *rch;
     Info info;
-
-    Node() : lch(nullptr), rch(nullptr) { info.node = this; }
+    Node(int l_, int r_) : l(l_), r(r_), lch(nullptr), rch(nullptr) {
+      info.node = this;
+    }
+    Node(Node* x) : l(x->l), r(x->r), lch(x->lch), rch(x->rch), info(x->info) {
+      info.node = this;
+    }
   };
 
   int l_range, r_range;
   Node* root;
+  bool persist;
+  SegmentTree(int l, int r, bool persist_ = false)
+      : l_range(l), r_range(r), root(nullptr), persist(persist_) {}
 
-  SegmentTree(int l, int r) : l_range(l), r_range(r), root(nullptr) {}
+  template <typename F>
+  Node* Modify(int from, int to, F f) {
+    root = Modify(root, l_range, r_range, from, to, f);
+    return root;
+  }
 
+  std::vector<Node*> GetAll(int from, int to) {
+    std::vector<Node*> all;
+    GetAll(root, l_range, r_range, from, to, all);
+    return all;
+  }
+
+  template <typename T, typename F>
+  static Node* BuildTree(std::vector<T>& arr, int l, int r, F f) {
+    Node* x = new Node(l, r);
+    if (l == r) {
+      f(x->info, arr[l]);
+      return x;
+    }
+    int m = l + (r - l) / 2;
+    x->lch = BuildTree(arr, l, m, f);
+    x->rch = BuildTree(arr, m + 1, r, f);
+    x->info.Update();
+    return x;
+  }
+
+ private:
   template <typename F>
   Node* Modify(Node* x, int l, int r, int from, int to, F f) {
     if (!x) {
-      x = new Node();
+      x = new Node(l, r);
+    } else if (persist && x == root) {
+      x = new Node(x);
     }
     if (from <= l && r <= to) {
-      f(x->info, l, r);
+      f(x->info);
       return x;
     }
-    x->info.PushDown(l, r);
+    if (persist) {
+      if (x->lch) x->lch = new Node(x->lch);
+      if (x->rch) x->rch = new Node(x->rch);
+    }
+    x->info.PushDown();
     int m = l + (r - l) / 2;
     if (from <= m) {
       x->lch = Modify(x->lch, l, m, from, to, f);
@@ -38,18 +77,18 @@ struct SegmentTree {
     return x;
   }
 
-  template <typename F>
-  void Modify(int from, int to, F f) {
-    root = Modify(root, l_range, r_range, from, to, f);
-  }
-
-  void GetAll(Node* x, int l, int r, int from, int to, std::vector<Info>& all) {
+  void GetAll(Node* x, int l, int r, int from, int to,
+              std::vector<Node*>& all) {
     if (!x) return;
     if (from <= l && r <= to) {
-      all.push_back(x->info);
+      all.push_back(x);
       return;
     }
-    x->info.PushDown(l, r);
+    if (persist) {
+      if (x->lch) x->lch = new Node(x->lch);
+      if (x->rch) x->rch = new Node(x->rch);
+    }
+    x->info.PushDown();
     int m = l + (r - l) / 2;
     if (from <= m) {
       GetAll(x->lch, l, m, from, to, all);
@@ -58,50 +97,20 @@ struct SegmentTree {
       GetAll(x->rch, m + 1, r, from, to, all);
     }
   }
-
-  std::vector<Info> GetAll(int from, int to) {
-    std::vector<Info> all;
-    GetAll(root, l_range, r_range, from, to, all);
-    return all;
-  }
 };
 
 /*
-
 struct Info {
-  int64 sum, tag;
+  int size;
   SegmentTree<Info>::Node* node;
-
-  Info(int64 sum = 0, int64 tag = 0) : sum(sum), tag(tag) {}
-
-  void Add(int64 val, int l, int r) {
-    tag += val;
-    sum += val * (r - l + 1);
-  }
-
-  void PushDown(int l, int r) {
-    if (tag == 0) return;
-    int m = l + (r - l) / 2;
-    if (node->lch) {
-      node->lch->info.Add(tag, l, m);
-    }
-    if (node->rch) {
-      node->rch->info.Add(tag, m + 1, r);
-    }
-    tag = 0;
-  }
-
+  Info() : size(0) {}
+  void PushDown() {}
   void Update() {
-    sum = 0;
-    if (node->lch) {
-      sum += node->lch->info.sum;
-    }
-    if (node->rch) {
-      sum += node->rch->info.sum;
-    }
+    size = 0;
+    if (node->lch) size += node->lch->info.size;
+    if (node->rch) size += node->rch->info.size;
   }
 };
-
 */
 
 #endif  // SEGMENT_TREE_H_

@@ -55,34 +55,19 @@ struct Point {
   real x, y;
   Point(real _x = 0, real _y = 0) : x(_x), y(_y) {}
 
-  bool operator<(const Point& b) const {
-    if (abs(x - b.x) > eps) return x < b.x;
-    if (abs(y - b.y) > eps) return y < b.y;
-    return false;
-  };
-  bool operator==(const Point& b) const {
-    return abs(x - b.x) < eps && abs(y - b.y) < eps;
-  }
-  bool operator<=(const Point& b) const { return (*this < b) || (*this == b); }
-  bool operator>(const Point& b) const { return !(*this <= b); }
-  bool operator!=(const Point& b) const { return !(*this == b); }
-
-  real Length() const { return sqrt(x * x + y * y); }
+  real Length2() const { return x * x + y * y; }
+  real Length() const { return sqrt(Length2()); }
   friend real Dist(const Point& a, const Point& b) {
     auto x = a.x - b.x, y = a.y - b.y;
     return sqrt(x * x + y * y);
   }
   Point operator+(const Point& b) const { return Point(x + b.x, y + b.y); }
-  void operator+=(const Point& b) { x += b.x, y += b.y; }
   Point operator-(const Point& b) const { return Point(x - b.x, y - b.y); }
   Point operator*(real t) const { return Point(x * t, y * t); }
   friend Point operator*(real t, const Point& a) { return a * t; }
   Point operator/(real t) const { return Point(x / t, y / t); }
   real operator*(const Point& b) const { return x * b.x + y * b.y; }
   real operator%(const Point& b) const { return x * b.y - y * b.x; }
-  // parallel
-  bool operator|(const Point& b) const { return abs((*this) % b) < eps; }
-
   operator string() const {
     return "Point(" + to_string(x) + ", " + to_string(y) + ")";
   }
@@ -92,17 +77,21 @@ struct Point {
   }
 };
 
+Point Normalize(const Point& a) { return a / a.Length(); }
+
 struct Line {
   Point p, u;
   Line(Point p_ = Point(0, 0), Point u_ = Point(1, 0)) : p(p_), u(u_) {
-    assert(u.Length() > eps);
+    assert(u.Length() > 0);
+    Normalize();
   }
-
-  bool Contains(const Point& a) const {
-    if (Dist(p, a) < eps) return true;
-    return u | (a - p);
-  }
+  void Normalize() { u = u / u.Length(); }
 };
+
+Point GetProjectionPoint(const Point& a, const Line& l) {
+  Point v = a - l.p;
+  return l.p + (l.u * v) * l.u;
+}
 
 struct HalfLine {
   Point p, u;
@@ -212,15 +201,10 @@ real GetAngle(const Point& u, const Point& v) {
 }
 
 // [0, 2pi)
-real GetAngleFromX(const Point& u) {
-  if (u.y > eps) {
-    return GetAngle(u, {1, 0});
-  } else if (u.y < -eps) {
-    return 2 * pi - GetAngle(u, {1, 0});
-  } else {
-    if (u.x > eps) return 0;
-    return pi;
-  }
+real GetAngleFromX(const Point& P) {
+  double ans = atan2(P.y, P.x);
+  if (ans < 0.0) ans += 2.0 * pi;
+  return ans;
 }
 
 Point GetSymetricPoint(const Point& a, const Line& l) {
