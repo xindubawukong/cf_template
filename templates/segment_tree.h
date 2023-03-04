@@ -6,13 +6,15 @@
 template <typename Info>
 struct SegmentTree {
   struct Node {
-    int l, r;
+    int l, r, ts;
     Node *lch, *rch;
     Info info;
-    Node(int l_, int r_) : l(l_), r(r_), lch(nullptr), rch(nullptr) {
+    Node(int l_, int r_, int ts_ = 0)
+        : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {
       info.node = this;
     }
-    Node(Node* x) : l(x->l), r(x->r), lch(x->lch), rch(x->rch), info(x->info) {
+    Node(Node* x, int ts_)
+        : l(x->l), r(x->r), ts(ts_), lch(x->lch), rch(x->rch), info(x->info) {
       info.node = this;
     }
   };
@@ -20,8 +22,17 @@ struct SegmentTree {
   int l_range, r_range;
   Node* root;
   bool persist;
+  int ts;  // add ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
-      : l_range(l), r_range(r), root(nullptr), persist(persist_) {}
+      : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(1) {}
+
+  void PushDown(Node* x) {
+    if (persist && x->info.NeedPushDown()) {
+      if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
+      if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
+    }
+    x->info.PushDown();
+  }
 
   template <typename F>
   Node* Modify(int from, int to, F f) {
@@ -53,19 +64,15 @@ struct SegmentTree {
   template <typename F>
   Node* Modify(Node* x, int l, int r, int from, int to, F f) {
     if (!x) {
-      x = new Node(l, r);
-    } else if (persist && x == root) {
-      x = new Node(x);
+      x = new Node(l, r, ts);
+    } else if (persist && x->ts != ts) {
+      x = new Node(x, ts);
     }
     if (from <= l && r <= to) {
       f(x->info);
       return x;
     }
-    if (persist) {
-      if (x->lch) x->lch = new Node(x->lch);
-      if (x->rch) x->rch = new Node(x->rch);
-    }
-    x->info.PushDown();
+    PushDown(x);
     int m = l + (r - l) / 2;
     if (from <= m) {
       x->lch = Modify(x->lch, l, m, from, to, f);
@@ -84,11 +91,7 @@ struct SegmentTree {
       all.push_back(x);
       return;
     }
-    if (persist) {
-      if (x->lch) x->lch = new Node(x->lch);
-      if (x->rch) x->rch = new Node(x->rch);
-    }
-    x->info.PushDown();
+    PushDown(x);
     int m = l + (r - l) / 2;
     if (from <= m) {
       GetAll(x->lch, l, m, from, to, all);
@@ -101,15 +104,14 @@ struct SegmentTree {
 
 /*
 struct Info {
-  int size;
+  int val;
   SegmentTree<Info>::Node* node;
-  Info() : size(0) {}
+
+  Info(int val_ = 0) : val(val_) {}
+
+  bool NeedPushDown() { return false; }
   void PushDown() {}
-  void Update() {
-    size = 0;
-    if (node->lch) size += node->lch->info.size;
-    if (node->rch) size += node->rch->info.size;
-  }
+  void Update() {}
 };
 */
 
