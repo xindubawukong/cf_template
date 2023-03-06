@@ -7,8 +7,7 @@
 template <typename Graph, typename F>
 auto Dijkstra(Graph& g, int s, F f) {
   static_assert(Graph::is_directed::value);
-  using dist_t =
-      std::invoke_result_t<F, std::add_pointer_t<typename Graph::edge_t>>;
+  using dist_t = std::invoke_result_t<F, typename Graph::edge_t>;
   std::vector<dist_t> dist(g.n, std::numeric_limits<dist_t>::max());
   std::vector<int> from(g.n);
   std::vector<bool> visit(g.n);
@@ -24,8 +23,8 @@ auto Dijkstra(Graph& g, int s, F f) {
     if (visit[u]) continue;
     visit[u] = true;
     for (auto eid : g.go[u]) {
-      auto e = &g.edges[eid];
-      int v = e->v;
+      auto& e = g.edges[eid];
+      int v = e.v;
       if (visit[v]) continue;
       dist_t d = du + f(e);
       if (d < dist[v]) {

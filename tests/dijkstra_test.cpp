@@ -18,6 +18,6 @@ TEST(DijkstraTest, BasicTest) {
   for (auto [u, v, w] : edges) {
     g.AddEdge(Edge({u, v, w}));
   }
-  auto [dist, from, visit] = Dijkstra(g, s, [](Edge* e) { return e->w; });
+  auto [dist, from, visit] = Dijkstra(g, s, [](const Edge& e) { return e.w; });
   EXPECT_EQ(std::vector<int>({0, 2, 4, 3}), dist);
 }
