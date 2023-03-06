@@ -3,9 +3,7 @@ import subprocess
 
 
 def test():
-    subprocess.call('cd build && ./problem_C/problem_C', shell=True)
-    subprocess.call('cd build && ./problem_A/problem_A', shell=True)
-    subprocess.call('cd build && ./problem_B/problem_B', shell=True)
+    subprocess.call('./go A B C --no-build', shell=True)
     f1 = open('problem_A/A.out', 'r')
     f2 = open('problem_B/B.out', 'r')
     s1 = f1.read()
@@ -20,7 +18,6 @@ def test():
 
 if __name__ == '__main__':
     subprocess.call('cd build && cmake .. && make', shell=True)
-
     for i in range(1000):
         res = test()
         print(i, res)

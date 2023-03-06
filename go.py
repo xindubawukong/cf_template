@@ -4,6 +4,18 @@ import subprocess
 import datetime
 
 
+def clean(names):
+    if len(names) == 0:
+        names = ['*']
+    folder = str(datetime.datetime.now())
+    folder = folder.replace(' ', '_')
+    subprocess.call(f'mkdir -p ./.history/{folder}', shell=True)
+    for name in names:
+        subprocess.call(
+            f'cp -r problem_{name} ./.history/{folder}', shell=True)
+        subprocess.call(f'rm -rf problem_{name}', shell=True)
+
+
 def init_problem(name):
     subprocess.call(f'mkdir -p problem_{name}', shell=True)
     subprocess.call(
@@ -25,38 +37,35 @@ def init_problem(name):
         f.write(cmake_content)
 
 
-def run_problem(name):
-    if not os.path.exists(f'./problem_{name}'):
-        init_problem(name)
+def run_problem(names, no_build):
+    for name in names:
+        if not os.path.exists(f'./problem_{name}'):
+            init_problem(name)
     subprocess.call(f'mkdir -p build', shell=True)
-    subprocess.call(
-        f'cd build && cmake .. && make && ./problem_{name}/problem_{name}', shell=True)
-
-
-def clean():
-    folder = str(datetime.datetime.now())
-    folder = folder.replace(' ', '_')
-    subprocess.call(f'mkdir -p ./.history/{folder}', shell=True)
-    subprocess.call(f'cp -r problem_* ./.history/{folder}', shell=True)
-    subprocess.call(f'rm -rf problem_*', shell=True)
+    problems = ' '.join(list(map(lambda name: f'problem_{name}', names)))
+    if not no_build:
+        subprocess.call(
+            f'cd build && cmake .. && make {problems}', shell=True)
+    for name in names:
+        subprocess.call(
+            f'cd build && ./problem_{name}/problem_{name}', shell=True)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--problem', type=str, help='the problem to run')
-    parser.add_argument('--clean', action='store_true', help='clean ALL.')
+    parser.add_argument('names', nargs='+')
+    parser.add_argument('--no-build', action='store_true')
     args = parser.parse_args()
-    if args.clean:
+    if 'clean' in args.names:
+        assert args.names[0] == 'clean'
         print('Enter yes to clean: ', end='')
         confirm = input()
         if confirm == 'yes':
-            clean()
+            clean(args.names[1:])
         else:
             print('Not cleaning. Exit.')
-    elif args.problem is not None:
-        run_problem(args.problem)
     else:
-        parser.print_help()
+        run_problem(args.names, args.no_build)
 
 
 if __name__ == '__main__':
