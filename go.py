@@ -42,13 +42,13 @@ def run_problem(names, no_build):
         if not os.path.exists(f'./problem_{name}'):
             init_problem(name)
     subprocess.call(f'mkdir -p build', shell=True)
-    problems = ' '.join(list(map(lambda name: f'problem_{name}', names)))
-    if not no_build:
-        subprocess.call(
-            f'cd build && cmake .. && make {problems}', shell=True)
-    for name in names:
-        subprocess.call(
-            f'cd build && ./problem_{name}/problem_{name}', shell=True)
+    problems = list(map(lambda name: f'problem_{name}', names))
+    make_str = 'cmake .. && make ' + ' '.join(problems)
+    if no_build:
+        make_str = ':'
+    run_str = ' && '.join(
+        list(map(lambda problem: f'./{problem}/{problem}', problems)))
+    subprocess.call(f'cd build && {make_str} && {run_str}', shell=True)
 
 
 def main():

@@ -40,22 +40,22 @@ struct SegmentTree {
     return root;
   }
 
-  std::vector<Node*> GetAll(int from, int to) {
+  std::vector<Node*> GetAllNodes(int from, int to) {
     std::vector<Node*> all;
-    GetAll(root, l_range, r_range, from, to, all);
+    GetAllNodes(root, l_range, r_range, from, to, all);
     return all;
   }
 
-  template <typename T, typename F>
-  static Node* BuildTree(std::vector<T>& arr, int l, int r, F f) {
+  template <typename F>
+  static Node* BuildTree(int l, int r, F f) {
     Node* x = new Node(l, r);
     if (l == r) {
-      f(x->info, arr[l]);
+      f(l, x->info);
       return x;
     }
     int m = l + (r - l) / 2;
-    x->lch = BuildTree(arr, l, m, f);
-    x->rch = BuildTree(arr, m + 1, r, f);
+    x->lch = BuildTree(l, m, f);
+    x->rch = BuildTree(m + 1, r, f);
     x->info.Update();
     return x;
   }
@@ -84,8 +84,8 @@ struct SegmentTree {
     return x;
   }
 
-  void GetAll(Node* x, int l, int r, int from, int to,
-              std::vector<Node*>& all) {
+  void GetAllNodes(Node* x, int l, int r, int from, int to,
+                  std::vector<Node*>& all) {
     if (!x) return;
     if (from <= l && r <= to) {
       all.push_back(x);
@@ -94,10 +94,10 @@ struct SegmentTree {
     PushDown(x);
     int m = l + (r - l) / 2;
     if (from <= m) {
-      GetAll(x->lch, l, m, from, to, all);
+      GetAllNodes(x->lch, l, m, from, to, all);
     }
     if (to > m) {
-      GetAll(x->rch, m + 1, r, from, to, all);
+      GetAllNodes(x->rch, m + 1, r, from, to, all);
     }
   }
 };
@@ -106,9 +106,7 @@ struct SegmentTree {
 struct Info {
   int val;
   SegmentTree<Info>::Node* node;
-
   Info(int val_ = 0) : val(val_) {}
-
   bool NeedPushDown() { return false; }
   void PushDown() {}
   void Update() {}

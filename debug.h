@@ -66,20 +66,26 @@ struct DebugPrinter<short> {
 };
 
 template <>
+struct DebugPrinter<unsigned short> {
+  unsigned short x;
+  operator std::string() { return std::to_string(x); }
+};
+
+template <>
 struct DebugPrinter<int> {
   int x;
   operator std::string() { return std::to_string(x); }
 };
 
 template <>
-struct DebugPrinter<long> {
-  long x;
+struct DebugPrinter<unsigned int> {
+  unsigned int x;
   operator std::string() { return std::to_string(x); }
 };
 
 template <>
-struct DebugPrinter<unsigned int> {
-  unsigned int x;
+struct DebugPrinter<long> {
+  long x;
   operator std::string() { return std::to_string(x); }
 };
 
