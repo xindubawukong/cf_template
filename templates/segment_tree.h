@@ -22,7 +22,7 @@ struct SegmentTree {
   int l_range, r_range;
   Node* root;
   bool persist;
-  int ts;  // add ts if persistence is wanted
+  int ts;  // plus ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
       : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(1) {}
 

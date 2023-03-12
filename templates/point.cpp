@@ -1,29 +1,34 @@
-#if __APPLE__ && __clang__
-#define LOCAL
-#endif
-
 #include <algorithm>
 #include <any>
 #include <array>
+#include <bit>
 #include <bitset>
 #include <cassert>
 #include <climits>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <functional>
+#include <iomanip>
 #include <iostream>
+#include <iterator>
+#include <list>
 #include <map>
+#include <numeric>
 #include <optional>
 #include <queue>
 #include <random>
 #include <set>
 #include <stack>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #ifdef LOCAL
@@ -37,19 +42,20 @@ using namespace std;
 using int64 = long long;
 #if _WIN64 || __x86_64__
 using int128 = __int128_t;
+using uint128 = __uint128_t;
 #endif
 using uint = unsigned int;
 using uint64 = unsigned long long;
 
-mt19937 rng(19980723);
-mt19937_64 rng64(19980723);
+// mt19937 rng(0);
+// mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-// --------------------------- xindubawukong ---------------------------
+// ----------------------------------------------------------------------
 
 using real = long double;
 
-const real pi = 3.14159265358979;
-const real eps = 1e-7;
+const real pi = 3.141592653589793238;
+const real eps = 1e-8;
 
 struct Point {
   real x, y;
@@ -68,6 +74,7 @@ struct Point {
   Point operator/(real t) const { return Point(x / t, y / t); }
   real operator*(const Point& b) const { return x * b.x + y * b.y; }
   real operator%(const Point& b) const { return x * b.y - y * b.x; }
+  bool operator|(const Point& b) const { return abs((*this) % b) < eps; }
   operator string() const {
     return "Point(" + to_string(x) + ", " + to_string(y) + ")";
   }
@@ -77,20 +84,21 @@ struct Point {
   }
 };
 
-Point Normalize(const Point& a) { return a / a.Length(); }
-
 struct Line {
   Point p, u;
   Line(Point p_ = Point(0, 0), Point u_ = Point(1, 0)) : p(p_), u(u_) {
     assert(u.Length() > 0);
-    Normalize();
   }
-  void Normalize() { u = u / u.Length(); }
+  bool Contains(const Point& a) const { return abs(u % (a - p)) < eps; }
+  operator string() const {
+    return "Line(p=" + string(p) + ", u=" + string(u) + ")";
+  }
 };
 
 Point GetProjectionPoint(const Point& a, const Line& l) {
   Point v = a - l.p;
-  return l.p + (l.u * v) * l.u;
+  Point u = l.u / l.u.Length();
+  return l.p + (u * v) * u;
 }
 
 struct HalfLine {
@@ -98,7 +106,6 @@ struct HalfLine {
   HalfLine(Point p_ = Point(0, 0), Point u_ = Point(1, 0)) : p(p_), u(u_) {
     assert(u.Length() > eps);
   }
-
   bool Contains(const Point& a) const {
     if (Dist(p, a) < eps) return true;
     return (a - p) | u && (a - p) * u > -eps;
@@ -110,23 +117,19 @@ struct Segment {
   Segment(Point a_ = Point(0, 0), Point b_ = Point(1, 0)) : a(a_), b(b_) {
     assert(Dist(a, b) > eps);
   }
-
-  operator string() { return "Segment(" + string(a) + ", " + string(b) + ")"; }
-
   bool Contains(const Point& p) const {
     if (Dist(a, p) < eps || Dist(b, p) < eps) return true;
     return (p - a) | (b - a) && (a - p) * (b - p) < eps;
   }
+  operator string() { return "Segment(" + string(a) + ", " + string(b) + ")"; }
 };
 
 struct Circle {
   Point c;
   real r;
   Circle(Point c_ = Point(), real r_ = 1) : c(c_), r(r_) { assert(r_ > eps); }
-
-  friend bool IsInside(const Point& a, const Circle& c) {
-    auto d = Dist(a, c.c);
-    return d - c.r < eps;
+  operator string() const {
+    return "Circle(c=" + string(c) + ", r=" + to_string(r) + ")";
   }
 };
 
@@ -207,15 +210,6 @@ real GetAngleFromX(const Point& P) {
   return ans;
 }
 
-Point GetSymetricPoint(const Point& a, const Line& l) {
-  if (l.Contains(a)) return a;
-  auto v = Rotate(l.u, pi / 2);
-  auto bs = GetIntersection(l, Line(a, v));
-  assert(bs.size() == 1);
-  auto b = bs[0];
-  return b * 2 - a;
-}
-
 // 0 - pi
 real GetTriangularAngle(real a, real b, real c) {
   real t = (a * a + b * b - c * c) / (2 * a * b);
@@ -234,6 +228,39 @@ bool IsTriangularSame(const vector<Point>& a, const vector<Point>& b) {
     if (abs(p[i] - q[i]) > eps) return false;
   }
   return true;
+}
+
+Point Inverse(const Point& o, real r, const Point& a) {
+  real da = Dist(o, a);
+  assert(da > eps);
+  real db = r * r / da;
+  return o + (a - o) * db / da;
+}
+
+Circle InverseToCircle(const Point& o, real r, const Circle& a) {
+  real da = Dist(o, a.c);
+  assert(da - a.r > eps);
+  real rb = 0.5 * ((1 / (da - a.r)) - (1 / (da + a.r))) * r * r;
+  real db = da * rb / a.r;
+  real bx = o.x + (a.c.x - o.x) * db / da;
+  real by = o.y + (a.c.y - o.y) * db / da;
+  return Circle(Point(bx, by), rb);
+}
+
+Line InverseToLine(const Point& o, real r, const Circle& a) {
+  real da = Dist(o, a.c);
+  assert(abs(da - a.r) < eps);
+  Point v = a.c - o;
+  Point p = o + v * 2;
+  Point p_ = Inverse(o, r, p);
+  return Line(p_, Rotate(v, pi / 2));
+}
+
+Circle InverseToCircle(const Point& o, real r, const Line& l) {
+  Point p = GetProjectionPoint(o, l);
+  assert(Dist(o, p) > eps);
+  Point p_ = Inverse(o, r, p);
+  return Circle((o + p_) / 2, Dist(o, p_) / 2);
 }
 
 struct Polygon {
@@ -282,6 +309,7 @@ struct Polygon {
     for (auto& seg : segs) {
       if (seg.Contains(a)) return false;
     }
+    std::mt19937_64 rng64(0);
     for (int t = 0; t < 10; t++) {
       auto x = 1.0 * (rng64() + 1) / rng64.max();
       auto y = 1.0 * (rng64() + 1) / rng64.max();
@@ -363,11 +391,11 @@ struct ConnectedArea {
 void Main() {}
 
 int main() {
-  // std::ios::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 #ifdef LOCAL
   freopen("../problem_A/A.in", "r", stdin);
-  // freopen("../problem_A/output.txt", "w", stdout);
+  // freopen("../problem_A/A.out", "w", stdout);
 #endif
   Main();
   return 0;

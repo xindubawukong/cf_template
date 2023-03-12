@@ -30,7 +30,7 @@ struct Treap {
 
   Node* root;
   bool persist;
-  int ts;  // add version if persistence is wanted
+  int ts;  // plus version if persistence is wanted
   Treap(bool persist_ = false) : root(nullptr), persist(persist_) {}
 
   Node* Update(Node* x) {
