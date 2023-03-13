@@ -3,7 +3,7 @@ import subprocess
 
 
 def test():
-    subprocess.call('./go A B C --no-build', shell=True)
+    subprocess.call('./go C A B --no-build', shell=True)
     f1 = open('problem_A/A.out', 'r')
     f2 = open('problem_B/B.out', 'r')
     s1 = f1.read()
