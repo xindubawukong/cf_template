@@ -29,6 +29,12 @@ class Dsu {
     }
   }
 
+  bool IsConnected(int x, int y) {
+    x = GetFa(x);
+    y = GetFa(y);
+    return x == y;
+  }
+
   std::vector<int> GetCounts() {
     std::vector<int> num(n);
     for (int i = 0; i < n; i++) {

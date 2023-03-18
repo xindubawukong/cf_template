@@ -12,4 +12,5 @@ TEST(DsuTest, BasicTest) {
   EXPECT_EQ(3, dsu.cnt);
   EXPECT_EQ(0, dsu.GetFa(2));
   EXPECT_EQ(std::vector<int>({3, 0, 0, 2, 0, 1}), dsu.GetCounts());
+  EXPECT_TRUE(dsu.IsConnected(0, 2));
 }
