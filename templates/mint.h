@@ -1,8 +1,10 @@
 #ifndef MINT_H_
 #define MINT_H_
 
+#include <cassert>
+
 template <typename T>
-T Power(T a, int64 b) {
+T QuickPower(T a, long long b) {
   T res = 1;
   while (b) {
     if (b & 1) res = res * a;
@@ -12,14 +14,14 @@ T Power(T a, int64 b) {
   return res;
 }
 
-template <typename T, int P>
+template <int P>
 struct MInt {
   static_assert(P > 0);
-  T x;
+  int x;
   MInt() : x(0) {}
   MInt(auto x_) { x = Adjust(x_ % P); }
 
-  T Adjust(T x) {
+  int Adjust(int x) {
     if (x < 0) {
       x += P;
     } else if (x >= P) {
@@ -28,25 +30,25 @@ struct MInt {
     return x;
   }
 
-  MInt<T, P> Inverse() {
+  MInt<P> Inverse() const {
     assert(x > 0);
-    return Power(*this, P - 2);
+    return QuickPower(*this, P - 2);
   }
 
-  MInt<T, P>& operator+=(const MInt<T, P>& b) {
+  MInt<P>& operator+=(const MInt<P>& b) {
     x = Adjust(x + b.x);
     return *this;
   }
-  MInt<T, P>& operator-=(const MInt<T, P>& b) {
+  MInt<P>& operator-=(const MInt<P>& b) {
     x = Adjust(x - b.x);
     return *this;
   }
-  MInt<T, P>& operator*=(const MInt<T, P>& b) {
-    x = (int64)x * b.x % P;
+  MInt<P>& operator*=(const MInt<P>& b) {
+    x = (long long)x * b.x % P;
     return *this;
   }
-  MInt<T, P>& operator/=(const MInt<T, P>& b) { return (*this) *= b.Inverse(); }
-  MInt<T, P> operator*(const MInt<T, P>& b) {
+  MInt<P>& operator/=(const MInt<P>& b) { return (*this) *= b.Inverse(); }
+  MInt<P> operator*(const MInt<P>& b) const {
     auto res = *this;
     res *= b;
     return res;
