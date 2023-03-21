@@ -30,6 +30,13 @@ struct FlowGraph : public DirectedGraph<Edge> {
     e.cap = 0;
     this->AddEdge(e);
   }
+  void AddFlowEdgeWithCost(Edge e) {
+    this->AddEdge(e);
+    std::swap(e.u, e.v);
+    e.cap = 0;
+    e.cost *= -1;
+    this->AddEdge(e);
+  }
 };
 
 #endif  // GRAPH_H_

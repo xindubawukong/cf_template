@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 
 struct Edge {
-  int u, v, cap;
+  int u, v, cap, cost;
 };
 
 TEST(FlowTest, MaxFlowTest) {
@@ -19,4 +19,21 @@ TEST(FlowTest, MaxFlowTest) {
   }
   MaxFlow mf(graph);
   EXPECT_EQ(50, mf.Solve(s, t, 1000));
+}
+
+TEST(FlowTest, MinCostMaxFlowTest) {
+  int n = 4, m = 5, s = 3, t = 2;
+  std::vector<std::array<int, 4>> edges = {{3, 1, 30, 2},
+                                           {3, 2, 20, 3},
+                                           {1, 2, 20, 1},
+                                           {1, 0, 30, 9},
+                                           {0, 2, 30, 5}};
+  FlowGraph<Edge> graph(n);
+  for (auto [u, v, cap, cost] : edges) {
+    graph.AddFlowEdgeWithCost(Edge{u, v, cap, cost});
+  }
+  MinCostMaxFlow mf(graph);
+  auto [flow, cost] = mf.Solve(s, t);
+  EXPECT_EQ(50, flow);
+  EXPECT_EQ(280, cost);
 }

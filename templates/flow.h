@@ -59,4 +59,70 @@ struct MaxFlow {
   }
 };
 
+template <typename FlowGraph>
+struct MinCostMaxFlow {
+  using flow_t = typename FlowGraph::flow_t;
+  using cost_t = decltype(std::declval<typename FlowGraph::edge_t>().cap);
+  FlowGraph& graph;
+  MinCostMaxFlow(FlowGraph& graph_) : graph(graph_) {}
+
+  std::pair<flow_t, cost_t> Solve(int s, int t) {
+    assert(0 <= s && s < graph.n && 0 <= t && t < graph.n);
+    std::vector<int> pre(graph.n);
+    auto Spfa = [&]() -> bool {
+      std::fill(pre.begin(), pre.end(), -1);
+      std::vector<cost_t> dist(graph.n);
+      std::vector<bool> inq(graph.n), vt(graph.n);
+      dist[s] = 0;
+      inq[s] = true;
+      vt[s] = true;
+      std::queue<int> q;
+      q.push(s);
+      while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        inq[u] = false;
+        for (auto eid : graph.go[u]) {
+          auto& e = graph.edges[eid];
+          if (e.cap > graph.eps && (!vt[e.v] || dist[e.v] > dist[u] + e.cost)) {
+            pre[e.v] = eid;
+            dist[e.v] = dist[u] + e.cost;
+            vt[e.v] = true;
+            if (!inq[e.v]) {
+              inq[e.v] = true;
+              q.push(e.v);
+            }
+          }
+        }
+      }
+      return vt[t];
+    };
+    auto Calc = [&]() {
+      flow_t flow = std::numeric_limits<flow_t>::max();
+      for (auto eid = pre[t]; eid != -1;) {
+        auto& e = graph.edges[eid];
+        flow = std::min(flow, e.cap);
+        eid = pre[e.u];
+      }
+      cost_t cost = 0;
+      for (auto eid = pre[t]; eid != -1;) {
+        auto& e = graph.edges[eid];
+        auto& back = graph.edges[eid ^ 1];
+        cost += flow * e.cost;
+        e.cap -= flow;
+        back.cap += flow;
+        eid = pre[e.u];
+      }
+      return std::make_pair(flow, cost);
+    };
+    flow_t flow = 0;
+    cost_t cost = 0;
+    while (Spfa()) {
+      auto [f, c] = Calc();
+      flow += f, cost += c;
+    }
+    return {flow, cost};
+  }
+};
+
 #endif  // FLOW_H_
