@@ -13,5 +13,6 @@ endfunction()
 
 add_simple_test(dijkstra_test)
 add_simple_test(dsu_test)
+add_simple_test(flow_test)
 add_simple_test(get_primes_test)
 add_simple_test(range_min_test)
