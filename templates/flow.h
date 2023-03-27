@@ -4,6 +4,51 @@
 #include <queue>
 #include <vector>
 
+template <typename T = int>
+struct Matching {
+  int n, m, res = 0, ts = 0;
+  std::vector<std::vector<int>> go;
+  std::vector<int> vt, pa, pb;
+  Matching(int n_, int m_) : n(n_), m(m_) {
+    assert(n >= 0 && m >= 0);
+    go.resize(n);
+    vt.resize(n, -1);
+    pa.resize(n, -1);
+    pb.resize(m, -1);
+  }
+  void AddEdge(int u, int v) {
+    assert(u >= 0 && u < n && v >= 0 && v < m);
+    go[u].push_back(v);
+  }
+  bool Dfs(int u) {
+    vt[u] = ts;
+    for (int v : go[u]) {
+      if (pb[v] == -1) {
+        pa[u] = v;
+        pb[v] = u;
+        return true;
+      }
+    }
+    for (int v : go[u]) {
+      if (vt[pb[v]] != ts && Dfs(pb[v])) {
+        pa[u] = v;
+        pb[v] = u;
+        return true;
+      }
+    }
+    return false;
+  }
+  int Solve() {
+    for (int i = 0; i < n; i++) {
+      if (pa[i] == -1) {
+        ts++;
+        if (Dfs(i)) res++;
+      }
+    }
+    return res;
+  }
+};
+
 template <typename FlowGraph>
 struct MaxFlow {
   using flow_t = typename FlowGraph::flow_t;

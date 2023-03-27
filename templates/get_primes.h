@@ -4,7 +4,7 @@
 #include <vector>
 
 template <typename T>
-std::vector<T> GetPrimes(T n) {
+std::pair<std::vector<T>, std::vector<bool>> GetPrimes(T n) {
   std::vector<T> primes;
   std::vector<bool> is_prime(n + 1, true);
   for (T i = 2; i <= n; i++) {
@@ -18,7 +18,7 @@ std::vector<T> GetPrimes(T n) {
       if (i % p == 0) break;
     }
   }
-  return primes;
+  return std::make_pair(primes, is_prime);
 }
 
 #endif  // GET_PRIMES_H_

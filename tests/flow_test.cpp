@@ -1,9 +1,24 @@
 #include "flow.h"
 
 #include <array>
+#include <vector>
 
 #include "graph.h"
 #include "gtest/gtest.h"
+
+TEST(FlowTest, MatchingTest) {
+  int n = 3, m = 3;
+  Matching matching(n, m);
+  matching.AddEdge(0, 0);
+  matching.AddEdge(0, 1);
+  matching.AddEdge(1, 0);
+  matching.AddEdge(2, 2);
+  int res = matching.Solve();
+  EXPECT_EQ(3, res);
+  EXPECT_EQ(3, matching.res);
+  EXPECT_EQ(std::vector<int>({1, 0, 2}), matching.pa);
+  EXPECT_EQ(std::vector<int>({1, 0, 2}), matching.pb);
+}
 
 struct Edge {
   int u, v, cap, cost;
