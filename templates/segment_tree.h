@@ -31,7 +31,9 @@ struct SegmentTree {
       if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
       if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
     }
-    x->info.PushDown();
+    if (x->info.NeedPushDown()) {
+      x->info.PushDown();
+    }
   }
 
   template <typename F>
@@ -85,7 +87,7 @@ struct SegmentTree {
   }
 
   void GetAllNodes(Node* x, int l, int r, int from, int to,
-                  std::vector<Node*>& all) {
+                   std::vector<Node*>& all) {
     if (!x) return;
     if (from <= l && r <= to) {
       all.push_back(x);
