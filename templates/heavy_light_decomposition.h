@@ -14,6 +14,7 @@ struct HeavyLightDecomposition {
 
   HeavyLightDecomposition(int n_, int root_)
       : n(n_), root(root_), segtree(SegmentTree<Info>(0, n - 1)) {
+    assert(n > 0 && 0 <= root && root < n);
     go.resize(n);
     size.resize(n);
     dep.resize(n);
@@ -70,6 +71,7 @@ struct HeavyLightDecomposition {
 
   template <typename F>
   void ModifyOnPath(int u, int v, F f) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
     while (up[u] != up[v]) {
       if (dep[up[u]] < dep[up[v]]) std::swap(u, v);
       segtree.Modify(pos[up[u]], pos[u], f);
@@ -81,10 +83,12 @@ struct HeavyLightDecomposition {
 
   template <typename F>
   void ModifyInSubTree(int u, F f) {
+    assert(0 <= u && u < n);
     segtree.Modify(pos[u], pos[u] + size[u] - 1, f);
   }
 
   std::vector<Info> GetAllOnPath(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
     std::vector<Info> res;
     while (up[u] != up[v]) {
       if (dep[up[u]] < dep[up[v]]) std::swap(u, v);
@@ -103,6 +107,7 @@ struct HeavyLightDecomposition {
   }
 
   std::vector<Info> GetAllInSubTree(int u) {
+    assert(0 <= u && u < n);
     std::vector<Info> res;
     auto nodes = segtree.GetAllNodes(pos[u], pos[u] + size[u] - 1);
     for (auto&& node : nodes) {

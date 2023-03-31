@@ -18,7 +18,7 @@ def test():
 
 if __name__ == '__main__':
     subprocess.call('cd build && cmake .. && make', shell=True)
-    for i in range(1000):
+    for i in range(1000000):
         res = test()
         print(i, res)
         if not res:
