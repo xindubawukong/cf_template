@@ -24,7 +24,9 @@ struct SegmentTree {
   bool persist;
   int ts;  // plus ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
-      : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(1) {}
+      : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(1) {
+    assert(l_range <= r_range);
+  }
 
   void PushDown(Node* x) {
     if (persist && x->info.NeedPushDown()) {
@@ -38,14 +40,75 @@ struct SegmentTree {
 
   template <typename F>
   Node* Modify(int from, int to, F f) {
+    assert(l_range <= from && from <= to && to <= r_range);
     root = Modify(root, l_range, r_range, from, to, f);
     return root;
   }
 
   std::vector<Node*> GetAllNodes(int from, int to) {
+    assert(l_range <= from && from <= to && to <= r_range);
     std::vector<Node*> all;
-    GetAllNodes(root, l_range, r_range, from, to, all);
+    function<void(Node*, int, int, int, int)> GetAllNodes =
+        [&](Node* x, int l, int r, int from, int to) {
+          if (!x) return;
+          if (from <= l && r <= to) {
+            all.push_back(x);
+            return;
+          }
+          PushDown(x);
+          int m = l + (r - l) / 2;
+          if (from <= m) {
+            GetAllNodes(x->lch, l, m, from, to);
+          }
+          if (to > m) {
+            GetAllNodes(x->rch, m + 1, r, from, to);
+          }
+        };
+    GetAllNodes(root, l_range, r_range, from, to);
     return all;
+  }
+
+  template <typename F>
+  int GetFirstAfter(int p, F f) {
+    assert(l_range <= p && p <= r_range);
+    auto nodes = GetAllNodes(p, r_range);
+    for (auto x : nodes) {
+      if (f(x->info)) {
+        while (x->r > x->l) {
+          assert(f(x->info));
+          PushDown(x);
+          if (x->lch && f(x->lch->info)) {
+            x = x->lch;
+          } else {
+            x = x->rch;
+          }
+        }
+        return x->l;
+      }
+    }
+    return r_range + 1;
+  }
+
+  template <typename F>
+  int GetLastBefore(int p, F f) {
+    assert(l_range <= p && p <= r_range);
+    auto nodes = GetAllNodes(l_range, p);
+    reverse(nodes.begin(), nodes.end());
+    for (auto x : nodes) {
+      if (f(x->info)) {
+        while (x->r > x->l) {
+          assert(f(x->info));
+          PushDown(x);
+          if (x->rch && f(x->rch->info)) {
+            x = x->rch;
+          } else {
+            x = x->lch;
+          }
+        }
+        return x->l;
+      }
+    }
+    return l_range - 1;
   }
 
   template <typename F>
@@ -84,23 +147,6 @@ struct SegmentTree {
     }
     x->info.Update();
     return x;
-  }
-
-  void GetAllNodes(Node* x, int l, int r, int from, int to,
-                   std::vector<Node*>& all) {
-    if (!x) return;
-    if (from <= l && r <= to) {
-      all.push_back(x);
-      return;
-    }
-    PushDown(x);
-    int m = l + (r - l) / 2;
-    if (from <= m) {
-      GetAllNodes(x->lch, l, m, from, to, all);
-    }
-    if (to > m) {
-      GetAllNodes(x->rch, m + 1, r, from, to, all);
-    }
   }
 };
 
