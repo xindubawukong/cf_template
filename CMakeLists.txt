@@ -5,12 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-DLOCAL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(templates)
 
 option(XdbwkCfTemplate_BuildTest "" OFF)
 if(${XdbwkCfTemplate_BuildTest})
   enable_testing()
   add_subdirectory(googletest)
-  include_directories(templates)
   add_subdirectory(tests)
 endif()
 

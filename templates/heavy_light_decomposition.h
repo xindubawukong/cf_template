@@ -115,6 +115,28 @@ struct HeavyLightDecomposition {
     }
     return res;
   }
+
+  int GetLca(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
+    while (up[u] != up[v]) {
+      if (dep[up[u]] < dep[up[v]]) swap(u, v);
+      u = fa[up[u]];
+    }
+    if (dep[u] < dep[v]) swap(u, v);
+    return v;
+  };
+
+  int GetNodeUnderLca(int u, int lca) {
+    assert(GetLca(u, lca) == lca);
+    int last = -1;
+    while (up[u] != up[lca]) {
+      last = up[u];
+      u = fa[up[u]];
+    }
+    if (u == lca) return last;
+    int t = pos[lca] + 1;
+    return which[t];
+  };
 };
 
 #endif  // HEAVY_LIGHT_DECOMPOSITION_H_
