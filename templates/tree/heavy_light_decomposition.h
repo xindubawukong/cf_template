@@ -10,15 +10,8 @@ struct HeavyLightDecomposition {
   std::vector<std::vector<int>> go;
   std::vector<int> size, dep, pos, which, heavy, fa, up;
 
-  HeavyLightDecomposition(int n_) : n(n_) { assert(n > 0); }
-
-  void AddEdge(int u, int v) {
-    assert(0 <= u && u < n && 0 <= v && v < n);
-    go[u].push_back(v);
-    go[v].push_back(u);
-  }
-
-  void Build(int root_) {
+  HeavyLightDecomposition(int n_) : n(n_) {
+    assert(n > 0);
     go.resize(n);
     size.resize(n);
     dep.resize(n);
@@ -27,6 +20,15 @@ struct HeavyLightDecomposition {
     heavy.resize(n);
     fa.resize(n);
     up.resize(n);
+  }
+
+  void AddEdge(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
+    go[u].push_back(v);
+    go[v].push_back(u);
+  }
+
+  void Build(int root_) {
     root = root_;
     std::function<void(int)> Dfs1 = [&](int u) {
       heavy[u] = -1;
