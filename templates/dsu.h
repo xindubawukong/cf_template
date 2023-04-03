@@ -3,7 +3,6 @@
 
 #include <vector>
 
-template <typename T = int>
 class Dsu {
  public:
   std::vector<int> fa;

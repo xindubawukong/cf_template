@@ -1,6 +1,7 @@
 #ifndef SEGMENT_TREE_H_
 #define SEGMENT_TREE_H_
 
+#include <functional>
 #include <vector>
 
 template <typename Info>
@@ -48,7 +49,7 @@ struct SegmentTree {
   std::vector<Node*> GetAllNodes(int from, int to) {
     assert(l_range <= from && from <= to && to <= r_range);
     std::vector<Node*> all;
-    function<void(Node*, int, int, int, int)> GetAllNodes =
+    std::function<void(Node*, int, int, int, int)> GetAllNodes =
         [&](Node* x, int l, int r, int from, int to) {
           if (!x) return;
           if (from <= l && r <= to) {
