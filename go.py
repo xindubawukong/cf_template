@@ -52,7 +52,19 @@ def run_problem(names, no_build):
         submit = f'problem_{name}/submit_{name}.cpp'
         subprocess.call(
             f'g++ -std=c++20 -Iutils/system_headers -Itemplates -E problem_{name}/{name}.cpp | grep -v "^# [0-9]" > {submit}', shell=True)
-        subprocess.call(f'echo "$(cat main.cpp | grep "#include <")\n\n$(cat {submit})" > {submit}', shell=True)
+        f = open('main.cpp', 'r')
+        a = f.readlines()
+        f.close()
+        f = open(f'{submit}', 'r')
+        b = f.readlines()
+        f.close()
+        f = open(f'{submit}', 'w')
+        for t in a:
+            if t.startswith('#include <'):
+                f.write(t)
+        for t in b:
+            f.write(t)
+        f.close()
 
 
 def main():
