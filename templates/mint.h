@@ -2,6 +2,7 @@
 #define MINT_H_
 
 #include <cassert>
+#include <iostream>
 
 template <typename T>
 T QuickPower(T a, long long b) {
@@ -52,6 +53,16 @@ struct MInt {
     auto res = *this;
     res *= b;
     return res;
+  }
+  operator std::string() { return std::to_string(x); }
+  friend std::ostream& operator<<(std::ostream& output, MInt<P>& a) {
+    output << string(a);
+    return output;
+  }
+
+  friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
+    input >> a.x;
+    return input;
   }
 };
 
