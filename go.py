@@ -38,7 +38,7 @@ def init_problem(name):
 
 def run_problem(names, no_build):
     for name in names:
-        if not os.path.exists(f'./problem_{name}'):
+        if not os.path.exists(f'./problem_{name}') or not os.path.exists(f'./problem_{name}/{name}.cpp'):
             init_problem(name)
     subprocess.call(f'mkdir -p build', shell=True)
     problems = list(map(lambda name: f'problem_{name}', names))
@@ -48,6 +48,11 @@ def run_problem(names, no_build):
     run_str = ' && '.join(
         list(map(lambda problem: f'./{problem}/{problem}', problems)))
     subprocess.call(f'cd build && {make_str} && {run_str}', shell=True)
+    for name in names:
+        submit = f'problem_{name}/submit_{name}.cpp'
+        subprocess.call(
+            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -E problem_{name}/{name}.cpp | grep -v "^# [0-9]" > {submit}', shell=True)
+        subprocess.call(f'echo "$(cat main.cpp | grep "#include <")\n\n$(cat {submit})" > {submit}', shell=True)
 
 
 def main():
