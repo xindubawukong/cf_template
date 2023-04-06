@@ -51,6 +51,7 @@ struct Matching {
 
 template <typename FlowGraph>
 struct MaxFlow {
+  static_assert(FlowGraph::is_directed::value);
   using flow_t = typename FlowGraph::flow_t;
   FlowGraph& graph;
   MaxFlow(FlowGraph& graph_) : graph(graph_) {}

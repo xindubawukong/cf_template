@@ -20,8 +20,7 @@ auto Dijkstra(const Graph& g, int s, F f) {
     q.pop();
     if (visit[u]) continue;
     visit[u] = true;
-    for (auto eid : g.go[u]) {
-      auto& e = g.edges[eid];
+    for (auto& e : g.Edges(u)) {
       int v = e.v;
       if (visit[v]) continue;
       dist_t d = dist[u] + f(e);
