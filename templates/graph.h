@@ -4,8 +4,6 @@
 #include <utility>
 #include <vector>
 
-#include "dsu.h"
-
 template <typename Graph>
 struct GraphNeighborsRange {
   struct Iterator {

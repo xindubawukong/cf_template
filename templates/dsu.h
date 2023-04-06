@@ -7,39 +7,22 @@ class Dsu {
  public:
   std::vector<int> fa;
   int n, cnt;
-
-  Dsu(int n): n(n) {
+  Dsu(int n) : n(n) {
     fa.resize(n);
     for (int i = 0; i < n; i++) fa[i] = i;
     cnt = n;
   }
-
-  int GetFa(int x) {
+  int Find(int x) {
     if (fa[x] == x) return x;
-    return fa[x] = GetFa(fa[x]);
+    return fa[x] = Find(fa[x]);
   }
-
-  void Merge(int x, int y) {
-    x = GetFa(x);
-    y = GetFa(y);
+  void Unite(int x, int y) {
+    x = Find(x);
+    y = Find(y);
     if (x != y) {
       fa[y] = x;
       cnt--;
     }
-  }
-
-  bool IsConnected(int x, int y) {
-    x = GetFa(x);
-    y = GetFa(y);
-    return x == y;
-  }
-
-  std::vector<int> GetCounts() {
-    std::vector<int> num(n);
-    for (int i = 0; i < n; i++) {
-      num[GetFa(i)]++;
-    }
-    return num;
   }
 };
 
