@@ -14,10 +14,16 @@
 #include <vector>
 
 #define SHOULD_PRINT
+// #define COLOR_PRINT
 
+#ifdef COLOR_PRINT
 // https://xdevs.com/guide/color_serial/
 const std::string COLOR_START_STR = "\033[0;31m";
 const std::string COLOR_END_STR = "\033[0m";
+#else
+const std::string COLOR_START_STR = "";
+const std::string COLOR_END_STR = "";
+#endif
 
 #ifdef SHOULD_PRINT
 #define debug(...)                                                   \
