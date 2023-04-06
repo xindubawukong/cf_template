@@ -20,7 +20,7 @@ struct DirectedGraph : public Graph<Edge> {
   using edge_t = Edge;
   using is_directed = std::bool_constant<true>;
   DirectedGraph(int n_) : Graph<Edge>(n_) {}
-  void AddEdge(Edge e) {
+  virtual void AddEdge(Edge e) {
     assert(e.u >= 0 && e.u < this->n && e.v >= 0 && e.v < this->n);
     this->edges.push_back(e);
     this->go[e.u].push_back(this->edges.size() - 1);
@@ -32,18 +32,19 @@ struct FlowGraph : public DirectedGraph<Edge> {
   using flow_t = decltype(std::declval<Edge>().cap);
   FlowGraph(int n_) : DirectedGraph<Edge>(n_) {}
   static const flow_t eps = (flow_t)1e-7;
+  virtual void AddEdge(Edge e) { assert(false); }
   void AddFlowEdge(Edge e) {
-    this->AddEdge(e);
+    DirectedGraph<Edge>::AddEdge(e);
     std::swap(e.u, e.v);
     e.cap = 0;
-    this->AddEdge(e);
+    DirectedGraph<Edge>::AddEdge(e);
   }
   void AddFlowEdgeWithCost(Edge e) {
-    this->AddEdge(e);
+    DirectedGraph<Edge>::AddEdge(e);
     std::swap(e.u, e.v);
     e.cap = 0;
     e.cost *= -1;
-    this->AddEdge(e);
+    DirectedGraph<Edge>::AddEdge(e);
   }
 };
 
@@ -52,7 +53,7 @@ struct UndirectedGraph : public Graph<Edge> {
   using edge_t = Edge;
   using is_directed = std::bool_constant<false>;
   UndirectedGraph(int n_) : Graph<Edge>(n_) {}
-  void AddEdge(Edge e) {
+  virtual void AddEdge(Edge e) {
     assert(e.u >= 0 && e.u < this->n && e.v >= 0 && e.v < this->n);
     this->edges.push_back(e);
     this->go[e.u].push_back(this->edges.size() - 1);
