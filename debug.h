@@ -14,7 +14,7 @@
 #include <vector>
 
 #define SHOULD_PRINT
-// #define COLOR_PRINT
+#define COLOR_PRINT
 
 #ifdef COLOR_PRINT
 // https://xdevs.com/guide/color_serial/

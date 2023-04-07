@@ -43,10 +43,8 @@ TEST(DsuTest, UndoTest) {
 
 TEST(DsuTest, RelationTest) {
   auto plus = [](int x, int y) { return x ^ y; };
-  auto negate = [](int x) { return x; };
   int n = 10;
-  DsuWithRelation<true, false, int, decltype(plus), decltype(negate)> dsu(
-      n * 2, plus, negate);
+  DsuWithRelation<true, false, int, decltype(plus)> dsu(n * 2, plus);
   std::mt19937 rng(
       std::chrono::high_resolution_clock::now().time_since_epoch().count());
   for (int i = 0; i < 30; i++) {
@@ -55,22 +53,9 @@ TEST(DsuTest, RelationTest) {
     std::tie(rx, tx) = dsu.Find(x);
     std::tie(ry, ty) = dsu.Find(y);
     if (rx != ry) {
-      dsu.Unite(x, y, 1);
+      dsu.Unite(rx, ry, 1 ^ tx ^ ty, 1 ^ tx ^ ty);
     } else {
       EXPECT_NE(tx, ty);
     }
   }
-}
-
-TEST(DsuTest, RelationUndoTest) {
-  auto plus = [](int x, int y) { return x ^ y; };
-  auto negate = [](int x) { return x; };
-  DsuWithRelation<false, true, int, decltype(plus), decltype(negate)> dsu(
-      4, plus, negate);
-  dsu.Unite(0, 2, 1);
-  dsu.Unite(0, 3, 1);
-  EXPECT_EQ(dsu.Find(2), dsu.Find(3));
-  dsu.Undo(1);
-  dsu.Unite(2, 3, 1);
-  EXPECT_NE(dsu.Find(2), dsu.Find(3));
 }
