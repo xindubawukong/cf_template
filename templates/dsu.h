@@ -32,7 +32,7 @@ struct Dsu {
     assert(0 <= x && x < n && 0 <= y && y < n);
     x = Find(x);
     y = Find(y);
-    if (x == y) return;
+    assert(x != y);  // Must unite two roots.
     if (size[x] > size[y]) std::swap(x, y);
     if (SupportUndo) {
       int fax = fa[x], sizey = size[y];
