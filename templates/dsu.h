@@ -7,21 +7,17 @@
 template <bool Compress = true, bool SupportUndo = false>
 struct Dsu {
   static_assert(!Compress || (Compress && !SupportUndo));
-  std::vector<int> fa, size;
+  std::vector<int> fa;
   int n, cnt;
   std::stack<std::function<void()>> undo;
   Dsu(int n_) : n(n_) {
     fa.resize(n);
-    size.resize(n);
-    for (int i = 0; i < n; i++) {
-      fa[i] = i;
-      size[i] = 1;
-    }
+    for (int i = 0; i < n; i++) fa[i] = -1;
     cnt = n;
   }
   int Find(int x) {
     assert(0 <= x && x < n);
-    if (fa[x] == x) return x;
+    if (fa[x] < 0) return x;
     int root = Find(fa[x]);
     if (Compress) {
       fa[x] = root;
@@ -32,18 +28,18 @@ struct Dsu {
     assert(0 <= x && x < n && 0 <= y && y < n);
     x = Find(x);
     y = Find(y);
-    assert(x != y);  // Must unite two roots.
-    if (size[x] > size[y]) std::swap(x, y);
+    assert(x != y);  // Must be two different sets.
+    if (fa[x] < fa[y]) std::swap(x, y);
     if (SupportUndo) {
-      int fax = fa[x], sizey = size[y];
-      undo.push([this, x, y, fax, sizey]() {
+      int fax = fa[x], fay = fa[y];
+      undo.push([this, x, y, fax, fay]() {
         fa[x] = fax;
-        size[y] = sizey;
+        fa[y] = fay;
         cnt++;
       });
     }
+    fa[y] += fa[x];
     fa[x] = y;
-    size[y] += size[x];
     cnt--;
   }
   void Undo(int cnt) {
@@ -60,25 +56,21 @@ template <bool Compress = true, bool SupportUndo = false,
           typename Relation = int, typename Plus = std::plus<Relation>>
 struct DsuWithRelation {
   static_assert(!Compress || (Compress && !SupportUndo));
-  std::vector<int> fa, size;
+  std::vector<int> fa;
   int n, cnt;
   std::stack<std::function<void()>> undo;
   std::vector<Relation> rel;
   Plus plus;
   DsuWithRelation(int n_, Plus plus_) : n(n_), plus(plus_) {
     fa.resize(n);
-    size.resize(n);
     rel.resize(n);
-    for (int i = 0; i < n; i++) {
-      fa[i] = i;
-      size[i] = 1;
-    }
+    for (int i = 0; i < n; i++) fa[i] = -1;
     cnt = n;
   }
   // return pair{root, relation of x -> root}
   std::pair<int, Relation> Find(int x) {
     assert(0 <= x && x < n);
-    if (fa[x] == x) return {x, rel[x]};
+    if (fa[x] < 0) return {x, rel[x]};
     auto [root, relfa] = Find(fa[x]);
     if (Compress) {
       fa[x] = root;
@@ -91,22 +83,22 @@ struct DsuWithRelation {
   void Unite(int x, int y, Relation relx, Relation rely) {
     assert(0 <= x && x < n && 0 <= y && y < n);
     assert(Find(x).first == x && Find(y).first == y);  // Must unite two roots.
-    if (x == y) return;
-    if (size[x] > size[y]) {
+    assert(x != y);  // Must be two different sets.
+    if (fa[x] < fa[y]) {
       std::swap(x, y);
       std::swap(relx, rely);
     }
     if (SupportUndo) {
-      int fax = fa[x], sizey = size[y];
-      undo.push([this, x, y, fax, sizey]() {
+      int fax = fa[x], fay = fa[y];
+      undo.push([this, x, y, fax, fay]() {
         fa[x] = fax;
-        size[y] = sizey;
+        fa[y] = fa[x];
         rel[x] = {};
         cnt++;
       });
     }
+    fa[y] += fa[x];
     fa[x] = y;
-    size[y] += size[x];
     rel[x] = relx;
     cnt--;
   }

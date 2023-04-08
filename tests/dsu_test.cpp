@@ -12,6 +12,7 @@ TEST(DsuTest, BasicTest) {
   dsu.Unite(3, 4);
   EXPECT_EQ(3, dsu.cnt);
   EXPECT_EQ(dsu.Find(0), dsu.Find(2));
+  EXPECT_EQ(dsu.fa[dsu.Find(0)], -3);
 
   Dsu<false> dsu2(6);
   dsu2.Unite(0, 1);
@@ -19,6 +20,7 @@ TEST(DsuTest, BasicTest) {
   dsu2.Unite(3, 4);
   EXPECT_EQ(3, dsu2.cnt);
   EXPECT_EQ(dsu2.Find(0), dsu2.Find(2));
+  EXPECT_EQ(dsu.fa[dsu.Find(0)], -3);
 }
 
 TEST(DsuTest, UndoTest) {
@@ -37,7 +39,7 @@ TEST(DsuTest, UndoTest) {
   dsu.Undo(dsu.undo.size());
   for (int i = 0; i < 6; i++) {
     EXPECT_EQ(dsu.Find(i), i);
-    EXPECT_EQ(1, dsu.size[i]);
+    EXPECT_EQ(-1, dsu.fa[i]);
   }
 }
 

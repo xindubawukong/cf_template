@@ -25,7 +25,7 @@ struct SegmentTree {
   bool persist;
   int ts;  // plus ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
-      : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(1) {
+      : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(0) {
     assert(l_range <= r_range);
   }
 
@@ -111,6 +111,17 @@ struct SegmentTree {
     }
     return l_range - 1;
   }
+
+  template <typename F>
+  void TranverseLeaf(Node* x, F f) {
+    if (!x) return;
+    if (x->l == x->r) {
+      f(x->info);
+      return;
+    }
+    TranverseLeaf(x->lch, f);
+    TranverseLeaf(x->rch, f);
+  };
 
   template <typename F>
   static Node* BuildTree(int l, int r, F f) {
