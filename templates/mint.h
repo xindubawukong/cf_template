@@ -49,11 +49,25 @@ struct MInt {
     x = (long long)x * b.x % P;
     return *this;
   }
-  MInt<P>& operator/=(const MInt<P>& b) { return (*this) *= b.Inverse(); }
+  MInt<P>& operator/=(const MInt<P>& b) {
+    (*this) *= b.Inverse();
+    return *this;
+  }
+  MInt<P> operator+(const MInt<P>& b) const {
+    auto res = *this;
+    return res += b;
+  }
+  MInt<P> operator-(const MInt<P>& b) const {
+    auto res = *this;
+    return res -= b;
+  }
   MInt<P> operator*(const MInt<P>& b) const {
     auto res = *this;
-    res *= b;
-    return res;
+    return res *= b;
+  }
+  MInt<P> operator/(const MInt<P>& b) const {
+    auto res = *this;
+    return res /= b;
   }
   operator std::string() const { return std::to_string(x); }
   friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
@@ -61,7 +75,7 @@ struct MInt {
     return output;
   }
 
-  friend std::istream& operator>>(std::istream& input, const MInt<P>& a) {
+  friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
     input >> a.x;
     return input;
   }
@@ -70,7 +84,7 @@ struct MInt {
 template <typename mint>
 struct Combination {
   int maxn;
-  vector<mint> fact, factinv, inv;
+  std::vector<mint> fact, factinv, inv;
   Combination(int maxn_) : maxn(maxn_) {
     fact.resize(maxn + 1);
     factinv.resize(maxn + 1);
