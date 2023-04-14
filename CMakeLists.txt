@@ -7,7 +7,7 @@ add_compile_options(-DLOCAL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(templates)
 
-option(XdbwkCfTemplate_BuildTest "" OFF)
+option(XdbwkCfTemplate_BuildTest "" ON)
 if(${XdbwkCfTemplate_BuildTest})
   enable_testing()
   add_subdirectory(googletest)

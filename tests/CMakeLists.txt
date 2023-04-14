@@ -21,4 +21,6 @@ add_simple_test(heavy_light_decomposition_test tree/heavy_light_decomposition_te
 add_simple_test(mint_test mint_test.cpp)
 add_simple_test(range_min_test range_min_test.cpp)
 add_simple_test(segment_tree_test segment_tree_test.cpp)
+add_simple_test(suffix_array_test string/suffix_array_test.cpp)
+add_simple_test(radix_sort_test utils/radix_sort_test.cpp)
 add_simple_test(tpoint_test tpoint_test.cpp)
