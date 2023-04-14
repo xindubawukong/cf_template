@@ -5,6 +5,14 @@
 #include <random>
 #include <string>
 
+/*
+using real = long double;
+using Point = TPoint<real>;
+using geo = Geometry<Point>;
+template <>
+real Point::eps = 1e-7;
+*/
+
 template <typename Point>
 struct Geometry {
   using real = typename Point::real;
@@ -96,6 +104,7 @@ struct Geometry {
     Segment(Point a_ = Point(0, 0), Point b_ = Point(1, 0)) : a(a_), b(b_) {
       assert(Dist(a, b) > Point::eps);
     }
+    Line ToLine() const { return Line(a, b - a); }
     operator std::string() {
       return "Segment(" + std::string(a) + ", " + std::string(b) + ")";
     }
@@ -103,7 +112,7 @@ struct Geometry {
 
   static bool IsPointOnSegment(const Point& p, const Segment& s) {
     if (Dist(s.a, p) < Point::eps || Dist(s.b, p) < Point::eps) return true;
-    return (p - s.a) | (s.b - s.a) && (s.a - p) * (s.b - p) < Point::eps;
+    return (p - s.a) | (s.b - s.a) && (s.a - p) * (s.b - p) < -Point::eps;
   }
 
   struct Circle {
@@ -196,7 +205,7 @@ struct Geometry {
       }
       return true;
     }
-    std::vector<Segment> GetSegments() const {
+    std::vector<Segment> Segments() const {
       std::vector<Segment> segs;
       for (int i = 0; i < ps.size(); i++) {
         auto seg = Segment(ps[i], ps[(i + 1) % ps.size()]);
@@ -208,7 +217,7 @@ struct Geometry {
 
   static bool IsPointStrictlyInsidePolygon(const Point& a,
                                            const Polygon& poly) {
-    auto segs = poly.GetSegments();
+    auto segs = poly.Segments();
     for (auto& seg : segs) {
       if (seg.Contains(a)) return false;
     }
@@ -269,10 +278,10 @@ struct Geometry {
       }
       return res;
     }
-    std::vector<Segment> GetSegments() const {
-      std::vector<Segment> segs = out.GetSegments();
+    std::vector<Segment> Segments() const {
+      std::vector<Segment> segs = out.Segments();
       for (auto& poly : ins) {
-        for (auto& seg : poly.GetSegments()) {
+        for (auto& seg : poly.Segments()) {
           segs.push_back(seg);
         }
       }

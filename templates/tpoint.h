@@ -20,15 +20,39 @@ struct TPoint {
     auto x = a.x - b.x, y = a.y - b.y;
     return sqrt(x * x + y * y);
   }
+  TPoint<T>& operator+=(const TPoint<T>& b) {
+    x += b.x, y += b.y;
+    return *this;
+  }
   TPoint<T> operator+(const TPoint<T>& b) const {
-    return TPoint<T>(x + b.x, y + b.y);
+    auto res = *this;
+    return res += b;
+  }
+  TPoint<T>& operator-=(const TPoint<T>& b) {
+    x -= b.x, y -= b.y;
+    return *this;
   }
   TPoint<T> operator-(const TPoint<T>& b) const {
-    return TPoint<T>(x - b.x, y - b.y);
+    auto res = *this;
+    return res -= b;
   }
-  TPoint<T> operator*(T t) const { return TPoint<T>(x * t, y * t); }
+  TPoint<T>& operator*=(T t) {
+    x *= t, y *= t;
+    return *this;
+  }
+  TPoint<T> operator*(T t) const {
+    auto res = *this;
+    return res *= t;
+  }
   friend TPoint<T> operator*(T t, const TPoint<T>& a) { return a * t; }
-  TPoint<T> operator/(T t) const { return TPoint<T>(x / t, y / t); }
+  TPoint<T>& operator/=(T t) {
+    x /= t, y /= t;
+    return *this;
+  }
+  TPoint<T> operator/(T t) const {
+    auto res = *this;
+    return res /= t;
+  }
   T operator*(const TPoint<T>& b) const { return x * b.x + y * b.y; }
   T operator%(const TPoint<T>& b) const { return x * b.y - y * b.x; }
   bool operator|(const TPoint<T>& b) const { return abs((*this) % b) <= eps; }
