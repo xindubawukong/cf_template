@@ -1,6 +1,7 @@
 #ifndef HEAVY_LIGHT_DECOMPOSITION_H_
 #define HEAVY_LIGHT_DECOMPOSITION_H_
 
+#include <functional>
 #include <vector>
 
 struct HeavyLightDecomposition {
@@ -8,9 +9,8 @@ struct HeavyLightDecomposition {
   std::vector<std::vector<int>> go;
   std::vector<int> size, dep, pos, which, heavy, fa, up;
 
-  HeavyLightDecomposition(int n_) : n(n_) {
-    assert(n > 0);
-    go.resize(n);
+  void Init(int n_) {
+    n = n_;
     size.resize(n);
     dep.resize(n);
     pos.resize(n);
@@ -18,6 +18,12 @@ struct HeavyLightDecomposition {
     heavy.resize(n);
     fa.resize(n);
     up.resize(n);
+  }
+
+  HeavyLightDecomposition(int n_) : n(n_) {
+    assert(n > 0);
+    go.resize(n);
+    Init(n);
   }
 
   void AddEdge(int u, int v) {
