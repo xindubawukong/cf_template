@@ -5,7 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-DLOCAL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 include_directories(templates)
+include_directories(templates/graph)
+include_directories(templates/math)
+include_directories(templates/string)
+include_directories(templates/tree)
+include_directories(templates/utils)
 
 option(XdbwkCfTemplate_BuildTest "" ON)
 if(${XdbwkCfTemplate_BuildTest})

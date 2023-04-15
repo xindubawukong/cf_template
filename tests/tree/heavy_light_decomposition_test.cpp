@@ -1,10 +1,9 @@
-#include "tree/heavy_light_decomposition.h"
+#include "heavy_light_decomposition.h"
 
 #include <random>
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "tree/heavy_light_decomposition.h"
 
 std::vector<std::vector<int>> GetTree(int n) {
   std::mt19937 rng(

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 
+// mm = max{f(a[i])}
 template <typename Seq, typename F>
 void RadixSort(Seq& a, int mm, F f) {
   int n = a.size();

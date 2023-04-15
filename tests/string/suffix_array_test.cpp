@@ -1,4 +1,4 @@
-#include "string/suffix_array.h"
+#include "suffix_array.h"
 
 #include <random>
 #include <string>
