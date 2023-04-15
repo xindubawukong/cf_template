@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include "segment_tree.h"
-
 struct HeavyLightDecomposition {
   int n, root;
   std::vector<std::vector<int>> go;
