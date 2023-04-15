@@ -4,6 +4,16 @@
 #include <random>
 #include <tuple>
 
+/*
+struct Info {
+  Treap<Info>::Node* node;
+  int val;
+  Info()  {}
+  void PushDown() {}
+  void Update() {}
+};
+*/
+
 template <typename Info>
 struct Treap {
   struct Node {
@@ -46,7 +56,7 @@ struct Treap {
     x->info.PushDown();
   }
 
-  Node* Merge(Node* x, Node* y) {
+  Node* Join(Node* x, Node* y) {
     if (x == nullptr) return y;
     if (y == nullptr) return x;
     if (persist) {
@@ -56,18 +66,18 @@ struct Treap {
     PushDown(x);
     PushDown(y);
     if (x->priority > y->priority) {
-      x->rch = Merge(x->rch, y);
+      x->rch = Join(x->rch, y);
       return Update(x);
     } else {
-      y->lch = Merge(x, y->lch);
+      y->lch = Join(x, y->lch);
       return Update(y);
     }
   }
 
-  Node* Merge(Node* x, Node* y, Node* z) {
-    if (x == nullptr) return Merge(y, z);
-    if (y == nullptr) return Merge(x, z);
-    if (z == nullptr) return Merge(x, y);
+  Node* Join(Node* x, Node* y, Node* z) {
+    if (x == nullptr) return Join(y, z);
+    if (y == nullptr) return Join(x, z);
+    if (z == nullptr) return Join(x, y);
     assert(y->lch == nullptr && y->rch == nullptr);  // y must be single node
     if (persist) {
       if (x->ts != ts) x = new Node(x, ts);
@@ -77,14 +87,14 @@ struct Treap {
     PushDown(x);
     PushDown(z);
     if (x->priority > y->priority && x->priority > z->priority) {
-      x->rch = Merge(x->rch, y, z);
+      x->rch = Join(x->rch, y, z);
       return Update(x);
     } else if (y->priority > z->priority) {
       y->lch = x;
       y->rch = z;
       return Update(y);
     } else {
-      z->lch = Merge(x, y, z->lch);
+      z->lch = Join(x, y, z->lch);
       return Update(z);
     }
   }
@@ -95,7 +105,7 @@ struct Treap {
       return {nullptr, nullptr, nullptr};
     }
     if (persist) {
-      x = new Node(x, ts);
+      if (x->ts != ts) x = new Node(x, ts);
     }
     PushDown(x);
     int d = cmp(x->info);
@@ -106,11 +116,11 @@ struct Treap {
     } else if (d < 0) {
       auto [w, y, z] = Split(x->lch, cmp);
       x->lch = nullptr;
-      return {w, y, Merge(z, Update(x))};
+      return {w, y, Join(z, Update(x))};
     } else {
       auto [w, y, z] = Split(x->rch, cmp);
       x->rch = nullptr;
-      return {Merge(Update(x), w), y, z};
+      return {Join(Update(x), w), y, z};
     }
   }
 
@@ -136,30 +146,5 @@ struct Treap {
     Go(root);
   }
 };
-
-/*
-struct Info {
-  Treap<Info>::Node* node;
-  int val, size;
-  bool rev;
-  Info(int val) : val(val), size(1), rev(false) {}
-  void Reverse() {
-    rev ^= 1;
-    swap(node->lch, node->rch);
-  }
-  void PushDown() {
-    if (rev) {
-      if (node->lch) node->lch->info.Reverse();
-      if (node->rch) node->rch->info.Reverse();
-      rev = false;
-    }
-  }
-  void Update() {
-    size = 1;
-    if (node->lch) size += node->lch->info.size;
-    if (node->rch) size += node->rch->info.size;
-  }
-};
-*/
 
 #endif  // TREAP_H_

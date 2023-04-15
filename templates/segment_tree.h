@@ -4,6 +4,17 @@
 #include <functional>
 #include <vector>
 
+/*
+struct Info {
+  int val;
+  SegmentTree<Info>::Node* node;
+  Info(int val_ = 0) : val(val_) {}
+  bool NeedPushDown() { return false; }
+  void PushDown() {}
+  void Update() {}
+};
+*/
+
 template <typename Info>
 struct SegmentTree {
   struct Node {
@@ -161,16 +172,5 @@ struct SegmentTree {
     return x;
   }
 };
-
-/*
-struct Info {
-  int val;
-  SegmentTree<Info>::Node* node;
-  Info(int val_ = 0) : val(val_) {}
-  bool NeedPushDown() { return false; }
-  void PushDown() {}
-  void Update() {}
-};
-*/
 
 #endif  // SEGMENT_TREE_H_
