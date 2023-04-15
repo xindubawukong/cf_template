@@ -41,11 +41,11 @@ struct SegmentTree {
   }
 
   void PushDown(Node* x) {
-    if (persist && x->info.NeedPushDown()) {
-      if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
-      if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
-    }
     if (x->info.NeedPushDown()) {
+      if (persist) {
+        if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
+        if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
+      }
       x->info.PushDown();
     }
   }

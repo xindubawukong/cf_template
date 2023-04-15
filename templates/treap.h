@@ -7,10 +7,19 @@
 /*
 struct Info {
   Treap<Info>::Node* node;
-  int val;
-  Info()  {}
+  int val, size;
+  Info() {}
+  bool NeedPushDown() { return rev; }
   void PushDown() {}
-  void Update() {}
+  void Update() {
+    size = 1;
+    if (node->lch) {
+      size += node->lch->info.size;
+    }
+    if (node->rch) {
+      size += node->rch->info.size;
+    }
+  }
 };
 */
 
@@ -49,11 +58,13 @@ struct Treap {
   }
 
   void PushDown(Node* x) {
-    if (persist) {
-      if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
-      if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
+    if (x->info.NeedPushDown()) {
+      if (persist) {
+        if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
+        if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
+      }
+      x->info.PushDown();
     }
-    x->info.PushDown();
   }
 
   Node* Join(Node* x, Node* y) {
@@ -111,6 +122,8 @@ struct Treap {
     int d = cmp(x->info);
     if (d == 0) {
       auto l = x->lch, r = x->rch;
+      if (l && l->ts != ts) l = new Node(l, ts);
+      if (r && r->ts != ts) r = new Node(r, ts);
       x->lch = x->rch = nullptr;
       return {l, Update(x), r};
     } else if (d < 0) {
