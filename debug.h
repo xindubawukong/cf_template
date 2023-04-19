@@ -6,6 +6,7 @@
 #include <optional>
 #include <queue>
 #include <set>
+#include <sstream>
 #include <stack>
 #include <string>
 #include <tuple>
@@ -52,6 +53,16 @@ std::string ToDebugString(A a, B... b) {
 }
 
 // DebugPrinter specializations
+
+template <typename T>
+struct DebugPrinter<T*> {
+  T* p;
+  operator std::string() {
+    std::stringstream ss;
+    ss << p;
+    return ss.str();
+  }
+};
 
 template <>
 struct DebugPrinter<char> {
