@@ -1,6 +1,7 @@
 #ifndef DSU_H_
 #define DSU_H_
 
+#include <array>
 #include <stack>
 #include <vector>
 
@@ -9,7 +10,7 @@ struct Dsu {
   static_assert(!Compress || (Compress && !SupportUndo));
   std::vector<int> fa;
   int n, cnt;
-  std::stack<std::function<void()>> undo;
+  std::stack<std::array<int, 4>> undo;
   Dsu(int n_) : n(n_) {
     fa.resize(n);
     for (int i = 0; i < n; i++) fa[i] = -1;
@@ -31,24 +32,22 @@ struct Dsu {
     assert(x != y);  // Must be two different sets.
     if (fa[x] < fa[y]) std::swap(x, y);
     if (SupportUndo) {
-      int fax = fa[x], fay = fa[y];
-      undo.push([this, x, y, fax, fay]() {
-        fa[x] = fax;
-        fa[y] = fay;
-        cnt++;
-      });
+      undo.push({x, fa[x], y, fa[y]});
     }
     fa[y] += fa[x];
     fa[x] = y;
     cnt--;
   }
-  void Undo(int cnt) {
+  std::array<int, 4> Undo() {
     static_assert(SupportUndo);
-    assert(0 <= cnt && cnt <= undo.size());
-    for (int i = 0; i < cnt; i++) {
-      undo.top()();
-      undo.pop();
-    }
+    assert(!undo.empty());
+    auto rec = undo.top();
+    auto [x, fax, y, fay] = rec;
+    undo.pop();
+    fa[x] = fax;
+    fa[y] = fay;
+    cnt++;
+    return rec;
   }
 };
 

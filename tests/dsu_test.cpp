@@ -30,13 +30,15 @@ TEST(DsuTest, UndoTest) {
   dsu.Unite(3, 4);
   dsu.Unite(1, 5);
   EXPECT_EQ(dsu.Find(0), dsu.Find(5));
-  dsu.Undo(1);
+  dsu.Undo();
   EXPECT_EQ(dsu.Find(0), dsu.Find(1));
   EXPECT_NE(dsu.Find(0), dsu.Find(5));
   EXPECT_EQ(dsu.Find(2), dsu.Find(4));
-  dsu.Undo(1);
+  dsu.Undo();
   EXPECT_NE(dsu.Find(2), dsu.Find(4));
-  dsu.Undo(dsu.undo.size());
+  while (!dsu.undo.empty()) {
+    dsu.Undo();
+  }
   for (int i = 0; i < 6; i++) {
     EXPECT_EQ(dsu.Find(i), i);
     EXPECT_EQ(-1, dsu.fa[i]);

@@ -62,8 +62,10 @@ def run_problem(names, no_build):
         for t in a:
             if t.startswith('#include <'):
                 f.write(t)
-        for t in b:
-            f.write(t)
+        for i in range(len(b)):
+            if i < len(b) - 1 and b[i] == '\n' and b[i + 1] == '\n':
+                continue
+            f.write(b[i])
         f.close()
 
 
