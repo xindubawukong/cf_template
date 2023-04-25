@@ -26,7 +26,10 @@ if(${XdbwkCfTemplate_BuildTest})
   add_subdirectory(tests)
 endif()
 
-add_subdirectory(parlaylib)
+option(XdbwkCfTemplate_IncludeParlay "" OFF)
+if(${XdbwkCfTemplate_IncludeParlay})
+  add_subdirectory(parlaylib)
+endif()
 
 file(GLOB problems true problem_*)
 foreach(problem ${problems})

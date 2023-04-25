@@ -31,7 +31,9 @@ def init_problem(name):
         project(problem_{name} VERSION 0.1.0)
 
         add_executable(problem_{name} {name}.cpp)
-        target_link_libraries(problem_{name} PUBLIC parlay)
+        if(${{XdbwkCfTemplate_IncludeParlay}})
+            target_link_libraries(problem_{name} PUBLIC parlay)
+        endif()
     '''
     with open(f'problem_{name}/CMakeLists.txt', 'w') as f:
         f.write(cmake_content)
