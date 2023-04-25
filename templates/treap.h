@@ -119,7 +119,7 @@ struct Treap {
       if (x->ts != ts) x = new Node(x, ts);
     }
     PushDown(x);
-    int d = cmp(x->info);
+    auto d = cmp(x->info);
     if (d == 0) {
       auto l = x->lch, r = x->rch;
       if (l && l->ts != ts) l = new Node(l, ts);

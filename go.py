@@ -31,6 +31,7 @@ def init_problem(name):
         project(problem_{name} VERSION 0.1.0)
 
         add_executable(problem_{name} {name}.cpp)
+        target_link_libraries(problem_{name} PUBLIC parlay)
     '''
     with open(f'problem_{name}/CMakeLists.txt', 'w') as f:
         f.write(cmake_content)
@@ -51,7 +52,7 @@ def run_problem(names, no_build):
     for name in names:
         submit = f'problem_{name}/submit_{name}.cpp'
         subprocess.call(
-            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -E problem_{name}/{name}.cpp | grep -v "^# [0-9]" > {submit}', shell=True)
+            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E problem_{name}/{name}.cpp | grep -v "^# [0-9]" > {submit}', shell=True)
         f = open('main.cpp', 'r')
         a = f.readlines()
         f.close()
