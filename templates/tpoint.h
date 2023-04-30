@@ -56,6 +56,10 @@ struct TPoint {
   T operator*(const TPoint<T>& b) const { return x * b.x + y * b.y; }
   T operator%(const TPoint<T>& b) const { return x * b.y - y * b.x; }
   bool operator|(const TPoint<T>& b) const { return abs((*this) % b) <= eps; }
+  bool operator<(const TPoint<T>& b) const {
+    if (x != b.x) return x < b.x;
+    return y < b.y;
+  }
   operator std::string() const {
     return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
   }
