@@ -54,7 +54,7 @@ def run_problem(names, no_build):
     for name in names:
         submit = f'problem_{name}/submit_{name}.cpp'
         subprocess.call(
-            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E problem_{name}/{name}.cpp | grep -v "^# [0-9]" > {submit}', shell=True)
+            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E problem_{name}/{name}.cpp > {submit}', shell=True)
         f = open('main.cpp', 'r')
         a = f.readlines()
         f.close()
@@ -65,6 +65,7 @@ def run_problem(names, no_build):
         for t in a:
             if t.startswith('#include <'):
                 f.write(t)
+        f.write('\n')
         for i in range(len(b)):
             if i < len(b) - 1 and b[i] == '\n' and b[i + 1] == '\n':
                 continue
