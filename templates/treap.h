@@ -6,33 +6,25 @@
 
 /*
 struct Info {
-  Treap<Info>::Node* node;
-  int val, size;
-  Info() {}
-  bool NeedPushDown() { return rev; }
-  void PushDown() {}
-  void Update() {
-    size = 1;
-    if (node->lch) {
-      size += node->lch->info.size;
-    }
-    if (node->rch) {
-      size += node->rch->info.size;
-    }
+  Treap<Info>::Node* Node() {
+    return reinterpret_cast<Treap<Info>::Node*>(this);
   }
+  Info() {}
+  bool NeedPushDown() { return false; }
+  void PushDown() {}
+  void Update() {}
 };
 */
 
 template <typename Info>
 struct Treap {
   struct Node {
+    Info info;
     unsigned int priority;
     int ts;
     Node *lch, *rch;
-    Info info;
     Node(Info info_, int ts_ = 0)
         : ts(ts_), lch(nullptr), rch(nullptr), info(info_) {
-      info.node = this;
       static std::mt19937 rng(0);
       priority = rng();
     }
@@ -42,9 +34,7 @@ struct Treap {
           ts(ts_),
           lch(x->lch),
           rch(x->rch),
-          info(x->info) {
-      info.node = this;
-    }
+          info(x->info) {}
   };
 
   Node* root;
@@ -139,7 +129,7 @@ struct Treap {
 
   auto SplitKth(Node* x, int k) {
     return Split(x, [&k](Info& info) {
-      int left = info.node->lch ? info.node->lch->info.size : 0;
+      int left = info.Node()->lch ? info.Node()->lch->info.size : 0;
       if (k <= left) return -1;
       if (k == left + 1) return 0;
       k -= left + 1;

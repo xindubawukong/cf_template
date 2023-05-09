@@ -37,6 +37,7 @@ struct MInt {
     return QuickPower(*this, P - 2);
   }
 
+  bool operator==(const MInt<P>& b) { return x == b.x; }
   MInt<P>& operator+=(const MInt<P>& b) {
     x = Adjust(x + b.x);
     return *this;
@@ -69,6 +70,7 @@ struct MInt {
     auto res = *this;
     return res /= b;
   }
+  friend MInt<P> operator*(long long x, const MInt<P>& b) { return b * x; }
   operator std::string() const { return std::to_string(x); }
   friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
     output << string(a);

@@ -6,9 +6,10 @@
 
 /*
 struct Info {
-  int val;
-  SegmentTree<Info>::Node* node;
-  Info(int val_ = 0) : val(val_) {}
+  SegmentTree<Info>::Node* Node() {
+    return reinterpret_cast<SegmentTree<Info>::Node*>(this);
+  }
+  Info() {}
   bool NeedPushDown() { return false; }
   void PushDown() {}
   void Update() {}
@@ -18,17 +19,13 @@ struct Info {
 template <typename Info>
 struct SegmentTree {
   struct Node {
+    Info info;
     int l, r, ts;
     Node *lch, *rch;
-    Info info;
     Node(int l_, int r_, int ts_ = 0)
-        : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {
-      info.node = this;
-    }
+        : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {}
     Node(Node* x, int ts_)
-        : l(x->l), r(x->r), ts(ts_), lch(x->lch), rch(x->rch), info(x->info) {
-      info.node = this;
-    }
+        : l(x->l), r(x->r), ts(ts_), lch(x->lch), rch(x->rch), info(x->info) {}
   };
 
   int l_range, r_range;

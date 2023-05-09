@@ -45,7 +45,7 @@ def run_problem(names, no_build):
             init_problem(name)
     subprocess.call(f'mkdir -p build', shell=True)
     problems = list(map(lambda name: f'problem_{name}', names))
-    make_str = 'cmake .. && make ' + ' '.join(problems)
+    make_str = 'cmake .. && make -j8 ' + ' '.join(problems)
     if no_build:
         make_str = ':'
     run_str = ' && '.join(
