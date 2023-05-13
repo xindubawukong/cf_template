@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "debug.h"
+
 template <typename Graph, typename F>
 auto Dijkstra(const Graph& g, int s, F f) {
   static_assert(Graph::is_directed::value);
@@ -23,10 +25,13 @@ auto Dijkstra(const Graph& g, int s, F f) {
     q.pop();
     if (visit[u]) continue;
     visit[u] = true;
-    for (auto& e : g.Edges(u)) {
+    debug(u, dist[u]);
+    for (auto eid : g.go[u]) {
+      auto& e = g.edges[eid];
       int v = e.v;
       if (visit[v]) continue;
       dist_t d = dist[u] + f(e);
+      debug(v, d);
       if (d < dist[v]) {
         dist[v] = d;
         from[v] = u;
