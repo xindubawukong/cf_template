@@ -5,6 +5,10 @@
 #include <utility>
 #include <vector>
 
+struct EdgeBase {
+  int u, v;
+};
+
 template <typename Edge>
 struct Graph {
   using edge_t = Edge;

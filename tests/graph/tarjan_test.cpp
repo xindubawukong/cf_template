@@ -3,12 +3,8 @@
 #include "graph.h"
 #include "gtest/gtest.h"
 
-struct Edge {
-  int u, v;
-};
-
 TEST(TarjanTest, BasicTest) {
-  DirectedGraph<Edge> g(3);
+  DirectedGraph<EdgeBase> g(3);
   g.AddEdge({0, 1});
   g.AddEdge({1, 0});
   g.AddEdge({1, 2});
