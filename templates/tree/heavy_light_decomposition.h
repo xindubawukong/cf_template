@@ -1,9 +1,11 @@
 #ifndef HEAVY_LIGHT_DECOMPOSITION_H_
 #define HEAVY_LIGHT_DECOMPOSITION_H_
 
+#include <cassert>
 #include <functional>
 #include <vector>
 
+template <typename T = int>
 struct HeavyLightDecomposition {
   int n, root;
   std::vector<std::vector<int>> go;

@@ -1,6 +1,9 @@
 #ifndef FLOW_H_
 #define FLOW_H_
 
+#include <cassert>
+#include <functional>
+#include <limits>
 #include <queue>
 #include <vector>
 

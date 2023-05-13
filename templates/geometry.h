@@ -1,6 +1,8 @@
 #ifndef GEOMETRY_H_
 #define GEOMETRY_H_
 
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <random>
 #include <string>

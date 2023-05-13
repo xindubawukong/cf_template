@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <vector>
 
 template <typename T>
 T QuickPower(T a, long long b) {

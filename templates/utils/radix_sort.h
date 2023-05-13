@@ -2,6 +2,7 @@
 #define RADIX_SORT_H_
 
 #include <algorithm>
+#include <cassert>
 #include <vector>
 
 // mm = max{f(a[i])}

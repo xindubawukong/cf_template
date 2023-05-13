@@ -1,7 +1,10 @@
 #ifndef DIJKSTRA_H_
 #define DIJKSTRA_H_
 
+#include <algorithm>
+#include <limits>
 #include <queue>
+#include <tuple>
 #include <vector>
 
 template <typename Graph, typename F>

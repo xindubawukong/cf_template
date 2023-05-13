@@ -1,6 +1,7 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
+#include <cassert>
 #include <utility>
 #include <vector>
 

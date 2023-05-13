@@ -2,6 +2,8 @@
 #define DSU_H_
 
 #include <array>
+#include <cassert>
+#include <functional>
 #include <stack>
 #include <vector>
 

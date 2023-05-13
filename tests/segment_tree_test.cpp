@@ -5,31 +5,33 @@
 #include "gtest/gtest.h"
 
 struct Info {
+  SegmentTree<Info>::Node* Node() {
+    return reinterpret_cast<SegmentTree<Info>::Node*>(this);
+  }
   unsigned int sum, tag;
-  SegmentTree<Info>::Node* node;
   Info() : sum(0), tag(0) {}
   bool NeedPushDown() { return tag > 0; }
   void Plus(unsigned int x) {
     tag += x;
-    sum += (node->r - node->l + 1) * x;
+    sum += (Node()->r - Node()->l + 1) * x;
   }
   void PushDown() {
     assert(tag > 0);
-    if (node->lch) {
-      node->lch->info.Plus(tag);
+    if (Node()->lch) {
+      Node()->lch->info.Plus(tag);
     }
-    if (node->rch) {
-      node->rch->info.Plus(tag);
+    if (Node()->rch) {
+      Node()->rch->info.Plus(tag);
     }
     tag = 0;
   }
   void Update() {
     sum = 0;
-    if (node->lch) {
-      sum += node->lch->info.sum;
+    if (Node()->lch) {
+      sum += Node()->lch->info.sum;
     }
-    if (node->rch) {
-      sum += node->rch->info.sum;
+    if (Node()->rch) {
+      sum += Node()->rch->info.sum;
     }
   }
 };

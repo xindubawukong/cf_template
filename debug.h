@@ -1,6 +1,7 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
+#include <bitset>
 #include <iostream>
 #include <map>
 #include <optional>

@@ -1,6 +1,7 @@
 #ifndef TREAP_H_
 #define TREAP_H_
 
+#include <functional>
 #include <random>
 #include <tuple>
 

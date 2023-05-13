@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import subprocess
 import datetime
 
@@ -66,6 +67,9 @@ def run_problem(names, no_build):
             if t.startswith('#include <'):
                 f.write(t)
         f.write('\n')
+        for i in range(len(b)):
+            if re.match('# \d+.*', b[i]) is not None:
+                b[i] = '\n'
         for i in range(len(b)):
             if i < len(b) - 1 and b[i] == '\n' and b[i + 1] == '\n':
                 continue

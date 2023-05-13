@@ -1,6 +1,8 @@
 #ifndef SUFFIX_ARRAY_H_
 #define SUFFIX_ARRAY_H_
 
+#include <cassert>
+#include <tuple>
 #include <vector>
 
 #include "radix_sort.h"

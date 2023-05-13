@@ -1,6 +1,7 @@
 #ifndef SEGMENT_TREE_H_
 #define SEGMENT_TREE_H_
 
+#include <cassert>
 #include <functional>
 #include <vector>
 
