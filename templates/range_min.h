@@ -34,13 +34,15 @@ struct RMQ {
     }
   }
 
-  int MinIndex(int i, int j) { return less(a[i], a[j]) ? i : j; }
-
+  // return the index of minimum value
   int Query(int l, int r) {
     int len = r - l + 1;
     int t = log[len];
     return MinIndex(f[l][t], f[r - (1 << t) + 1][t]);
   }
+
+ private:
+  int MinIndex(int i, int j) { return less(a[i], a[j]) ? i : j; }
 };
 
 #endif  // RANGE_MIN_H_

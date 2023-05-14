@@ -5,7 +5,7 @@
 #include <tuple>
 #include <vector>
 
-#include "radix_sort.h"
+#include "utils/radix_sort.h"
 
 // Adjust a[i] to 1..n
 template <typename Seq>
