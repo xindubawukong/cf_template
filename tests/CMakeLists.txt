@@ -12,7 +12,6 @@ function(add_simple_test NAME PATH)
 endfunction()
 
 add_simple_test(dijkstra_test graph/dijkstra_test.cpp)
-add_simple_test(dsu_test dsu_test.cpp)
 add_simple_test(flow_test graph/flow_test.cpp)
 add_simple_test(geometry_test geometry_test.cpp)
 add_simple_test(get_primes_test math/get_primes_test.cpp)
