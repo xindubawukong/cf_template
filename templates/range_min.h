@@ -3,16 +3,15 @@
 
 #include <vector>
 
-template <typename T, typename Less = std::less<T>>
+template <typename Seq, typename Less = std::less<typename Seq::value_type>>
 struct RMQ {
-  const std::vector<T>& a;
+  Seq a;
   Less less;
   int n;
   std::vector<int> log;
   std::vector<std::vector<int>> f;
 
-  RMQ(const std::vector<T>& a_, const Less& less_ = {})
-      : a(a_), less(less_), n(a.size()) {
+  RMQ(const Seq& a_, const Less& less_ = {}) : a(a_), less(less_), n(a.size()) {
     log.resize(n + 1);
     log[1] = 0;
     for (int i = 2, x = 0; i <= n; i++) {

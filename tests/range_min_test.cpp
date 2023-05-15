@@ -29,7 +29,7 @@ TEST(RangeMinTest, DefaultConstructorTest) {
   int n = rng() % 1000 + 10;
   vector<int> a(n);
   for (int i = 0; i < n; i++) a[i] = rng();
-  RMQ<int> rmq(a);
+  RMQ rmq(a);
   int iter = 1000;
   for (int i = 0; i < iter; i++) {
     int l = rng() % n, r = rng() % n;
@@ -45,7 +45,7 @@ TEST(RangeMinTest, RandomTest) {
   auto cmp = [](unsigned int x, unsigned int y) { return x > y; };
   vector<unsigned int> a(n);
   for (int i = 0; i < n; i++) a[i] = rng();
-  RMQ<unsigned int, decltype(cmp)> rmq(a);
+  RMQ<decltype(a), decltype(cmp)> rmq(a);
   int iter = 1000;
   for (int i = 0; i < iter; i++) {
     int l = rng() % n, r = rng() % n;
