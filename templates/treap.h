@@ -1,9 +1,11 @@
 #ifndef TREAP_H_
 #define TREAP_H_
 
+#include <cassert>
 #include <functional>
 #include <random>
 #include <tuple>
+#include <vector>
 
 /*
 struct Info {
@@ -136,6 +138,26 @@ struct Treap {
       k -= left + 1;
       return 1;
     });
+  }
+
+  // return the path from root to the node
+  // the result is empty if not found
+  template <typename Cmp>
+  std::vector<Node*> Search(Cmp cmp) {
+    std::vector<Node*> res;
+    Node* x = root;
+    while (x) {
+      PushDown(x);
+      res.push_back(x);
+      auto d = cmp(x->info);
+      if (d == 0) return res;
+      if (d < 0) {
+        x = x->lch;
+      } else {
+        x = x->rch;
+      }
+    }
+    return {};
   }
 
   template <typename F>
