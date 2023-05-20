@@ -48,7 +48,7 @@ TEST(TreapTest, BasicTest) {
   }
   EXPECT_EQ(n, treap.root->info.size);
   std::vector<int> b;
-  treap.Tranverse([&](auto& info) { b.push_back(info.val); });
+  treap.Tranverse(treap.root, [&](auto& info) { b.push_back(info.val); });
   EXPECT_EQ(a, b);
 
   for (int i = 0; i < n; i++) {

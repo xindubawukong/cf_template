@@ -164,9 +164,9 @@ struct Treap {
   void Tranverse(Node* x, F f) {
     if (!x) return;
     PushDown(x);
-    Go(x->lch);
+    Tranverse(x->lch, f);
     f(x->info);
-    Go(x->rch);
+    Tranverse(x->rch, f);
   }
 };
 
