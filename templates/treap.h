@@ -69,7 +69,7 @@ struct Treap {
     }
     PushDown(x);
     PushDown(y);
-    if (x->priority > y->priority) {
+    if (x->priority >= y->priority) {
       x->rch = Join(x->rch, y);
       return Update(x);
     } else {
@@ -90,10 +90,10 @@ struct Treap {
     }
     PushDown(x);
     PushDown(z);
-    if (x->priority > y->priority && x->priority > z->priority) {
+    if (x->priority >= y->priority && x->priority >= z->priority) {
       x->rch = Join(x->rch, y, z);
       return Update(x);
-    } else if (y->priority > z->priority) {
+    } else if (y->priority >= z->priority) {
       y->lch = x;
       y->rch = z;
       return Update(y);
@@ -161,15 +161,12 @@ struct Treap {
   }
 
   template <typename F>
-  void Tranverse(F f) {
-    std::function<void(Node*)> Go = [&](Node* x) {
-      if (!x) return;
-      PushDown(x);
-      Go(x->lch);
-      f(x->info);
-      Go(x->rch);
-    };
-    Go(root);
+  void Tranverse(Node* x, F f) {
+    if (!x) return;
+    PushDown(x);
+    Go(x->lch);
+    f(x->info);
+    Go(x->rch);
   }
 };
 
