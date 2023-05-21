@@ -2,11 +2,15 @@
 #define GRAPH_H_
 
 #include <cassert>
+#include <string>
 #include <utility>
 #include <vector>
 
 struct EdgeBase {
   int u, v;
+  operator std::string() {
+    return "Edge(" + std::to_string(u) + ", " + std::to_string(v) + ")";
+  }
 };
 
 template <typename Edge>
