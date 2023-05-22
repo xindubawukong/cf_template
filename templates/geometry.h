@@ -13,6 +13,8 @@ using Point = TPoint<real>;
 using geo = Geometry<Point>;
 template <>
 real Point::eps = 1e-7;
+
+// cout << fixed << setprecision(5) << 1 << '\n';
 */
 
 template <typename Point>
@@ -162,7 +164,7 @@ struct Geometry {
   }
 
   struct Polygon {
-    std::vector<Point> ps;  // clock-wise preferred
+    std::vector<Point> ps;  // anti-clockwise preferred
     Polygon(std::vector<Point> ps_ = {}) : ps(ps_) {}
     operator std::string() {
       std::string s = "Polygon[";
@@ -181,7 +183,7 @@ struct Geometry {
       }
       return abs(sum);
     }
-    bool IsClockWise() const {
+    bool IsClockwise() const {
       assert(ps.size() > 0);
       real sum = 0;
       for (int i = 0; i < ps.size(); i++) {
@@ -191,8 +193,8 @@ struct Geometry {
     }
     bool IsConvex() const {
       assert(this->ps.size() > 2);
-      auto ps = this->ps;
-      if (!this->IsClockWise()) {
+      auto& ps = this->ps;
+      if (this->IsClockwise()) {
         std::reverse(ps.begin(), ps.end());
       }
       int n = ps.size();
@@ -201,9 +203,7 @@ struct Geometry {
         auto& b = ps[(i + 1) % n];
         auto& c = ps[(i + 2) % n];
         auto u = b - a, v = c - a;
-        if (u % v > Point::eps) {
-          return false;
-        }
+        if (u % v < -Point::eps) return false;
       }
       return true;
     }
@@ -298,6 +298,46 @@ struct Geometry {
       if (IsStrictlyInside(p, poly)) return false;
     }
     return true;
+  }
+
+  static Polygon GetConvex(const std::vector<Point>& ps_) {
+    auto ps = ps_;
+    assert(ps.size() >= 3);
+    int n = ps.size();
+    Point O(0, 0);
+    for (auto& p : ps) O += p;
+    O /= n;
+    std::sort(ps.begin(), ps.end(), [&](auto& a, auto& b) {
+      auto p = GetAngleFromX(a - O);
+      auto q = GetAngleFromX(b - O);
+      if (abs(p - q) > Point::eps) return p < q;
+      return Dist(a, O) < Dist(b, O);
+    });
+    auto it = std::min_element(ps.begin(), ps.end(), [](auto& a, auto& b) {
+      if (abs(a.x - b.x) > Point::eps) return a.x < b.x;
+      return a.y < b.y;
+    });
+    std::rotate(ps.begin(), it, ps.end());
+    ps.push_back(ps[0]);
+    Polygon poly;
+    poly.ps = {ps[0], ps[1]};
+    for (int i = 2; i <= n; i++) {
+      auto& c = ps[i];
+      if (Dist(c, poly.ps.back()) < Point::eps) continue;
+      while (poly.ps.size() >= 2) {
+        auto& a = *next(poly.ps.rbegin());
+        auto& b = *poly.ps.rbegin();
+        if ((c - a) % (b - a) > Point::eps) {
+          poly.ps.pop_back();
+        } else {
+          break;
+        }
+      }
+      if (i < n && Dist(c, poly.ps.back()) > Point::eps) {
+        poly.ps.push_back(c);
+      }
+    }
+    return poly;
   }
 };
 
