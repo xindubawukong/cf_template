@@ -12,7 +12,7 @@ using real = long double;
 using Point = TPoint<real>;
 using geo = Geometry<Point>;
 template <>
-real Point::eps = 1e-7;
+const real Point::eps = 1e-7;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
 */
@@ -191,7 +191,7 @@ struct Geometry {
       }
       return sum < Point::eps;
     }
-    bool IsConvex() const {
+    bool IsConvex() {
       assert(this->ps.size() > 2);
       auto& ps = this->ps;
       if (this->IsClockwise()) {
@@ -304,39 +304,37 @@ struct Geometry {
     auto ps = ps_;
     assert(ps.size() >= 3);
     int n = ps.size();
-    Point O(0, 0);
-    for (auto& p : ps) O += p;
-    O /= n;
-    std::sort(ps.begin(), ps.end(), [&](auto& a, auto& b) {
-      auto p = GetAngleFromX(a - O);
-      auto q = GetAngleFromX(b - O);
+    std::sort(ps.begin(), ps.end(), [](auto& a, auto& b) {
+      if (abs(a.y - b.y) > Point::eps) return a.y < b.y;
+      return a.x > b.x;
+    });
+    Point o = ps[0];
+    std::sort(std::next(ps.begin()), ps.end(), [&](auto& a, auto& b) {
+      auto p = GetAngleFromX(a - o);
+      auto q = GetAngleFromX(b - o);
       if (abs(p - q) > Point::eps) return p < q;
-      return Dist(a, O) < Dist(b, O);
+      return Dist(a, o) < Dist(b, o);
     });
-    auto it = std::min_element(ps.begin(), ps.end(), [](auto& a, auto& b) {
-      if (abs(a.x - b.x) > Point::eps) return a.x < b.x;
-      return a.y < b.y;
-    });
-    std::rotate(ps.begin(), it, ps.end());
-    ps.push_back(ps[0]);
-    Polygon poly;
-    poly.ps = {ps[0], ps[1]};
+    ps.push_back(o);
+    std::vector<Point> res = {ps[0], ps[1]};
     for (int i = 2; i <= n; i++) {
       auto& c = ps[i];
-      if (Dist(c, poly.ps.back()) < Point::eps) continue;
-      while (poly.ps.size() >= 2) {
-        auto& a = *next(poly.ps.rbegin());
-        auto& b = *poly.ps.rbegin();
-        if ((c - a) % (b - a) > Point::eps) {
-          poly.ps.pop_back();
+      while (res.size() >= 2) {
+        auto& a = *std::next(res.rbegin());
+        auto& b = *res.rbegin();
+        auto u = b - a, v = c - b;
+        auto t = u % v;
+        if (t < -Point::eps || (abs(t) < Point::eps && u * v > -Point::eps)) {
+          res.pop_back();
         } else {
           break;
         }
       }
-      if (i < n && Dist(c, poly.ps.back()) > Point::eps) {
-        poly.ps.push_back(c);
+      if (i < n && Dist(c, res.back()) > Point::eps) {
+        res.push_back(c);
       }
     }
+    Polygon poly(res);
     return poly;
   }
 };
