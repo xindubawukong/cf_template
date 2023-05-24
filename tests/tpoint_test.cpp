@@ -3,9 +3,9 @@
 #include "gtest/gtest.h"
 
 template <>
-int TPoint<int>::eps = 0;
+const int TPoint<int>::eps = 0;
 template <>
-double TPoint<double>::eps = 1e-6;
+const double TPoint<double>::eps = 1e-6;
 
 TEST(TPointTest, IntPointTest) {
   using Point = TPoint<int>;

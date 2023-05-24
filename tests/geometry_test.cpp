@@ -6,7 +6,7 @@
 using Point = TPoint<double>;
 using geo = Geometry<Point>;
 template <>
-double Point::eps = 1e-6;
+const double Point::eps = 1e-6;
 
 TEST(GeometryTest, BasicTest) {
   Point u(1, 0);
