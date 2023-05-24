@@ -63,6 +63,10 @@ struct TPoint {
   operator std::string() const {
     return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
   }
+  friend std::istream& operator>>(std::istream& input, TPoint<T>& a) {
+    input >> a.x >> a.y;
+    return input;
+  }
   friend std::ostream& operator<<(std::ostream& output, const TPoint<T>& a) {
     output << static_cast<std::string>(a);
     return output;

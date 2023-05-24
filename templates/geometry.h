@@ -313,6 +313,7 @@ struct Geometry {
 
   // Minkowski sum for two convex
   static Polygon Minkowski(const Polygon& a, const Polygon& b) {
+    assert(a.is_convex && b.is_convex);
     int n = a.ps.size(), m = b.ps.size();
     std::vector<Point> aa(n), bb(m);
     for (int i = 0; i < n; i++) {
