@@ -38,7 +38,7 @@
 #include "parlay/internal/get_time.h"
 using timer = parlay::internal::timer;
 #else
-#define debug(...) 19980723
+#define debug(...) 0
 #endif
 
 using namespace std;
