@@ -3,6 +3,7 @@
 
 #include <bitset>
 #include <iostream>
+#include <list>
 #include <map>
 #include <optional>
 #include <queue>
@@ -260,6 +261,20 @@ struct DebugPrinter<std::deque<T>> {
   std::deque<T> x;
   operator std::string() {
     std::string s = "deque[";
+    for (auto it = x.begin(); it != x.end(); it++) {
+      if (it != x.begin()) s += ", ";
+      s += static_cast<std::string>(DebugPrinter<T>({*it}));
+    }
+    s += "]";
+    return s;
+  }
+};
+
+template <typename T>
+struct DebugPrinter<std::list<T>> {
+  std::list<T> x;
+  operator std::string() {
+    std::string s = "list[";
     for (auto it = x.begin(); it != x.end(); it++) {
       if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
