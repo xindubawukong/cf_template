@@ -3,46 +3,57 @@
 
 #include <vector>
 
-template <int P1, int M1, int P2, int M2>
-struct DoubleHashString {
-  int n;
-  std::vector<int> h1, h2;
+template <int P0, int M0, int P1, int M1>
+struct DoubleHashingHelper {
+  struct HashString {
+    DoubleHashingHelper* helper;
+    int n;
+    std::vector<int> a0, a1;
+    HashString() : n(0) {}
+    HashString(HashString&& h)
+        : n(h.n), a0(std::move(h.a0)), a1(std::move(h.a1)) {}
 
-  HashString(const string& s) {
-    n = s.length();
-    h1.resize(n);
-    h2.resize(n);
-    h1[0] = h2[0] = s[0] - 'a' + 1;
-    for (int i = 1; i < n; i++) {
-      h1[i] = (long long)h1[i - 1] * P1 % M1;
-      h2[i] = (long long)h2[i - 1] * P2 % M2;
+    std::pair<int, int> Hash() { return {a0[n - 1], a1[n - 1]}; }
+
+    std::pair<int, int> Hash(int l, int r) {
+      assert(0 <= l && l <= r && r < n);
+      int a, b, h0, h1;
+      a = a0[r];
+      b = (long long)(l == 0 ? 0 : a0[l - 1]) * helper->f0[r - l + 1] % M0;
+      h0 = (a - b + M0) % M0;
+      a = a1[r];
+      b = (long long)(l == 0 ? 0 : a1[l - 1]) * helper->f1[r - l + 1] % M1;
+      h1 = (a - b + M1) % M1;
+      return {h0, h1};
+    }
+  };
+
+  int maxn;
+  std::vector<int> f0, f1;
+  DoubleHashingHelper(int maxn_) : maxn(maxn_) {
+    assert(P0 > 0 && M0 > 0 && P1 > 0 && M1 > 0);
+    f0.resize(maxn + 1);
+    f1.resize(maxn + 1);
+    f0[0] = f1[0] = 1;
+    for (int i = 1; i <= maxn; i++) {
+      f0[i] = (long long)f0[i - 1] * P0 % M0;
+      f1[i] = (long long)f1[i - 1] * P1 % M1;
     }
   }
 
-  std::pair<int, int> GetHash(int l, int r) const {
-    assert(0 <= l && l <= r && r < n);
-    int a = 0, b = 0;
-    for (int i = 0; i < hash_config.size(); i++) {
-      int mod = hash_config[i].second;
-      int a = hash[i][r];
-      int b = (int64)(l == 0 ? 0 : hash[i][l - 1]) * fact[i][r - l + 1] % mod;
-      res[i] = (a - b + mod) % mod;
+  HashString Create(const string& s) {
+    HashString hh;
+    hh.n = s.length();
+    assert(hh.n <= maxn);
+    hh.a0.resize(hh.n);
+    hh.a1.resize(hh.n);
+    hh.a0[0] = hh.a1[0] = s[0];
+    for (int i = 1; i < hh.n; i++) {
+      hh.a0[i] = ((long long)hh.a0[i - 1] * P0 + s[i]) % M0;
+      hh.a1[i] = ((long long)hh.a1[i - 1] * P1 + s[i]) % M1;
     }
-    return res;
-  }
-
-  int Length() const { return hash[0].size(); }
-
-  static void Prepare(int n) {
-    fact.resize(hash_config.size());
-    for (int i = 0; i < fact.size(); i++) {
-      fact[i].resize(n + 1);
-      auto [p, mod] = hash_config[i];
-      fact[i][0] = 1;
-      for (int j = 1; j <= n; j++) {
-        fact[i][j] = (int64)fact[i][j - 1] * p % mod;
-      }
-    }
+    hh.helper = this;
+    return hh;
   }
 };
 
