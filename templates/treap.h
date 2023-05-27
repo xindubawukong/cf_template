@@ -103,6 +103,9 @@ struct Treap {
     }
   }
 
+  // cmp(info) < 0: split lch
+  // cmp(info) = 0: return this
+  // cmp(info) > 0: split rch
   template <typename Cmp>
   std::tuple<Node*, Node*, Node*> Split(Node* x, Cmp cmp) {
     if (x == nullptr) {

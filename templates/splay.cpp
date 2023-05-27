@@ -222,64 +222,6 @@ struct SplayTree {
   }
 };
 
-struct SegmentTreeNode {
-  int l, r;
-  SplayTree tree;
-  SegmentTreeNode *lch, *rch;
-
-  SegmentTreeNode(int l_, int r_) : l(l_), r(r_), lch(nullptr), rch(nullptr) {}
-};
-
-SegmentTreeNode* Insert(SegmentTreeNode* x, int l, int r, int posx, int posy,
-                        int id) {
-  if (!x) {
-    x = new SegmentTreeNode(l, r);
-    x->tree.Insert(-1, inf);
-    x->tree.Insert(kMaxXY + 1, inf);
-  }
-  if (l <= posx && posx <= r) {
-    x->tree.Insert(posy, id);
-  }
-  if (l == r) return x;
-  int m = (l + r) / 2;
-  if (posx <= m) {
-    x->lch = Insert(x->lch, l, m, posx, posy, id);
-  } else {
-    x->rch = Insert(x->rch, m + 1, r, posx, posy, id);
-  }
-  return x;
-}
-
-void Delete(SegmentTreeNode* x, int posx, int posy, int id) {
-  if (!x) return;
-  if (x->l <= posx && posx <= x->r) {
-    x->tree.Delete(posy, id);
-  }
-  if (x->l == x->r) return;
-  int m = (x->l + x->r) / 2;
-  if (posx <= m) {
-    Delete(x->lch, posx, posy, id);
-  } else {
-    Delete(x->rch, posx, posy, id);
-  }
-}
-
-int GetMinId(SegmentTreeNode* x, int x1, int x2, int y1, int y2) {
-  if (!x) return inf;
-  if (x1 <= x->l && x->r <= x2) {
-    return x->tree.GetMinId(y1, y2);
-  }
-  int m = (x->l + x->r) / 2;
-  int res = inf;
-  if (x1 <= m) {
-    res = min(res, GetMinId(x->lch, x1, x2, y1, y2));
-  }
-  if (x2 > m) {
-    res = min(res, GetMinId(x->rch, x1, x2, y1, y2));
-  }
-  return res;
-}
-
 void Main() {}
 
 int main() {
