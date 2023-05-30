@@ -6,14 +6,13 @@
 #include <stack>
 #include <vector>
 
-template <typename Graph>
-struct TarjanDirected {
+template <typename Graph> struct TarjanDirected {
   static_assert(Graph::is_directed::value);
   std::vector<int> dfn, low, belong;
   std::vector<bool> visit;
   std::stack<int> sta;
   int ts, scc_cnt;
-  TarjanDirected(Graph& g) {
+  TarjanDirected(Graph &g) {
     dfn.resize(g.n);
     low.resize(g.n);
     belong.resize(g.n);
@@ -26,7 +25,7 @@ struct TarjanDirected {
       visit[u] = true;
       sta.push(u);
       for (int eid : g.go[u]) {
-        auto& e = g.edges[eid];
+        auto &e = g.edges[eid];
         if (!visit[e.v]) {
           Dfs(e.v);
           low[u] = std::min(low[u], low[e.v]);
@@ -39,7 +38,8 @@ struct TarjanDirected {
           int v = sta.top();
           belong[v] = scc_cnt;
           sta.pop();
-          if (v == u) break;
+          if (v == u)
+            break;
         }
         scc_cnt++;
       }
@@ -52,4 +52,4 @@ struct TarjanDirected {
   }
 };
 
-#endif  // TARJAN_H_
+#endif // TARJAN_H_

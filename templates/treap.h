@@ -19,8 +19,7 @@ struct Info {
 };
 */
 
-template <typename Info>
-struct Treap {
+template <typename Info> struct Treap {
   struct Node {
     Info info;
     unsigned int priority;
@@ -32,40 +31,43 @@ struct Treap {
       priority = rng();
     }
     // when copying a node, must be in persist mode
-    Node(Node* x, int ts_)
-        : priority(x->priority),
-          ts(ts_),
-          lch(x->lch),
-          rch(x->rch),
+    Node(Node *x, int ts_)
+        : priority(x->priority), ts(ts_), lch(x->lch), rch(x->rch),
           info(x->info) {}
   };
 
-  Node* root;
+  Node *root;
   bool persist;
-  int ts;  // plus version if persistence is wanted
+  int ts; // plus version if persistence is wanted
   Treap(bool persist_ = false) : root(nullptr), persist(persist_), ts(0) {}
 
-  Node* Update(Node* x) {
+  Node *Update(Node *x) {
     x->info.Update();
     return x;
   }
 
-  void PushDown(Node* x) {
+  void PushDown(Node *x) {
     if (x->info.NeedPushDown()) {
       if (persist) {
-        if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
-        if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
+        if (x->lch && x->lch->ts != ts)
+          x->lch = new Node(x->lch, ts);
+        if (x->rch && x->rch->ts != ts)
+          x->rch = new Node(x->rch, ts);
       }
       x->info.PushDown();
     }
   }
 
-  Node* Join(Node* x, Node* y) {
-    if (x == nullptr) return y;
-    if (y == nullptr) return x;
+  Node *Join(Node *x, Node *y) {
+    if (x == nullptr)
+      return y;
+    if (y == nullptr)
+      return x;
     if (persist) {
-      if (x->ts != ts) x = new Node(x, ts);
-      if (y->ts != ts) y = new Node(y, ts);
+      if (x->ts != ts)
+        x = new Node(x, ts);
+      if (y->ts != ts)
+        y = new Node(y, ts);
     }
     PushDown(x);
     PushDown(y);
@@ -78,15 +80,21 @@ struct Treap {
     }
   }
 
-  Node* Join(Node* x, Node* y, Node* z) {
-    if (x == nullptr) return Join(y, z);
-    if (y == nullptr) return Join(x, z);
-    if (z == nullptr) return Join(x, y);
-    assert(y->lch == nullptr && y->rch == nullptr);  // y must be single node
+  Node *Join(Node *x, Node *y, Node *z) {
+    if (x == nullptr)
+      return Join(y, z);
+    if (y == nullptr)
+      return Join(x, z);
+    if (z == nullptr)
+      return Join(x, y);
+    assert(y->lch == nullptr && y->rch == nullptr); // y must be single node
     if (persist) {
-      if (x->ts != ts) x = new Node(x, ts);
-      if (y->ts != ts) y = new Node(y, ts);
-      if (z->ts != ts) z = new Node(z, ts);
+      if (x->ts != ts)
+        x = new Node(x, ts);
+      if (y->ts != ts)
+        y = new Node(y, ts);
+      if (z->ts != ts)
+        z = new Node(z, ts);
     }
     PushDown(x);
     PushDown(z);
@@ -107,19 +115,22 @@ struct Treap {
   // cmp(info) = 0: return this
   // cmp(info) > 0: split rch
   template <typename Cmp>
-  std::tuple<Node*, Node*, Node*> Split(Node* x, Cmp cmp) {
+  std::tuple<Node *, Node *, Node *> Split(Node *x, Cmp cmp) {
     if (x == nullptr) {
       return {nullptr, nullptr, nullptr};
     }
     if (persist) {
-      if (x->ts != ts) x = new Node(x, ts);
+      if (x->ts != ts)
+        x = new Node(x, ts);
     }
     PushDown(x);
     auto d = cmp(x->info);
     if (d == 0) {
       auto l = x->lch, r = x->rch;
-      if (l && l->ts != ts) l = new Node(l, ts);
-      if (r && r->ts != ts) r = new Node(r, ts);
+      if (l && l->ts != ts)
+        l = new Node(l, ts);
+      if (r && r->ts != ts)
+        r = new Node(r, ts);
       x->lch = x->rch = nullptr;
       return {l, Update(x), r};
     } else if (d < 0) {
@@ -133,11 +144,13 @@ struct Treap {
     }
   }
 
-  auto SplitKth(Node* x, int k) {
-    return Split(x, [&k](Info& info) {
+  auto SplitKth(Node *x, int k) {
+    return Split(x, [&k](Info &info) {
       int left = info.Node()->lch ? info.Node()->lch->info.size : 0;
-      if (k <= left) return -1;
-      if (k == left + 1) return 0;
+      if (k <= left)
+        return -1;
+      if (k == left + 1)
+        return 0;
       k -= left + 1;
       return 1;
     });
@@ -145,15 +158,15 @@ struct Treap {
 
   // return the path from root to the node
   // the result is empty if not found
-  template <typename Cmp>
-  std::vector<Node*> Search(Cmp cmp) {
-    std::vector<Node*> res;
-    Node* x = root;
+  template <typename Cmp> std::vector<Node *> Search(Cmp cmp) {
+    std::vector<Node *> res;
+    Node *x = root;
     while (x) {
       PushDown(x);
       res.push_back(x);
       auto d = cmp(x->info);
-      if (d == 0) return res;
+      if (d == 0)
+        return res;
       if (d < 0) {
         x = x->lch;
       } else {
@@ -163,9 +176,9 @@ struct Treap {
     return {};
   }
 
-  template <typename F>
-  void Tranverse(Node* x, F f) {
-    if (!x) return;
+  template <typename F> void Tranverse(Node *x, F f) {
+    if (!x)
+      return;
     PushDown(x);
     Tranverse(x->lch, f);
     f(x->info);
@@ -173,4 +186,4 @@ struct Treap {
   }
 };
 
-#endif  // TREAP_H_
+#endif // TREAP_H_

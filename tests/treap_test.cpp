@@ -6,8 +6,8 @@
 #include "gtest/gtest.h"
 
 struct Info {
-  Treap<Info>::Node* Node() {
-    return reinterpret_cast<Treap<Info>::Node*>(this);
+  Treap<Info>::Node *Node() {
+    return reinterpret_cast<Treap<Info>::Node *>(this);
   }
   int val, size;
   Info(int val_) : val(val_), size(1) {}
@@ -37,9 +37,11 @@ TEST(TreapTest, BasicTest) {
 
   Treap<Info> treap;
   for (int i = 0; i < n; i++) {
-    auto [t1, t2, t3] = treap.Split(treap.root, [&](auto& info) {
-      if (a[i] < info.val) return -1;
-      if (a[i] == info.val) return 0;
+    auto [t1, t2, t3] = treap.Split(treap.root, [&](auto &info) {
+      if (a[i] < info.val)
+        return -1;
+      if (a[i] == info.val)
+        return 0;
       return 1;
     });
     ASSERT_EQ(t2, nullptr);
@@ -48,13 +50,15 @@ TEST(TreapTest, BasicTest) {
   }
   EXPECT_EQ(n, treap.root->info.size);
   std::vector<int> b;
-  treap.Tranverse(treap.root, [&](auto& info) { b.push_back(info.val); });
+  treap.Tranverse(treap.root, [&](auto &info) { b.push_back(info.val); });
   EXPECT_EQ(a, b);
 
   for (int i = 0; i < n; i++) {
-    auto path = treap.Search([&](auto& info) {
-      if (a[i] < info.val) return -1;
-      if (a[i] == info.val) return 0;
+    auto path = treap.Search([&](auto &info) {
+      if (a[i] < info.val)
+        return -1;
+      if (a[i] == info.val)
+        return 0;
       return 1;
     });
     EXPECT_FALSE(path.empty());

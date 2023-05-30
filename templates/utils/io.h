@@ -4,11 +4,10 @@
 #include <iostream>
 #include <string>
 
-template <typename T = std::string>
-T ReadLine() {
+template <typename T = std::string> T ReadLine() {
   T s;
   std::getline(std::cin, s);
   return s;
 }
 
-#endif  // IO_H_
+#endif // IO_H_

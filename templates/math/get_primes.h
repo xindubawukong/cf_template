@@ -16,13 +16,15 @@ std::tuple<std::vector<T>, std::vector<bool>, std::vector<T>> GetPrimes(T n) {
     }
     for (T p : primes) {
       T x = p * i;
-      if (x > n) break;
+      if (x > n)
+        break;
       is_prime[x] = false;
       minp[x] = p;
-      if (i % p == 0) break;
+      if (i % p == 0)
+        break;
     }
   }
   return {primes, is_prime, minp};
 }
 
-#endif  // GET_PRIMES_H_
+#endif // GET_PRIMES_H_

@@ -11,7 +11,7 @@ struct RMQ {
   std::vector<int> log;
   std::vector<std::vector<int>> f;
 
-  RMQ(const Seq& a_, const Less& less_ = {}) : a(a_), less(less_), n(a.size()) {
+  RMQ(const Seq &a_, const Less &less_ = {}) : a(a_), less(less_), n(a.size()) {
     log.resize(n + 1);
     log[1] = 0;
     for (int i = 2, x = 0; i <= n; i++) {
@@ -40,8 +40,8 @@ struct RMQ {
     return MinIndex(f[l][t], f[r - (1 << t) + 1][t]);
   }
 
- private:
+private:
   int MinIndex(int i, int j) { return less(a[i], a[j]) ? i : j; }
 };
 
-#endif  // RANGE_MIN_H_
+#endif // RANGE_MIN_H_

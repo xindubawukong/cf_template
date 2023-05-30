@@ -21,7 +21,7 @@ std::vector<std::vector<int>> GetTree(int n) {
   return go;
 }
 
-auto Bfs(int n, auto& go, int root) {
+auto Bfs(int n, auto &go, int root) {
   std::vector<int> fa(n), size(n), dep(n), que;
   fa[root] = -1;
   dep[root] = 0;
@@ -29,7 +29,8 @@ auto Bfs(int n, auto& go, int root) {
   for (int i = 0; i < que.size(); i++) {
     int u = que[i];
     for (int v : go[u]) {
-      if (v == fa[u]) continue;
+      if (v == fa[u])
+        continue;
       fa[v] = u;
       dep[v] = dep[u] + 1;
       que.push_back(v);
@@ -40,18 +41,21 @@ auto Bfs(int n, auto& go, int root) {
     int u = que[i];
     size[u] = 1;
     for (int v : go[u]) {
-      if (v == fa[u]) continue;
+      if (v == fa[u])
+        continue;
       size[u] += size[v];
     }
   }
   return std::make_tuple(fa, size, dep);
 }
 
-int GetLca(int n, auto& fa, int u, int v) {
+int GetLca(int n, auto &fa, int u, int v) {
   std::vector<bool> vt(n, false);
-  for (int i = u; i != -1; i = fa[i]) vt[i] = true;
+  for (int i = u; i != -1; i = fa[i])
+    vt[i] = true;
   for (int i = v; i != -1; i = fa[i]) {
-    if (vt[i]) return i;
+    if (vt[i])
+      return i;
   }
   assert(false);
 }

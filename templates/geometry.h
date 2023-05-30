@@ -11,50 +11,52 @@
 using real = long double;
 using Point = TPoint<real>;
 using geo = Geometry<Point>;
-template <>
-const real Point::eps = 1e-7;
+template <> const real Point::eps = 1e-7;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
 */
 
-template <typename Point>
-struct Geometry {
+template <typename Point> struct Geometry {
   using real = typename Point::real;
   using point_t = Point;
 
   static constexpr real pi = 3.1415926535897932385;
 
-  static Point Rotate(const Point& v, real alpha) {
+  static Point Rotate(const Point &v, real alpha) {
     real c = cos(alpha);
     real s = sin(alpha);
     return Point(v.x * c - v.y * s, v.x * s + v.y * c);
   }
 
   // 0 - pi
-  static real GetAngle(const Point& u, const Point& v) {
+  static real GetAngle(const Point &u, const Point &v) {
     auto ul = u.Length(), vl = v.Length();
-    if (ul <= Point::eps || vl <= Point::eps) return 0;
+    if (ul <= Point::eps || vl <= Point::eps)
+      return 0;
     real alpha = u * v / ul / vl;
     return acos(alpha);
   }
 
   // [0, 2pi)
-  static real GetAngleFromX(const Point& P) {
+  static real GetAngleFromX(const Point &P) {
     double ans = atan2(P.y, P.x);
-    if (ans < 0.0) ans += 2.0 * pi;
+    if (ans < 0.0)
+      ans += 2.0 * pi;
     return ans;
   }
 
   // 0 - pi
   static real GetTriangularAngle(real a, real b, real c) {
     real t = (a * a + b * b - c * c) / (2 * a * b);
-    if (t < -1) t = -1;
-    if (t > 1) t = 1;
+    if (t < -1)
+      t = -1;
+    if (t > 1)
+      t = 1;
     return acos(t);
   }
 
-  static bool IsTriangularSame(const std::vector<Point>& a,
-                               const std::vector<Point>& b) {
+  static bool IsTriangularSame(const std::vector<Point> &a,
+                               const std::vector<Point> &b) {
     assert(a.size() == 3 && b.size() == 3);
     std::vector<real> p = {Dist(a[0], a[1]), Dist(a[1], a[2]),
                            Dist(a[0], a[2])};
@@ -63,7 +65,8 @@ struct Geometry {
     sort(p.begin(), p.end());
     sort(q.begin(), q.end());
     for (int i = 0; i < 3; i++) {
-      if (abs(p[i] - q[i]) > Point::eps) return false;
+      if (abs(p[i] - q[i]) > Point::eps)
+        return false;
     }
     return true;
   }
@@ -78,16 +81,16 @@ struct Geometry {
     }
   };
 
-  static bool IsPointOnLine(const Point& a, const Line& l) {
+  static bool IsPointOnLine(const Point &a, const Line &l) {
     return abs(l.u % (a - l.p)) <= Point::eps;
   }
-  static Point GetProjectionPoint(const Point& a, const Line& l) {
+  static Point GetProjectionPoint(const Point &a, const Line &l) {
     Point v = a - l.p;
     Point u = l.u / l.u.Length();
     return l.p + (u * v) * u;
   }
 
-  static Point LineToLineIntersection(const Line& l1, const Line& l2) {
+  static Point LineToLineIntersection(const Line &l1, const Line &l2) {
     assert(!(l1.u | l2.u));
     auto t = (l1.p - l2.p) % l1.u / (l2.u % l1.u);
     return l2.p + t * l2.u;
@@ -100,8 +103,9 @@ struct Geometry {
     }
   };
 
-  static bool IsPointOnHalfLine(const Point& a, const HalfLine& l) {
-    if (Dist(l.p, a) <= Point::eps) return true;
+  static bool IsPointOnHalfLine(const Point &a, const HalfLine &l) {
+    if (Dist(l.p, a) <= Point::eps)
+      return true;
     return (a - l.p) | l.u && (a - l.p) * l.u >= -Point::eps;
   }
 
@@ -114,8 +118,9 @@ struct Geometry {
     }
   };
 
-  static bool IsPointOnSegment(const Point& p, const Segment& s) {
-    if (Dist(s.a, p) <= Point::eps || Dist(s.b, p) <= Point::eps) return true;
+  static bool IsPointOnSegment(const Point &p, const Segment &s) {
+    if (Dist(s.a, p) <= Point::eps || Dist(s.b, p) <= Point::eps)
+      return true;
     return (p - s.a) | (s.b - s.a) && (s.a - p) * (s.b - p) < -Point::eps;
   }
 
@@ -130,14 +135,14 @@ struct Geometry {
     }
   };
 
-  static Point Inverse(const Point& o, real r, const Point& a) {
+  static Point Inverse(const Point &o, real r, const Point &a) {
     real da = Dist(o, a);
     assert(da > Point::eps);
     real db = r * r / da;
     return o + (a - o) * db / da;
   }
 
-  static Circle InverseToCircle(const Point& o, real r, const Circle& a) {
+  static Circle InverseToCircle(const Point &o, real r, const Circle &a) {
     real da = Dist(o, a.c);
     assert(da - a.r > Point::eps);
     real rb = 0.5 * ((1 / (da - a.r)) - (1 / (da + a.r))) * r * r;
@@ -147,7 +152,7 @@ struct Geometry {
     return Circle(Point(bx, by), rb);
   }
 
-  static Line InverseToLine(const Point& o, real r, const Circle& a) {
+  static Line InverseToLine(const Point &o, real r, const Circle &a) {
     real da = Dist(o, a.c);
     assert(abs(da - a.r) <= Point::eps);
     Point v = a.c - o;
@@ -156,7 +161,7 @@ struct Geometry {
     return Line(p_, Rotate(v, pi / 2));
   }
 
-  static Circle InverseToCircle(const Point& o, real r, const Line& l) {
+  static Circle InverseToCircle(const Point &o, real r, const Line &l) {
     Point p = GetProjectionPoint(o, l);
     assert(Dist(o, p) > Point::eps);
     Point p_ = Inverse(o, r, p);
@@ -164,13 +169,14 @@ struct Geometry {
   }
 
   struct Polygon {
-    std::vector<Point> ps;  // anti-clockwise preferred
+    std::vector<Point> ps; // anti-clockwise preferred
     bool is_convex;
     Polygon(std::vector<Point> ps_ = {}) : ps(ps_), is_convex(false) {}
     operator std::string() {
       std::string s = "Polygon[";
       for (int i = 0; i < ps.size(); i++) {
-        if (i > 0) s += ", ";
+        if (i > 0)
+          s += ", ";
         s += std::string(ps[i]);
       }
       s += "]";
@@ -194,17 +200,18 @@ struct Geometry {
     }
     bool IsConvex() {
       assert(this->ps.size() >= 2);
-      auto& ps = this->ps;
+      auto &ps = this->ps;
       if (this->IsClockwise()) {
         std::reverse(ps.begin(), ps.end());
       }
       int n = ps.size();
       for (int i = 0; i < n; i++) {
-        auto& a = ps[i];
-        auto& b = ps[(i + 1) % n];
-        auto& c = ps[(i + 2) % n];
+        auto &a = ps[i];
+        auto &b = ps[(i + 1) % n];
+        auto &c = ps[(i + 2) % n];
         auto u = b - a, v = c - a;
-        if (u % v < -Point::eps) return false;
+        if (u % v < -Point::eps)
+          return false;
       }
       return true;
     }
@@ -218,26 +225,30 @@ struct Geometry {
     }
   };
 
-  static bool IsPointInsidePolygon(const Point& p, const Polygon& poly) {
+  static bool IsPointInsidePolygon(const Point &p, const Polygon &poly) {
     if (poly.is_convex) {
-      auto& ps = poly.ps;
-      auto& o = ps[0];
+      auto &ps = poly.ps;
+      auto &o = ps[0];
       Point first = ps[1] - o;
       Point last = ps.back() - o;
       if (first % (p - o) < -Point::eps || last % (p - o) > Point::eps)
         return false;
-      auto it = std::lower_bound(
-          ps.begin(), ps.end(), p,
-          [&](auto& a, auto& b) { return (a - o) % (p - o) >= -Point::eps; });
+      auto it =
+          std::lower_bound(ps.begin(), ps.end(), p, [&](auto &a, auto &b) {
+            return (a - o) % (p - o) >= -Point::eps;
+          });
       int t = it - ps.begin() - 1;
-      auto& a = ps[t];
-      auto& b = ps[(t + 1) % ps.size()];
-      if (IsPointOnSegment(p, {o, a})) return true;
-      if (IsPointOnSegment(p, {o, b})) return true;
-      if (IsPointOnSegment(p, {a, b})) return true;
+      auto &a = ps[t];
+      auto &b = ps[(t + 1) % ps.size()];
+      if (IsPointOnSegment(p, {o, a}))
+        return true;
+      if (IsPointOnSegment(p, {o, b}))
+        return true;
+      if (IsPointOnSegment(p, {a, b}))
+        return true;
       return (p - a) % (b - a) < -Point::eps;
     } else {
-      assert(0);  // TBD
+      assert(0); // TBD
     }
   }
 
@@ -249,7 +260,8 @@ struct Geometry {
       s += "out: " + std::string(out);
       s += ", ins: [";
       for (int i = 0; i < ins.size(); i++) {
-        if (i > 0) s += ", ";
+        if (i > 0)
+          s += ", ";
         s += std::string(ins[i]);
       }
       s += "])";
@@ -257,15 +269,15 @@ struct Geometry {
     }
     real GetArea() const {
       real res = out.GetArea();
-      for (auto& polygon : ins) {
+      for (auto &polygon : ins) {
         res -= polygon.GetArea();
       }
       return res;
     }
     std::vector<Segment> Segments() const {
       std::vector<Segment> segs = out.Segments();
-      for (auto& poly : ins) {
-        for (auto& seg : poly.Segments()) {
+      for (auto &poly : ins) {
+        for (auto &seg : poly.Segments()) {
           segs.push_back(seg);
         }
       }
@@ -273,27 +285,29 @@ struct Geometry {
     }
   };
 
-  static Polygon GetConvex(const std::vector<Point>& ps_) {
+  static Polygon GetConvex(const std::vector<Point> &ps_) {
     auto ps = ps_;
     assert(ps.size() >= 3);
     int n = ps.size();
-    std::sort(ps.begin(), ps.end(), [](auto& a, auto& b) {
-      if (abs(a.y - b.y) > Point::eps) return a.y < b.y;
+    std::sort(ps.begin(), ps.end(), [](auto &a, auto &b) {
+      if (abs(a.y - b.y) > Point::eps)
+        return a.y < b.y;
       return a.x > b.x;
     });
     Point o = ps[0];
-    std::sort(std::next(ps.begin()), ps.end(), [&](auto& a, auto& b) {
+    std::sort(std::next(ps.begin()), ps.end(), [&](auto &a, auto &b) {
       auto t = (a - o) % (b - o);
-      if (abs(t) > Point::eps) return t > 0;
+      if (abs(t) > Point::eps)
+        return t > 0;
       return Dist(a, o) < Dist(b, o);
     });
     ps.push_back(o);
     std::vector<Point> res = {ps[0], ps[1]};
     for (int i = 2; i <= n; i++) {
-      auto& c = ps[i];
+      auto &c = ps[i];
       while (res.size() >= 2) {
-        auto& a = *std::next(res.rbegin());
-        auto& b = *res.rbegin();
+        auto &a = *std::next(res.rbegin());
+        auto &b = *res.rbegin();
         auto u = b - a, v = c - b;
         auto t = u % v;
         if (t < -Point::eps || (abs(t) <= Point::eps && u * v >= -Point::eps)) {
@@ -312,7 +326,7 @@ struct Geometry {
   }
 
   // Minkowski sum for two convex
-  static Polygon Minkowski(const Polygon& a, const Polygon& b) {
+  static Polygon Minkowski(const Polygon &a, const Polygon &b) {
     assert(a.is_convex && b.is_convex);
     int n = a.ps.size(), m = b.ps.size();
     std::vector<Point> aa(n), bb(m);
@@ -325,10 +339,10 @@ struct Geometry {
     std::vector<Point> all;
     std::merge(aa.begin(), aa.end(), bb.begin(), bb.end(),
                std::back_inserter(all),
-               [](auto& u, auto& v) { return u % v > Point::eps; });
+               [](auto &u, auto &v) { return u % v > Point::eps; });
     std::vector<Point> res;
     res.push_back(a.ps[0] + b.ps[0]);
-    for (auto& u : all) {
+    for (auto &u : all) {
       auto p = res.back() + u;
       res.push_back(p);
     }
@@ -338,4 +352,4 @@ struct Geometry {
   }
 };
 
-#endif  // GEOMETRY_H_
+#endif // GEOMETRY_H_
