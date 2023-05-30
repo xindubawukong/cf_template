@@ -119,21 +119,19 @@ struct HeavyLightDecomposition {
     return pos[u] <= pos[v] && pos[v] <= pos[u] + size[u] - 1;
   }
 
-  int RootedFather(int root, int u) {
-    assert(0 <= root && root < n && 0 <= u && u < n);
-    if (root == u) return -1;
-    if (!IsAncester(u, root)) return fa[u];
-    int d = dep[root] - dep[u] - 1;
-    return Jump(root, d);
+  int RootedFather(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
+    if (u == v) return -1;
+    if (!IsAncester(v, u)) return fa[v];
+    int d = dep[u] - dep[v] - 1;
+    return Jump(u, d);
   }
 
-  int RootedSize(int root, int u) {
-    assert(0 <= root && root < n && 0 <= u && u < n);
-    if (root == u) return n;
-    if (!IsAncester(u, root)) {
-      return size[u];
-    }
-    return n - size[RootedFather(root, u)];
+  int RootedSize(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
+    if (u == v) return n;
+    if (!IsAncester(v, u)) return size[v];
+    return n - size[RootedFather(u, v)];
   }
 
   int RootedLca(int a, int b, int c) {
