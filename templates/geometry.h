@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <random>
 #include <string>
 
@@ -21,6 +20,7 @@ template <typename Point>
 struct Geometry {
   using real = typename Point::real;
   using point_t = Point;
+  static_assert(Point::dim::value == 2);
 
   static constexpr real pi = 3.1415926535897932385;
 
@@ -311,7 +311,7 @@ struct Geometry {
     return poly;
   }
 
-  // Minkowski sum for two convex
+  // Minkowski sum for two convex is also a convex
   static Polygon Minkowski(const Polygon &a, const Polygon &b) {
     assert(a.is_convex && b.is_convex);
     int n = a.ps.size(), m = b.ps.size();

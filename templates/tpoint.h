@@ -76,7 +76,7 @@ struct TPoint {
 template <typename T>
 struct TPoint3 {
   using real = T;
-  using dim = std::integral_constant<int, 2>;
+  using dim = std::integral_constant<int, 3>;
   static const T eps;
   T x, y, z;
   TPoint3(T x_ = 0, T y_ = 0, T z_ = 0) : x(x_), y(y_), z(z_) {}
