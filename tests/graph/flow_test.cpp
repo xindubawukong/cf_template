@@ -1,9 +1,9 @@
-#include "flow.h"
+#include "graph/flow.h"
 
 #include <array>
 #include <vector>
 
-#include "graph.h"
+#include "graph/graph.h"
 #include "gtest/gtest.h"
 
 TEST(FlowTest, MatchingTest) {

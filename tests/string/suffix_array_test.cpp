@@ -1,12 +1,12 @@
-#include "suffix_array.h"
+#include "string/suffix_array.h"
 
 #include <random>
 #include <string>
 
 #include "gtest/gtest.h"
 
-std::mt19937
-    rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+std::mt19937 rng(
+    std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
 TEST(SuffixArrayTest, PrefixDoublingTest) {
   int n = rng() % 500 + 200;

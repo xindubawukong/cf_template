@@ -1,9 +1,9 @@
-#include "dijkstra.h"
+#include "graph/dijkstra.h"
 
 #include <array>
 #include <vector>
 
-#include "graph.h"
+#include "graph/graph.h"
 #include "gtest/gtest.h"
 
 struct Edge {

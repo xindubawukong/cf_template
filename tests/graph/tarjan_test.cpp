@@ -1,6 +1,6 @@
-#include "tarjan.h"
+#include "graph/tarjan.h"
 
-#include "graph.h"
+#include "graph/graph.h"
 #include "gtest/gtest.h"
 
 TEST(TarjanTest, BasicTest) {

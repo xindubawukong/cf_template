@@ -1,11 +1,12 @@
 #include "geometry.h"
 
-#include "tpoint.h"
 #include "gtest/gtest.h"
+#include "tpoint.h"
 
 using Point = TPoint<double>;
 using geo = Geometry<Point>;
-template <> const double Point::eps = 1e-6;
+template <>
+const double Point::eps = 1e-6;
 
 TEST(GeometryTest, BasicTest) {
   Point u(1, 0);

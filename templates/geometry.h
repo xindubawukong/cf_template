@@ -11,7 +11,8 @@
 using real = long double;
 using Point = TPoint<real>;
 using geo = Geometry<Point>;
-template <> const real Point::eps = 1e-7;
+template <>
+const real Point::eps = 1e-7;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
 */

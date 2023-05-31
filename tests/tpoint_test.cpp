@@ -2,8 +2,10 @@
 
 #include "gtest/gtest.h"
 
-template <> const int TPoint<int>::eps = 0;
-template <> const double TPoint<double>::eps = 1e-6;
+template <>
+const int TPoint<int>::eps = 0;
+template <>
+const double TPoint<double>::eps = 1e-6;
 
 TEST(TPointTest, IntPointTest) {
   using Point = TPoint<int>;

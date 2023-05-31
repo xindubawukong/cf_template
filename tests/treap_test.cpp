@@ -38,10 +38,8 @@ TEST(TreapTest, BasicTest) {
   Treap<Info> treap;
   for (int i = 0; i < n; i++) {
     auto [t1, t2, t3] = treap.Split(treap.root, [&](auto &info) {
-      if (a[i] < info.val)
-        return -1;
-      if (a[i] == info.val)
-        return 0;
+      if (a[i] < info.val) return -1;
+      if (a[i] == info.val) return 0;
       return 1;
     });
     ASSERT_EQ(t2, nullptr);
@@ -55,10 +53,8 @@ TEST(TreapTest, BasicTest) {
 
   for (int i = 0; i < n; i++) {
     auto path = treap.Search([&](auto &info) {
-      if (a[i] < info.val)
-        return -1;
-      if (a[i] == info.val)
-        return 0;
+      if (a[i] < info.val) return -1;
+      if (a[i] == info.val) return 0;
       return 1;
     });
     EXPECT_FALSE(path.empty());

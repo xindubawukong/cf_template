@@ -1,4 +1,4 @@
-#include "get_primes.h"
+#include "math/get_primes.h"
 
 #include <vector>
 
