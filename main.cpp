@@ -58,7 +58,7 @@ using uint64 = unsigned long long;
 
 void Main() {}
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #ifdef LOCAL

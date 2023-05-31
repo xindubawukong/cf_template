@@ -6,7 +6,8 @@
 #include <stack>
 #include <vector>
 
-template <typename Graph> struct TarjanDirected {
+template <typename Graph>
+struct TarjanDirected {
   static_assert(Graph::is_directed::value);
   std::vector<int> dfn, low, belong;
   std::vector<bool> visit;
@@ -38,8 +39,7 @@ template <typename Graph> struct TarjanDirected {
           int v = sta.top();
           belong[v] = scc_cnt;
           sta.pop();
-          if (v == u)
-            break;
+          if (v == u) break;
         }
         scc_cnt++;
       }
@@ -52,4 +52,4 @@ template <typename Graph> struct TarjanDirected {
   }
 };
 
-#endif // TARJAN_H_
+#endif  // TARJAN_H_

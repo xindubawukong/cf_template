@@ -5,7 +5,8 @@
 #include <functional>
 #include <vector>
 
-template <typename T = int> struct HeavyLightDecomposition {
+template <typename T = int>
+struct HeavyLightDecomposition {
   int n, root;
   std::vector<std::vector<int>> go;
   std::vector<int> size, dep, pos, which, heavy, fa, up;
@@ -39,8 +40,7 @@ template <typename T = int> struct HeavyLightDecomposition {
       heavy[u] = -1;
       size[u] = 1;
       for (int v : go[u]) {
-        if (v == fa[u])
-          continue;
+        if (v == fa[u]) continue;
         fa[v] = u;
         dep[v] = dep[u] + 1;
         Dfs1(v);
@@ -59,13 +59,11 @@ template <typename T = int> struct HeavyLightDecomposition {
       pos[u] = cnt;
       which[cnt] = u;
       cnt++;
-      if (heavy[u] == -1)
-        return;
+      if (heavy[u] == -1) return;
       up[heavy[u]] = up[u];
       Dfs2(heavy[u]);
       for (int v : go[u]) {
-        if (v == fa[u] || v == heavy[u])
-          continue;
+        if (v == fa[u] || v == heavy[u]) continue;
         up[v] = v;
         Dfs2(v);
       }
@@ -80,13 +78,11 @@ template <typename T = int> struct HeavyLightDecomposition {
     assert(0 <= u && u < n && 0 <= v && v < n);
     std::vector<std::pair<int, int>> intervals;
     while (up[u] != up[v]) {
-      if (dep[up[u]] < dep[up[v]])
-        std::swap(u, v);
+      if (dep[up[u]] < dep[up[v]]) std::swap(u, v);
       intervals.push_back({pos[up[u]], pos[u]});
       u = fa[up[u]];
     }
-    if (dep[u] < dep[v])
-      std::swap(u, v);
+    if (dep[u] < dep[v]) std::swap(u, v);
     intervals.push_back({pos[v], pos[u]});
     return intervals;
   }
@@ -98,12 +94,10 @@ template <typename T = int> struct HeavyLightDecomposition {
   int Lca(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
     while (up[u] != up[v]) {
-      if (dep[up[u]] < dep[up[v]])
-        std::swap(u, v);
+      if (dep[up[u]] < dep[up[v]]) std::swap(u, v);
       u = fa[up[u]];
     }
-    if (dep[u] < dep[v])
-      std::swap(u, v);
+    if (dep[u] < dep[v]) std::swap(u, v);
     return v;
   };
 
@@ -114,11 +108,9 @@ template <typename T = int> struct HeavyLightDecomposition {
 
   int Jump(int u, int k) {
     assert(0 <= u && u < n && k >= 0);
-    if (dep[u] < k)
-      return -1;
+    if (dep[u] < k) return -1;
     int d = dep[u] - k;
-    while (dep[up[u]] > d)
-      u = fa[up[u]];
+    while (dep[up[u]] > d) u = fa[up[u]];
     return which[pos[u] - dep[u] + d];
   }
 
@@ -129,20 +121,16 @@ template <typename T = int> struct HeavyLightDecomposition {
 
   int RootedFather(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
-    if (u == v)
-      return -1;
-    if (!IsAncester(v, u))
-      return fa[v];
+    if (u == v) return -1;
+    if (!IsAncester(v, u)) return fa[v];
     int d = dep[u] - dep[v] - 1;
     return Jump(u, d);
   }
 
   int RootedSize(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
-    if (u == v)
-      return n;
-    if (!IsAncester(v, u))
-      return size[v];
+    if (u == v) return n;
+    if (!IsAncester(v, u)) return size[v];
     return n - size[RootedFather(u, v)];
   }
 
@@ -152,4 +140,4 @@ template <typename T = int> struct HeavyLightDecomposition {
   }
 };
 
-#endif // HEAVY_LIGHT_DECOMPOSITION_H_
+#endif  // HEAVY_LIGHT_DECOMPOSITION_H_

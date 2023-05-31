@@ -21,14 +21,12 @@ auto Dijkstra(const Graph &g, int s, F f) {
   while (!q.empty()) {
     int u = q.top();
     q.pop();
-    if (visit[u])
-      continue;
+    if (visit[u]) continue;
     visit[u] = true;
     for (auto eid : g.go[u]) {
       auto &e = g.edges[eid];
       int v = e.v;
-      if (visit[v])
-        continue;
+      if (visit[v]) continue;
       dist_t d = dist[u] + f(e);
       if (d < dist[v]) {
         dist[v] = d;
@@ -40,4 +38,4 @@ auto Dijkstra(const Graph &g, int s, F f) {
   return std::make_tuple(dist, from, visit);
 }
 
-#endif // DIJKSTRA_H_
+#endif  // DIJKSTRA_H_

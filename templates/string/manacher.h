@@ -4,15 +4,15 @@
 #include <string>
 #include <vector>
 
-template <typename Seq> std::vector<int> Manacher(const Seq &s) {
+template <typename Seq>
+std::vector<int> Manacher(const Seq &s) {
   std::vector<int> t;
   std::vector<int> p;
   t.reserve(s.size() * 2 + 1);
   t.push_back(-1);
   for (int i = 0; i < s.size(); i++) {
     t.push_back(s[i]);
-    if (i < s.size() - 1)
-      t.push_back(-2);
+    if (i < s.size() - 1) t.push_back(-2);
   }
   t.push_back(-3);
   p.resize(t.size());
@@ -24,8 +24,7 @@ template <typename Seq> std::vector<int> Manacher(const Seq &s) {
     } else {
       p[i] = 0;
     }
-    while (t[i - p[i] - 1] == t[i + p[i] + 1])
-      p[i]++;
+    while (t[i - p[i] - 1] == t[i + p[i] + 1]) p[i]++;
     if (i + p[i] > right) {
       now = i;
       right = i + p[i];
@@ -41,4 +40,4 @@ template <typename Seq> std::vector<int> Manacher(const Seq &s) {
   return t;
 }
 
-#endif // MANACHER_H_
+#endif  // MANACHER_H_

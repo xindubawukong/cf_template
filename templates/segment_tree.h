@@ -17,7 +17,8 @@ struct Info {
 };
 */
 
-template <typename Info> struct SegmentTree {
+template <typename Info>
+struct SegmentTree {
   struct Node {
     Info info;
     int l, r, ts;
@@ -31,7 +32,7 @@ template <typename Info> struct SegmentTree {
   int l_range, r_range;
   Node *root;
   bool persist;
-  int ts; // plus ts if persistence is wanted
+  int ts;  // plus ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
       : l_range(l), r_range(r), root(nullptr), persist(persist_), ts(0) {
     assert(l_range <= r_range);
@@ -40,16 +41,15 @@ template <typename Info> struct SegmentTree {
   void PushDown(Node *x) {
     if (x->info.NeedPushDown()) {
       if (persist) {
-        if (x->lch && x->lch->ts != ts)
-          x->lch = new Node(x->lch, ts);
-        if (x->rch && x->rch->ts != ts)
-          x->rch = new Node(x->rch, ts);
+        if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
+        if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
       }
       x->info.PushDown();
     }
   }
 
-  template <typename F> Node *Modify(int from, int to, F f) {
+  template <typename F>
+  Node *Modify(int from, int to, F f) {
     assert(l_range <= from && from <= to && to <= r_range);
     root = Modify(root, l_range, r_range, from, to, f);
     return root;
@@ -60,8 +60,7 @@ template <typename Info> struct SegmentTree {
     std::vector<Node *> all;
     std::function<void(Node *, int, int, int, int)> GetAllNodes =
         [&](Node *x, int l, int r, int from, int to) {
-          if (!x)
-            return;
+          if (!x) return;
           if (from <= l && r <= to) {
             all.push_back(x);
             return;
@@ -79,7 +78,8 @@ template <typename Info> struct SegmentTree {
     return all;
   }
 
-  template <typename F> int GetFirstAfter(int p, F f) {
+  template <typename F>
+  int GetFirstAfter(int p, F f) {
     assert(l_range <= p && p <= r_range);
     auto nodes = GetAllNodes(p, r_range);
     for (auto x : nodes) {
@@ -99,7 +99,8 @@ template <typename Info> struct SegmentTree {
     return r_range + 1;
   }
 
-  template <typename F> int GetLastBefore(int p, F f) {
+  template <typename F>
+  int GetLastBefore(int p, F f) {
     assert(l_range <= p && p <= r_range);
     auto nodes = GetAllNodes(l_range, p);
     reverse(nodes.begin(), nodes.end());
@@ -120,9 +121,9 @@ template <typename Info> struct SegmentTree {
     return l_range - 1;
   }
 
-  template <typename F> void TranverseLeaf(Node *x, F f) {
-    if (!x)
-      return;
+  template <typename F>
+  void TranverseLeaf(Node *x, F f) {
+    if (!x) return;
     if (x->l == x->r) {
       f(x->info);
       return;
@@ -131,7 +132,8 @@ template <typename Info> struct SegmentTree {
     TranverseLeaf(x->rch, f);
   };
 
-  template <typename F> static Node *BuildTree(int l, int r, F f) {
+  template <typename F>
+  static Node *BuildTree(int l, int r, F f) {
     Node *x = new Node(l, r);
     if (l == r) {
       f(l, x->info);
@@ -144,7 +146,7 @@ template <typename Info> struct SegmentTree {
     return x;
   }
 
-private:
+ private:
   template <typename F>
   Node *Modify(Node *x, int l, int r, int from, int to, F f) {
     if (!x) {
@@ -169,4 +171,4 @@ private:
   }
 };
 
-#endif // SEGMENT_TREE_H_
+#endif  // SEGMENT_TREE_H_

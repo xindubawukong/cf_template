@@ -38,4 +38,4 @@ struct TwoSat {
   }
 };
 
-#endif // TWO_SAT_H_
+#endif  // TWO_SAT_H_

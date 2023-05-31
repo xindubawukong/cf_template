@@ -40,8 +40,8 @@ struct RMQ {
     return MinIndex(f[l][t], f[r - (1 << t) + 1][t]);
   }
 
-private:
+ private:
   int MinIndex(int i, int j) { return less(a[i], a[j]) ? i : j; }
 };
 
-#endif // RANGE_MIN_H_
+#endif  // RANGE_MIN_H_

@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-template <int P0, int M0, int P1, int M1> struct DoubleHashingHelper {
+template <int P0, int M0, int P1, int M1>
+struct DoubleHashingHelper {
   struct HashString {
     DoubleHashingHelper *helper;
     int n;
@@ -57,4 +58,4 @@ template <int P0, int M0, int P1, int M1> struct DoubleHashingHelper {
   }
 };
 
-#endif // HASH_STRING_H_
+#endif  // HASH_STRING_H_

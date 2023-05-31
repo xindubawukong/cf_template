@@ -5,7 +5,8 @@
 #include <string>
 #include <type_traits>
 
-template <typename T> struct TPoint {
+template <typename T>
+struct TPoint {
   using real = T;
   using dim = std::integral_constant<int, 2>;
   static const T eps;
@@ -56,8 +57,7 @@ template <typename T> struct TPoint {
   T operator%(const TPoint<T> &b) const { return x * b.y - y * b.x; }
   bool operator|(const TPoint<T> &b) const { return abs((*this) % b) <= eps; }
   bool operator<(const TPoint<T> &b) const {
-    if (x != b.x)
-      return x < b.x;
+    if (x != b.x) return x < b.x;
     return y < b.y;
   }
   operator std::string() const {
@@ -73,7 +73,8 @@ template <typename T> struct TPoint {
   }
 };
 
-template <typename T> struct TPoint3 {
+template <typename T>
+struct TPoint3 {
   using real = T;
   using dim = std::integral_constant<int, 2>;
   static const T eps;
@@ -127,10 +128,8 @@ template <typename T> struct TPoint3 {
     return abs(((*this) % b).Length()) <= eps;
   }
   bool operator<(const TPoint3<T> &b) const {
-    if (x != b.x)
-      return x < b.x;
-    if (y != b.y)
-      return y < b.y;
+    if (x != b.x) return x < b.x;
+    if (y != b.y) return y < b.y;
     return z < b.z;
   }
   operator std::string() const {
@@ -147,4 +146,4 @@ template <typename T> struct TPoint3 {
   }
 };
 
-#endif // TPOINT_H_
+#endif  // TPOINT_H_

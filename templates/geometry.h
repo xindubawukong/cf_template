@@ -16,7 +16,8 @@ template <> const real Point::eps = 1e-7;
 // cout << fixed << setprecision(5) << 1 << '\n';
 */
 
-template <typename Point> struct Geometry {
+template <typename Point>
+struct Geometry {
   using real = typename Point::real;
   using point_t = Point;
 
@@ -31,8 +32,7 @@ template <typename Point> struct Geometry {
   // 0 - pi
   static real GetAngle(const Point &u, const Point &v) {
     auto ul = u.Length(), vl = v.Length();
-    if (ul <= Point::eps || vl <= Point::eps)
-      return 0;
+    if (ul <= Point::eps || vl <= Point::eps) return 0;
     real alpha = u * v / ul / vl;
     return acos(alpha);
   }
@@ -40,18 +40,15 @@ template <typename Point> struct Geometry {
   // [0, 2pi)
   static real GetAngleFromX(const Point &P) {
     double ans = atan2(P.y, P.x);
-    if (ans < 0.0)
-      ans += 2.0 * pi;
+    if (ans < 0.0) ans += 2.0 * pi;
     return ans;
   }
 
   // 0 - pi
   static real GetTriangularAngle(real a, real b, real c) {
     real t = (a * a + b * b - c * c) / (2 * a * b);
-    if (t < -1)
-      t = -1;
-    if (t > 1)
-      t = 1;
+    if (t < -1) t = -1;
+    if (t > 1) t = 1;
     return acos(t);
   }
 
@@ -65,8 +62,7 @@ template <typename Point> struct Geometry {
     sort(p.begin(), p.end());
     sort(q.begin(), q.end());
     for (int i = 0; i < 3; i++) {
-      if (abs(p[i] - q[i]) > Point::eps)
-        return false;
+      if (abs(p[i] - q[i]) > Point::eps) return false;
     }
     return true;
   }
@@ -104,8 +100,7 @@ template <typename Point> struct Geometry {
   };
 
   static bool IsPointOnHalfLine(const Point &a, const HalfLine &l) {
-    if (Dist(l.p, a) <= Point::eps)
-      return true;
+    if (Dist(l.p, a) <= Point::eps) return true;
     return (a - l.p) | l.u && (a - l.p) * l.u >= -Point::eps;
   }
 
@@ -119,8 +114,7 @@ template <typename Point> struct Geometry {
   };
 
   static bool IsPointOnSegment(const Point &p, const Segment &s) {
-    if (Dist(s.a, p) <= Point::eps || Dist(s.b, p) <= Point::eps)
-      return true;
+    if (Dist(s.a, p) <= Point::eps || Dist(s.b, p) <= Point::eps) return true;
     return (p - s.a) | (s.b - s.a) && (s.a - p) * (s.b - p) < -Point::eps;
   }
 
@@ -169,14 +163,13 @@ template <typename Point> struct Geometry {
   }
 
   struct Polygon {
-    std::vector<Point> ps; // anti-clockwise preferred
+    std::vector<Point> ps;  // anti-clockwise preferred
     bool is_convex;
     Polygon(std::vector<Point> ps_ = {}) : ps(ps_), is_convex(false) {}
     operator std::string() {
       std::string s = "Polygon[";
       for (int i = 0; i < ps.size(); i++) {
-        if (i > 0)
-          s += ", ";
+        if (i > 0) s += ", ";
         s += std::string(ps[i]);
       }
       s += "]";
@@ -210,8 +203,7 @@ template <typename Point> struct Geometry {
         auto &b = ps[(i + 1) % n];
         auto &c = ps[(i + 2) % n];
         auto u = b - a, v = c - a;
-        if (u % v < -Point::eps)
-          return false;
+        if (u % v < -Point::eps) return false;
       }
       return true;
     }
@@ -233,22 +225,18 @@ template <typename Point> struct Geometry {
       Point last = ps.back() - o;
       if (first % (p - o) < -Point::eps || last % (p - o) > Point::eps)
         return false;
-      auto it =
-          std::lower_bound(ps.begin(), ps.end(), p, [&](auto &a, auto &b) {
-            return (a - o) % (p - o) >= -Point::eps;
-          });
+      auto it = std::lower_bound(
+          ps.begin(), ps.end(), p,
+          [&](auto &a, auto &b) { return (a - o) % (p - o) >= -Point::eps; });
       int t = it - ps.begin() - 1;
       auto &a = ps[t];
       auto &b = ps[(t + 1) % ps.size()];
-      if (IsPointOnSegment(p, {o, a}))
-        return true;
-      if (IsPointOnSegment(p, {o, b}))
-        return true;
-      if (IsPointOnSegment(p, {a, b}))
-        return true;
+      if (IsPointOnSegment(p, {o, a})) return true;
+      if (IsPointOnSegment(p, {o, b})) return true;
+      if (IsPointOnSegment(p, {a, b})) return true;
       return (p - a) % (b - a) < -Point::eps;
     } else {
-      assert(0); // TBD
+      assert(0);  // TBD
     }
   }
 
@@ -260,8 +248,7 @@ template <typename Point> struct Geometry {
       s += "out: " + std::string(out);
       s += ", ins: [";
       for (int i = 0; i < ins.size(); i++) {
-        if (i > 0)
-          s += ", ";
+        if (i > 0) s += ", ";
         s += std::string(ins[i]);
       }
       s += "])";
@@ -290,15 +277,13 @@ template <typename Point> struct Geometry {
     assert(ps.size() >= 3);
     int n = ps.size();
     std::sort(ps.begin(), ps.end(), [](auto &a, auto &b) {
-      if (abs(a.y - b.y) > Point::eps)
-        return a.y < b.y;
+      if (abs(a.y - b.y) > Point::eps) return a.y < b.y;
       return a.x > b.x;
     });
     Point o = ps[0];
     std::sort(std::next(ps.begin()), ps.end(), [&](auto &a, auto &b) {
       auto t = (a - o) % (b - o);
-      if (abs(t) > Point::eps)
-        return t > 0;
+      if (abs(t) > Point::eps) return t > 0;
       return Dist(a, o) < Dist(b, o);
     });
     ps.push_back(o);
@@ -352,4 +337,4 @@ template <typename Point> struct Geometry {
   }
 };
 
-#endif // GEOMETRY_H_
+#endif  // GEOMETRY_H_

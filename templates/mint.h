@@ -5,18 +5,19 @@
 #include <iostream>
 #include <vector>
 
-template <typename T> T QuickPower(T a, long long b) {
+template <typename T>
+T QuickPower(T a, long long b) {
   T res = 1;
   while (b) {
-    if (b & 1)
-      res = res * a;
+    if (b & 1) res = res * a;
     a *= a;
     b = b >> 1;
   }
   return res;
 }
 
-template <int P> struct MInt {
+template <int P>
+struct MInt {
   static_assert(P > 0);
   int x;
   MInt() : x(0) {}
@@ -83,7 +84,8 @@ template <int P> struct MInt {
   }
 };
 
-template <typename mint> struct Combination {
+template <typename mint>
+struct Combination {
   int maxn;
   std::vector<mint> fact, factinv, inv;
   Combination(int maxn_) : maxn(maxn_) {
@@ -102,10 +104,9 @@ template <typename mint> struct Combination {
   }
 
   mint Comb(int n, int m) {
-    if (m > n || m < 0)
-      return 0;
+    if (m > n || m < 0) return 0;
     return fact[n] * factinv[n - m] * factinv[m];
   }
 };
 
-#endif // MINT_H_
+#endif  // MINT_H_

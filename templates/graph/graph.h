@@ -13,7 +13,8 @@ struct EdgeBase {
   }
 };
 
-template <typename Edge> struct Graph {
+template <typename Edge>
+struct Graph {
   using edge_t = Edge;
   int n;
   std::vector<Edge> edges;
@@ -22,7 +23,8 @@ template <typename Edge> struct Graph {
   virtual void AddEdge(Edge e) = 0;
 };
 
-template <typename Edge> struct UndirectedGraph : public Graph<Edge> {
+template <typename Edge>
+struct UndirectedGraph : public Graph<Edge> {
   using is_directed = std::bool_constant<false>;
   UndirectedGraph(int n_) : Graph<Edge>(n_) {}
   virtual void AddEdge(Edge e) {
@@ -33,7 +35,8 @@ template <typename Edge> struct UndirectedGraph : public Graph<Edge> {
   }
 };
 
-template <typename Edge> struct DirectedGraph : public Graph<Edge> {
+template <typename Edge>
+struct DirectedGraph : public Graph<Edge> {
   using is_directed = std::bool_constant<true>;
   DirectedGraph(int n_) : Graph<Edge>(n_) {}
   virtual void AddEdge(Edge e) {
@@ -43,7 +46,8 @@ template <typename Edge> struct DirectedGraph : public Graph<Edge> {
   }
 };
 
-template <typename Edge> struct FlowGraph : public DirectedGraph<Edge> {
+template <typename Edge>
+struct FlowGraph : public DirectedGraph<Edge> {
   using flow_t = decltype(std::declval<Edge>().cap);
   FlowGraph(int n_) : DirectedGraph<Edge>(n_) {}
   static const flow_t eps = (flow_t)1e-7;
@@ -63,4 +67,4 @@ template <typename Edge> struct FlowGraph : public DirectedGraph<Edge> {
   }
 };
 
-#endif // GRAPH_H_
+#endif  // GRAPH_H_
