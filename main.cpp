@@ -35,8 +35,6 @@
 
 #ifdef LOCAL
 #include "debug.h"
-#include "parlay/internal/get_time.h"
-using timer = parlay::internal::timer;
 #else
 #define debug(...) 0
 #endif
