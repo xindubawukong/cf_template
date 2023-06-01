@@ -15,7 +15,7 @@ TEST(SuffixArrayTest, PrefixDoublingTest) {
   for (int i = 0; i < n; i++) {
     s[i] = 'a' + rng() % 3;
   }
-  auto [sa, rank, lcp] = SuffixArrayPrefixDoubling(s);
+  auto [sa, rank, lcp] = SuffixArray(s);
   std::vector<std::string> a(n);
   for (int i = 0; i < n; i++) {
     a[i] = s.substr(i, n - i);
