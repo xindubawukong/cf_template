@@ -32,7 +32,7 @@ struct Treap {
       priority = rng();
     }
     // when copying a node, must be in persist mode
-    Node(Node *x, int ts_)
+    Node(Node* x, int ts_)
         : priority(x->priority),
           ts(ts_),
           lch(x->lch),
@@ -40,17 +40,17 @@ struct Treap {
           info(x->info) {}
   };
 
-  Node *root;
+  Node* root;
   bool persist;
   int ts;  // plus version if persistence is wanted
   Treap(bool persist_ = false) : root(nullptr), persist(persist_), ts(0) {}
 
-  Node *Update(Node *x) {
+  Node* Update(Node* x) {
     x->info.Update();
     return x;
   }
 
-  void PushDown(Node *x) {
+  void PushDown(Node* x) {
     if (x->info.NeedPushDown()) {
       if (persist) {
         if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
@@ -60,7 +60,7 @@ struct Treap {
     }
   }
 
-  Node *Join(Node *x, Node *y) {
+  Node* Join(Node* x, Node* y) {
     if (x == nullptr) return y;
     if (y == nullptr) return x;
     if (persist) {
@@ -78,7 +78,7 @@ struct Treap {
     }
   }
 
-  Node *Join(Node *x, Node *y, Node *z) {
+  Node* Join(Node* x, Node* y, Node* z) {
     if (x == nullptr) return Join(y, z);
     if (y == nullptr) return Join(x, z);
     if (z == nullptr) return Join(x, y);
@@ -107,7 +107,7 @@ struct Treap {
   // cmp(info) = 0: return this
   // cmp(info) > 0: split rch
   template <typename Cmp>
-  std::tuple<Node *, Node *, Node *> Split(Node *x, Cmp cmp) {
+  std::tuple<Node*, Node*, Node*> Split(Node* x, Cmp cmp) {
     if (x == nullptr) {
       return {nullptr, nullptr, nullptr};
     }
@@ -133,8 +133,8 @@ struct Treap {
     }
   }
 
-  auto SplitKth(Node *x, int k) {
-    return Split(x, [&k](Info &info) {
+  auto SplitKth(Node* x, int k) {
+    return Split(x, [&k](Info& info) {
       int left = info.Node()->lch ? info.Node()->lch->info.size : 0;
       if (k <= left) return -1;
       if (k == left + 1) return 0;
@@ -146,9 +146,9 @@ struct Treap {
   // return the path from root to the node
   // the result is empty if not found
   template <typename Cmp>
-  std::vector<Node *> Search(Cmp cmp) {
-    std::vector<Node *> res;
-    Node *x = root;
+  std::vector<Node*> Search(Cmp cmp) {
+    std::vector<Node*> res;
+    Node* x = root;
     while (x) {
       PushDown(x);
       res.push_back(x);
@@ -164,7 +164,7 @@ struct Treap {
   }
 
   template <typename F>
-  void Tranverse(Node *x, F f) {
+  void Tranverse(Node* x, F f) {
     if (!x) return;
     PushDown(x);
     Tranverse(x->lch, f);

@@ -25,12 +25,12 @@ struct SegmentTree {
     Node *lch, *rch;
     Node(int l_, int r_, int ts_ = 0)
         : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {}
-    Node(Node *x, int ts_)
+    Node(Node* x, int ts_)
         : l(x->l), r(x->r), ts(ts_), lch(x->lch), rch(x->rch), info(x->info) {}
   };
 
   int l_range, r_range;
-  Node *root;
+  Node* root;
   bool persist;
   int ts;  // plus ts if persistence is wanted
   SegmentTree(int l, int r, bool persist_ = false)
@@ -38,7 +38,7 @@ struct SegmentTree {
     assert(l_range <= r_range);
   }
 
-  void PushDown(Node *x) {
+  void PushDown(Node* x) {
     if (x->info.NeedPushDown()) {
       if (persist) {
         if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
@@ -49,17 +49,17 @@ struct SegmentTree {
   }
 
   template <typename F>
-  Node *Modify(int from, int to, F f) {
+  Node* Modify(int from, int to, F f) {
     assert(l_range <= from && from <= to && to <= r_range);
     root = Modify(root, l_range, r_range, from, to, f);
     return root;
   }
 
-  std::vector<Node *> GetAllNodes(int from, int to) {
+  std::vector<Node*> GetAllNodes(int from, int to) {
     assert(l_range <= from && from <= to && to <= r_range);
-    std::vector<Node *> all;
-    std::function<void(Node *, int, int, int, int)> GetAllNodes =
-        [&](Node *x, int l, int r, int from, int to) {
+    std::vector<Node*> all;
+    std::function<void(Node*, int, int, int, int)> GetAllNodes =
+        [&](Node* x, int l, int r, int from, int to) {
           if (!x) return;
           if (from <= l && r <= to) {
             all.push_back(x);
@@ -122,7 +122,7 @@ struct SegmentTree {
   }
 
   template <typename F>
-  void TranverseLeaf(Node *x, F f) {
+  void TranverseLeaf(Node* x, F f) {
     if (!x) return;
     if (x->l == x->r) {
       f(x->info);
@@ -133,8 +133,16 @@ struct SegmentTree {
   };
 
   template <typename F>
-  static Node *BuildTree(int l, int r, F f) {
-    Node *x = new Node(l, r);
+  void TranverseAllNode(Node* x, F f) {
+    if (!x) return;
+    f(x->info);
+    TranverseAllNode(x->lch, f);
+    TranverseAllNode(x->rch, f);
+  }
+
+  template <typename F>
+  static Node* BuildTree(int l, int r, F f) {
+    Node* x = new Node(l, r);
     if (l == r) {
       f(l, x->info);
       return x;
@@ -146,9 +154,16 @@ struct SegmentTree {
     return x;
   }
 
+  void GC(Node* x) {
+    if (!x) return;
+    GC(x->lch);
+    GC(x->rch);
+    delete x;
+  }
+
  private:
   template <typename F>
-  Node *Modify(Node *x, int l, int r, int from, int to, F f) {
+  Node* Modify(Node* x, int l, int r, int from, int to, F f) {
     if (!x) {
       x = new Node(l, r, ts);
     } else if (persist && x->ts != ts) {

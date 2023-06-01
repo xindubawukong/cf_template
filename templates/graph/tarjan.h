@@ -13,7 +13,7 @@ struct TarjanDirected {
   std::vector<bool> visit;
   std::stack<int> sta;
   int ts, scc_cnt;
-  TarjanDirected(Graph &g) {
+  TarjanDirected(Graph& g) {
     dfn.resize(g.n);
     low.resize(g.n);
     belong.resize(g.n);
@@ -26,7 +26,7 @@ struct TarjanDirected {
       visit[u] = true;
       sta.push(u);
       for (int eid : g.go[u]) {
-        auto &e = g.edges[eid];
+        auto& e = g.edges[eid];
         if (!visit[e.v]) {
           Dfs(e.v);
           low[u] = std::min(low[u], low[e.v]);

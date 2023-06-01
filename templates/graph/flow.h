@@ -56,8 +56,8 @@ template <typename FlowGraph>
 struct MaxFlow {
   static_assert(FlowGraph::is_directed::value);
   using flow_t = typename FlowGraph::flow_t;
-  FlowGraph &graph;
-  MaxFlow(FlowGraph &graph_) : graph(graph_) {}
+  FlowGraph& graph;
+  MaxFlow(FlowGraph& graph_) : graph(graph_) {}
 
   flow_t Solve(int s, int t, flow_t new_flow) {
     assert(0 <= s && s < graph.n && 0 <= t && t < graph.n);
@@ -73,7 +73,7 @@ struct MaxFlow {
         int u = q.front();
         q.pop();
         for (auto eid : graph.go[u]) {
-          auto &e = graph.edges[eid];
+          auto& e = graph.edges[eid];
           if (e.cap > graph.eps && dep[e.v] == -1) {
             dep[e.v] = dep[u] + 1;
             q.push(e.v);
@@ -85,10 +85,10 @@ struct MaxFlow {
     std::function<flow_t(int, flow_t)> Dfs = [&](int u, flow_t flow) {
       if (u == t) return flow;
       flow_t res = 0;
-      for (int &i = cur[u]; i < graph.go[u].size(); i++) {
+      for (int& i = cur[u]; i < graph.go[u].size(); i++) {
         auto eid = graph.go[u][i];
-        auto &e = graph.edges[eid];
-        auto &back = graph.edges[eid ^ 1];
+        auto& e = graph.edges[eid];
+        auto& back = graph.edges[eid ^ 1];
         if (e.cap <= graph.eps || dep[e.v] != dep[u] + 1) continue;
         flow_t df = Dfs(e.v, std::min(e.cap, flow));
         flow -= df;
@@ -112,8 +112,8 @@ template <typename FlowGraph>
 struct MinCostMaxFlow {
   using flow_t = typename FlowGraph::flow_t;
   using cost_t = decltype(std::declval<typename FlowGraph::edge_t>().cap);
-  FlowGraph &graph;
-  MinCostMaxFlow(FlowGraph &graph_) : graph(graph_) {}
+  FlowGraph& graph;
+  MinCostMaxFlow(FlowGraph& graph_) : graph(graph_) {}
 
   std::pair<flow_t, cost_t> Solve(int s, int t) {
     assert(0 <= s && s < graph.n && 0 <= t && t < graph.n);
@@ -132,7 +132,7 @@ struct MinCostMaxFlow {
         q.pop();
         inq[u] = false;
         for (auto eid : graph.go[u]) {
-          auto &e = graph.edges[eid];
+          auto& e = graph.edges[eid];
           if (e.cap > graph.eps && (!vt[e.v] || dist[e.v] > dist[u] + e.cost)) {
             pre[e.v] = eid;
             dist[e.v] = dist[u] + e.cost;
@@ -149,14 +149,14 @@ struct MinCostMaxFlow {
     auto Calc = [&]() {
       flow_t flow = std::numeric_limits<flow_t>::max();
       for (auto eid = pre[t]; eid != -1;) {
-        auto &e = graph.edges[eid];
+        auto& e = graph.edges[eid];
         flow = std::min(flow, e.cap);
         eid = pre[e.u];
       }
       cost_t cost = 0;
       for (auto eid = pre[t]; eid != -1;) {
-        auto &e = graph.edges[eid];
-        auto &back = graph.edges[eid ^ 1];
+        auto& e = graph.edges[eid];
+        auto& back = graph.edges[eid ^ 1];
         cost += flow * e.cost;
         e.cap -= flow;
         back.cap += flow;

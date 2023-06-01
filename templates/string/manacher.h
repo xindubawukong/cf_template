@@ -5,7 +5,7 @@
 #include <vector>
 
 template <typename Seq>
-std::vector<int> Manacher(const Seq &s) {
+std::vector<int> Manacher(const Seq& s) {
   std::vector<int> t;
   std::vector<int> p;
   t.reserve(s.size() * 2 + 1);

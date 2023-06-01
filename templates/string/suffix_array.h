@@ -9,7 +9,7 @@
 
 // Adjust a[i] to 1..n
 template <typename Seq>
-void SAPreProcess(Seq &a) {
+void SAPreProcess(Seq& a) {
   int n = a.size();
   int minx = *std::min_element(a.begin(), a.end());
   int maxx = *std::max_element(a.begin(), a.end());
@@ -26,7 +26,7 @@ void SAPreProcess(Seq &a) {
 }
 
 template <typename Seq>
-auto SuffixArrayPrefixDoubling(const Seq &s0) {
+auto SuffixArrayPrefixDoubling(const Seq& s0) {
   int n = s0.size();
   std::vector<int> a(n);
   for (int i = 0; i < n; i++) a[i] = s0[i];

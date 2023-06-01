@@ -11,7 +11,7 @@ struct List {
   Node *head, *tail;
   int size;
   List() : head(nullptr), tail(nullptr), size(0) {}
-  T &Back() {
+  T& Back() {
     assert(size > 0);
     return tail->val;
   }
@@ -19,7 +19,7 @@ struct List {
     assert(size > 0);
     return tail->val;
   }
-  T &Front() {
+  T& Front() {
     assert(size > 0);
     return head->val;
   }
@@ -27,7 +27,7 @@ struct List {
     assert(size > 0);
     return head->val;
   }
-  Node *InsertBefore(Node *it, T val) {
+  Node* InsertBefore(Node* it, T val) {
     assert(it != nullptr);
     size++;
     auto x = new Node(val);
@@ -41,7 +41,7 @@ struct List {
     if (it == head) head = x;
     return x;
   }
-  Node *InsertAfter(Node *it, T val) {
+  Node* InsertAfter(Node* it, T val) {
     assert(it != nullptr);
     size++;
     auto x = new Node(val);
@@ -55,7 +55,7 @@ struct List {
     if (it == tail) tail = x;
     return x;
   }
-  void Delete(Node *it) {
+  void Delete(Node* it) {
     assert(it != nullptr);
     size--;
     auto p = it->prev, n = it->next;

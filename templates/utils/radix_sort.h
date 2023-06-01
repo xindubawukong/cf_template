@@ -7,7 +7,7 @@
 
 // mm = max{f(a[i])}
 template <typename Seq, typename F>
-void RadixSort(Seq &a, int mm, F f) {
+void RadixSort(Seq& a, int mm, F f) {
   int n = a.size();
   std::vector<int> sum(mm + 2), b(mm + 1), at(n);
   for (int i = 0; i < n; i++) {

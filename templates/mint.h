@@ -38,47 +38,47 @@ struct MInt {
     return QuickPower(*this, P - 2);
   }
 
-  bool operator==(const MInt<P> &b) { return x == b.x; }
-  MInt<P> &operator+=(const MInt<P> &b) {
+  bool operator==(const MInt<P>& b) { return x == b.x; }
+  MInt<P>& operator+=(const MInt<P>& b) {
     x = Adjust(x + b.x);
     return *this;
   }
-  MInt<P> &operator-=(const MInt<P> &b) {
+  MInt<P>& operator-=(const MInt<P>& b) {
     x = Adjust(x - b.x);
     return *this;
   }
-  MInt<P> &operator*=(const MInt<P> &b) {
+  MInt<P>& operator*=(const MInt<P>& b) {
     x = (long long)x * b.x % P;
     return *this;
   }
-  MInt<P> &operator/=(const MInt<P> &b) {
+  MInt<P>& operator/=(const MInt<P>& b) {
     (*this) *= b.Inverse();
     return *this;
   }
-  MInt<P> operator+(const MInt<P> &b) const {
+  MInt<P> operator+(const MInt<P>& b) const {
     auto res = *this;
     return res += b;
   }
-  MInt<P> operator-(const MInt<P> &b) const {
+  MInt<P> operator-(const MInt<P>& b) const {
     auto res = *this;
     return res -= b;
   }
-  MInt<P> operator*(const MInt<P> &b) const {
+  MInt<P> operator*(const MInt<P>& b) const {
     auto res = *this;
     return res *= b;
   }
-  MInt<P> operator/(const MInt<P> &b) const {
+  MInt<P> operator/(const MInt<P>& b) const {
     auto res = *this;
     return res /= b;
   }
-  friend MInt<P> operator*(long long x, const MInt<P> &b) { return b * x; }
+  friend MInt<P> operator*(long long x, const MInt<P>& b) { return b * x; }
   operator std::string() const { return std::to_string(x); }
-  friend std::ostream &operator<<(std::ostream &output, const MInt<P> &a) {
+  friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
     output << string(a);
     return output;
   }
 
-  friend std::istream &operator>>(std::istream &input, MInt<P> &a) {
+  friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
     input >> a.x;
     return input;
   }

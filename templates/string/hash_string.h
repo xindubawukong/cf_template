@@ -7,11 +7,11 @@
 template <int P0, int M0, int P1, int M1>
 struct DoubleHashingHelper {
   struct HashString {
-    DoubleHashingHelper *helper;
+    DoubleHashingHelper* helper;
     int n;
     std::vector<int> a0, a1;
     HashString() : n(0) {}
-    HashString(HashString &&h)
+    HashString(HashString&& h)
         : n(h.n), a0(std::move(h.a0)), a1(std::move(h.a1)) {}
 
     std::pair<int, int> Hash() { return {a0[n - 1], a1[n - 1]}; }
@@ -42,7 +42,7 @@ struct DoubleHashingHelper {
     }
   }
 
-  HashString Create(const std::string &s) {
+  HashString Create(const std::string& s) {
     HashString hh;
     hh.n = s.length();
     assert(hh.n <= maxn);

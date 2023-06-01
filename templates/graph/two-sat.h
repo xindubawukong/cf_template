@@ -23,7 +23,7 @@ struct TwoSat {
 
   void Solve() {
     TarjanDirected tj(g);
-    auto &belong = tj.belong;
+    auto& belong = tj.belong;
     ok = true;
     ans.resize(n);
     for (int i = 0; i < n; i++) {
