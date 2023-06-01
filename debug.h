@@ -29,31 +29,35 @@ const std::string COLOR_END_STR = "";
 #endif
 
 #ifdef SHOULD_PRINT
-#define debug(...)                                                             \
-  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__                         \
+#define debug(...)                                     \
+  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
             << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR << '\n'
 #else
-#define debug(...) 19980723
+#define debug(...) 0
 #endif
 
-template <typename T> struct DebugPrinter {
+template <typename T>
+struct DebugPrinter {
   T x;
   operator std::string() { return static_cast<std::string>(x); }
 };
 
-template <typename A> std::string ToDebugString(A a) {
+template <typename A>
+std::string ToDebugString(A a) {
   return static_cast<std::string>(DebugPrinter<A>({a}));
 }
 
-template <typename A, typename... B> std::string ToDebugString(A a, B... b) {
+template <typename A, typename... B>
+std::string ToDebugString(A a, B... b) {
   return static_cast<std::string>(DebugPrinter<A>({a})) + ", " +
          ToDebugString(b...);
 }
 
 // DebugPrinter specializations
 
-template <typename T> struct DebugPrinter<T *> {
-  T *p;
+template <typename T>
+struct DebugPrinter<T*> {
+  T* p;
   operator std::string() {
     std::stringstream ss;
     ss << p;
@@ -61,7 +65,8 @@ template <typename T> struct DebugPrinter<T *> {
   }
 };
 
-template <> struct DebugPrinter<char> {
+template <>
+struct DebugPrinter<char> {
   char x;
   operator std::string() {
     std::string s;
@@ -72,67 +77,80 @@ template <> struct DebugPrinter<char> {
   }
 };
 
-template <> struct DebugPrinter<short> {
+template <>
+struct DebugPrinter<short> {
   short x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<unsigned short> {
+template <>
+struct DebugPrinter<unsigned short> {
   unsigned short x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<int> {
+template <>
+struct DebugPrinter<int> {
   int x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<unsigned int> {
+template <>
+struct DebugPrinter<unsigned int> {
   unsigned int x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<long> {
+template <>
+struct DebugPrinter<long> {
   long x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<unsigned long> {
+template <>
+struct DebugPrinter<unsigned long> {
   unsigned long x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<long long> {
+template <>
+struct DebugPrinter<long long> {
   long long x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<unsigned long long> {
+template <>
+struct DebugPrinter<unsigned long long> {
   unsigned long long x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<bool> {
+template <>
+struct DebugPrinter<bool> {
   bool x;
   operator std::string() { return x ? "true" : "false"; }
 };
 
-template <> struct DebugPrinter<float> {
+template <>
+struct DebugPrinter<float> {
   float x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<double> {
+template <>
+struct DebugPrinter<double> {
   double x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <> struct DebugPrinter<long double> {
+template <>
+struct DebugPrinter<long double> {
   long double x;
   operator std::string() { return std::to_string(x); }
 };
 
-template <size_t N> struct DebugPrinter<std::bitset<N>> {
+template <size_t N>
+struct DebugPrinter<std::bitset<N>> {
   std::bitset<N> x;
   operator std::string() {
     std::string s = "bitset<" + std::to_string(N) + ">(";
@@ -143,7 +161,8 @@ template <size_t N> struct DebugPrinter<std::bitset<N>> {
 };
 
 #if __cplusplus >= 202001L
-template <typename T> struct DebugPrinter<std::optional<T>> {
+template <typename T>
+struct DebugPrinter<std::optional<T>> {
   std::optional<T> x;
   operator std::string() {
     std::string s = "optional(";
@@ -156,7 +175,8 @@ template <typename T> struct DebugPrinter<std::optional<T>> {
 };
 #endif
 
-template <typename A, typename B> struct DebugPrinter<std::pair<A, B>> {
+template <typename A, typename B>
+struct DebugPrinter<std::pair<A, B>> {
   std::pair<A, B> x;
   operator std::string() {
     std::string s = "pair(";
@@ -168,13 +188,13 @@ template <typename A, typename B> struct DebugPrinter<std::pair<A, B>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::vector<T>> {
+template <typename T>
+struct DebugPrinter<std::vector<T>> {
   std::vector<T> x;
   operator std::string() {
     std::string s = "vector[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -182,7 +202,8 @@ template <typename T> struct DebugPrinter<std::vector<T>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::stack<T>> {
+template <typename T>
+struct DebugPrinter<std::stack<T>> {
   std::stack<T> x;
   operator std::string() {
     std::string s = "stack[";
@@ -194,8 +215,7 @@ template <typename T> struct DebugPrinter<std::stack<T>> {
     }
     for (int i = a.size() - 1; i >= 0; i--) {
       T t = a[i];
-      if (i != a.size() - 1)
-        s += ", ";
+      if (i != a.size() - 1) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({t}));
       x.push(t);
     }
@@ -204,13 +224,13 @@ template <typename T> struct DebugPrinter<std::stack<T>> {
   }
 };
 
-template <typename T, std::size_t N> struct DebugPrinter<std::array<T, N>> {
+template <typename T, std::size_t N>
+struct DebugPrinter<std::array<T, N>> {
   std::array<T, N> x;
   operator std::string() {
     std::string s = "array[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -218,15 +238,15 @@ template <typename T, std::size_t N> struct DebugPrinter<std::array<T, N>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::queue<T>> {
+template <typename T>
+struct DebugPrinter<std::queue<T>> {
   std::queue<T> x;
   operator std::string() {
     std::string s = "queue[";
     int n = x.size();
     for (int i = 0; i < n; i++) {
       auto t = x.front();
-      if (i > 0)
-        s += ", ";
+      if (i > 0) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({t}));
       x.pop();
       x.push(t);
@@ -236,13 +256,13 @@ template <typename T> struct DebugPrinter<std::queue<T>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::deque<T>> {
+template <typename T>
+struct DebugPrinter<std::deque<T>> {
   std::deque<T> x;
   operator std::string() {
     std::string s = "deque[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -250,13 +270,13 @@ template <typename T> struct DebugPrinter<std::deque<T>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::list<T>> {
+template <typename T>
+struct DebugPrinter<std::list<T>> {
   std::list<T> x;
   operator std::string() {
     std::string s = "list[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -264,13 +284,13 @@ template <typename T> struct DebugPrinter<std::list<T>> {
   }
 };
 
-template <typename T, typename Cmp> struct DebugPrinter<std::set<T, Cmp>> {
+template <typename T, typename Cmp>
+struct DebugPrinter<std::set<T, Cmp>> {
   std::set<T, Cmp> x;
   operator std::string() {
     std::string s = "set[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -278,13 +298,13 @@ template <typename T, typename Cmp> struct DebugPrinter<std::set<T, Cmp>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::unordered_set<T>> {
+template <typename T>
+struct DebugPrinter<std::unordered_set<T>> {
   std::unordered_set<T> x;
   operator std::string() {
     std::string s = "unordered_set[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -292,13 +312,13 @@ template <typename T> struct DebugPrinter<std::unordered_set<T>> {
   }
 };
 
-template <typename T> struct DebugPrinter<std::multiset<T>> {
+template <typename T>
+struct DebugPrinter<std::multiset<T>> {
   std::multiset<T> x;
   operator std::string() {
     std::string s = "multiset[";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<T>({*it}));
     }
     s += "]";
@@ -312,8 +332,7 @@ struct DebugPrinter<std::map<A, B, Cmp>> {
   operator std::string() {
     std::string s = "map{";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<A>({it->first}));
       s += " -> ";
       s += static_cast<std::string>(DebugPrinter<B>({it->second}));
@@ -329,8 +348,7 @@ struct DebugPrinter<std::unordered_map<A, B>> {
   operator std::string() {
     std::string s = "unordered_map{";
     for (auto it = x.begin(); it != x.end(); it++) {
-      if (it != x.begin())
-        s += ", ";
+      if (it != x.begin()) s += ", ";
       s += static_cast<std::string>(DebugPrinter<A>({it->first}));
       s += " -> ";
       s += static_cast<std::string>(DebugPrinter<B>({it->second}));
@@ -342,7 +360,8 @@ struct DebugPrinter<std::unordered_map<A, B>> {
 
 namespace tuple_helper {
 
-template <std::size_t...> struct index_seq {};
+template <std::size_t...>
+struct index_seq {};
 
 template <std::size_t N, std::size_t... Is>
 struct make_index_seq : make_index_seq<N - 1, N - 1, Is...> {};
@@ -350,25 +369,27 @@ struct make_index_seq : make_index_seq<N - 1, N - 1, Is...> {};
 template <std::size_t... Is>
 struct make_index_seq<0, Is...> : index_seq<Is...> {};
 
-template <typename T> std::string PrintTupleElements(const T &t) {
+template <typename T>
+std::string PrintTupleElements(const T& t) {
   return DebugPrinter<T>({t});
 }
 
 template <typename T, typename... Args>
-std::string PrintTupleElements(const T &t, const Args &...rest) {
+std::string PrintTupleElements(const T& t, const Args&... rest) {
   std::string s = static_cast<std::string>(DebugPrinter<T>({t})) + ", ";
   s += PrintTupleElements(rest...);
   return s;
 }
 
 template <typename T, std::size_t... Is>
-std::string PrintTuple(const T &a, index_seq<Is...> s) {
+std::string PrintTuple(const T& a, index_seq<Is...> s) {
   return PrintTupleElements(std::get<Is>(a)...);
 }
 
-} // namespace tuple_helper
+}  // namespace tuple_helper
 
-template <typename... T> struct DebugPrinter<std::tuple<T...>> {
+template <typename... T>
+struct DebugPrinter<std::tuple<T...>> {
   std::tuple<T...> x;
   operator std::string() {
     std::string s = "tuple(";
@@ -379,4 +400,4 @@ template <typename... T> struct DebugPrinter<std::tuple<T...>> {
   }
 };
 
-#endif // DEBUG_H_
+#endif  // DEBUG_H_
