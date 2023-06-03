@@ -38,7 +38,7 @@ struct MInt {
     return QuickPower(*this, P - 2);
   }
 
-  bool operator==(const MInt<P>& b) { return x == b.x; }
+  bool operator==(const MInt<P>& b) const { return x == b.x; }
   MInt<P>& operator+=(const MInt<P>& b) {
     x = Adjust(x + b.x);
     return *this;
