@@ -49,6 +49,11 @@ using uint128 = __uint128_t;
 using uint = unsigned int;
 using uint64 = unsigned long long;
 
+// clang-format off
+template <typename T> bool ckmin(T& a, T b) { return b < a ? a = b, 1 : 0; }
+template <typename T> bool ckmax(T& a, T b) { return b > a ? a = b, 1 : 0; }
+// clang-format on
+
 // mt19937 rng(0);
 // mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
 
