@@ -60,6 +60,7 @@ struct TPoint {
     if (x != b.x) return x < b.x;
     return y < b.y;
   }
+  bool operator==(const TPoint<T>& b) const { return x == b.x && y == b.y; }
   operator std::string() const {
     return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
   }
