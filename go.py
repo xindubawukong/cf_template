@@ -50,12 +50,26 @@ def run_problem(names, no_build):
     if no_build:
         make_str = ':'
     run_str = ' && '.join(
-        list(map(lambda problem: f'./{problem}/{problem}', problems)))
+        list(map(lambda problem: f'/usr/local/bin/time -v ./{problem}/{problem} 2> ./{problem}/{problem}_run.txt', problems)))
     subprocess.call(f'cd build && {make_str} && {run_str}', shell=True)
     for name in names:
-        submit = f'problem_{name}/submit_{name}.cpp'
+        # print time and memory
+        problem = f'problem_{name}'
+        with open(f'./build/{problem}/{problem}_run.txt', 'r') as f:
+            timev = f.readlines()
+        tt = 0
+        mm = 0
+        for line in timev:
+            if line.find('User time') != -1:
+                tt = float(line.split(' ')[-1])
+            if line.find('Maximum resident set size') != -1:
+                mm = float(line.split(' ')[-1]) / 1000
+        print(f'[{problem}] time = {tt} s, memory = {mm} MB')
+
+        # generate problem_A_submit.cpp
+        submit = f'{problem}/submit_{problem}.cpp'
         subprocess.call(
-            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E problem_{name}/{name}.cpp > {submit}', shell=True)
+            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E {problem}/{name}.cpp > {submit}', shell=True)
         f = open('main.cpp', 'r')
         a = f.readlines()
         f.close()

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+// pi[i]: max k of s[0..k-1] = s[i-k+1..i]
+// z[i]: lcp of s[0..] and s[i..] (except z[0])
 template <typename Seq>
 auto KMP(const Seq& s) {
   int n = s.size();
