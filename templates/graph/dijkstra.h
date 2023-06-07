@@ -9,7 +9,7 @@
 
 template <typename Graph, typename F>
 auto Dijkstra(const Graph& g, int s, F f) {
-  static_assert(Graph::is_directed::value);
+  assert(g.IsDirected());
   using dist_t = std::invoke_result_t<F, typename Graph::edge_t>;
   std::vector<dist_t> dist(g.n, std::numeric_limits<dist_t>::max());
   std::vector<int> from(g.n);

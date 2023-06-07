@@ -54,10 +54,9 @@ struct Matching {
 
 template <typename FlowGraph>
 struct MaxFlow {
-  static_assert(FlowGraph::is_directed::value);
   using flow_t = typename FlowGraph::flow_t;
   FlowGraph& graph;
-  MaxFlow(FlowGraph& graph_) : graph(graph_) {}
+  MaxFlow(FlowGraph& graph_) : graph(graph_) { assert(graph.IsDirected()); }
 
   flow_t Solve(int s, int t, flow_t new_flow) {
     assert(0 <= s && s < graph.n && 0 <= t && t < graph.n);

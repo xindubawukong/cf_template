@@ -8,12 +8,12 @@
 
 template <typename Graph>
 struct TarjanDirected {
-  static_assert(Graph::is_directed::value);
   std::vector<int> dfn, low, belong;
   std::vector<bool> visit;
   std::stack<int> sta;
   int ts, scc_cnt;
   TarjanDirected(Graph& g) {
+    assert(g.IsDirected());
     dfn.resize(g.n);
     low.resize(g.n);
     belong.resize(g.n);
