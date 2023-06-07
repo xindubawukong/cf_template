@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+// s = "a     b     a     a     b"
+// t = [0, 0, 1, 0, 0, 2, 0, 0, 0]
 template <typename Seq>
 std::vector<int> Manacher(const Seq& s) {
   std::vector<int> t;
