@@ -102,8 +102,7 @@ struct Combination {
       factinv[i - 1] = factinv[i] * i;
     }
   }
-
-  mint Comb(int n, int m) {
+  mint operator()(int n, int m) {
     if (m > n || m < 0) return 0;
     return fact[n] * factinv[n - m] * factinv[m];
   }
