@@ -6,24 +6,18 @@
 template <typename T, int n>
 struct TMatrix {
   static_assert(n > 0);
-  TMatrix() {
+  TMatrix(bool identity = false) {
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) data[i][j] = 0;
     }
-  }
-  TMatrix(int x) {
-    assert(x == 1);
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        data[i][j] = i == j;
-      }
+    if (identity) {
+      for (int i = 0; i < n; i++) data[i][i] = 1;
     }
   }
   TMatrix(const TMatrix& b) = default;
   TMatrix(TMatrix&& b) { data = std::move(b.data); }
   TMatrix& operator=(const TMatrix& b) = default;
   TMatrix& operator=(TMatrix&& b) = default;
-
   std::array<T, n>& operator[](int i) { return data[i]; }
   const std::array<T, n>& operator[](int i) const { return data[i]; }
   TMatrix<T, n> operator*(const TMatrix<T, n>& b) {

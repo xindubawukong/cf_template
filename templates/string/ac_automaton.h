@@ -6,21 +6,20 @@
 #include <string>
 #include <vector>
 
-#include "graph/graph.h"
-
 template <char offset = 'a', int K = 26>
 struct AhoCorasickAutomaton {
   int tot;
   std::vector<std::array<int, K>> son;
+  std::vector<int> back;
   std::vector<int> fail;
   AhoCorasickAutomaton() : tot(1) { Expand(); }
-  int Insert(const std::string& s) {
-    int now = 0;
+  int Insert(const std::string& s, int now = 0) {
     for (int i = 0; i < s.length(); i++) {
       int c = s[i] - offset;
       if (!son[now][c]) {
         Expand();
         son[now][c] = tot++;
+        back[son[now][c]] = now;
       }
       now = son[now][c];
     }
@@ -44,18 +43,12 @@ struct AhoCorasickAutomaton {
       }
     }
   }
-  DirectedGraph<EdgeBase> FailTree() {
-    DirectedGraph<EdgeBase> g(tot);
-    for (int i = 1; i < tot; i++) {
-      g.AddEdge({fail[i], i});
-    }
-    return g;
-  }
 
  private:
   void Expand() {
     son.push_back({});
     fail.push_back(0);
+    back.push_back(-1);
   }
 };
 
