@@ -9,9 +9,9 @@
 /*
 using real = long double;
 using Point = TPoint<real>;
-using geo = Geometry<Point>;
 template <>
 const real Point::eps = 1e-7;
+using geo = Geometry<Point>;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
 */
@@ -22,7 +22,7 @@ struct Geometry {
   using point_t = Point;
   static_assert(Point::dim::value == 2);
 
-  static constexpr real pi = 3.1415926535897932385;
+  static constexpr long double pi = 3.1415926535897932385;
 
   static Point Rotate(const Point& v, real alpha) {
     real c = cos(alpha);
@@ -115,7 +115,7 @@ struct Geometry {
   };
 
   static bool IsPointOnSegment(const Point& p, const Segment& s) {
-    if (Dist(s.a, p) <= Point::eps || Dist(s.b, p) <= Point::eps) return true;
+    if (Dist2(s.a, p) <= Point::eps || Dist2(s.b, p) <= Point::eps) return true;
     return (p - s.a) | (s.b - s.a) && (s.a - p) * (s.b - p) < -Point::eps;
   }
 
@@ -167,6 +167,8 @@ struct Geometry {
     std::vector<Point> ps;  // anti-clockwise preferred
     bool is_convex;
     Polygon(std::vector<Point> ps_ = {}) : ps(ps_), is_convex(false) {}
+    Polygon(const Polygon& b) : ps(b.ps), is_convex(b.is_convex) {}
+    Polygon(Polygon&& b) : ps(std::move(b.ps)), is_convex(b.is_convex) {}
     operator std::string() {
       std::string s = "Polygon[";
       for (int i = 0; i < ps.size(); i++) {
@@ -275,17 +277,25 @@ struct Geometry {
 
   static Polygon GetConvex(const std::vector<Point>& ps_) {
     auto ps = ps_;
-    assert(ps.size() >= 3);
+    if (ps.size() <= 2) {
+      Polygon poly(ps);
+      poly.is_convex = true;
+      return poly;
+    }
     int n = ps.size();
-    std::sort(ps.begin(), ps.end(), [](auto& a, auto& b) {
-      if (abs(a.y - b.y) > Point::eps) return a.y < b.y;
-      return a.x > b.x;
-    });
+    std::rotate(ps.begin(),
+                std::min_element(ps.begin(), ps.end(),
+                                 [](auto& a, auto& b) {
+                                   if (abs(a.y - b.y) > Point::eps)
+                                     return a.y < b.y;
+                                   return a.x > b.x;
+                                 }),
+                ps.end());
     Point o = ps[0];
     std::sort(std::next(ps.begin()), ps.end(), [&](auto& a, auto& b) {
       auto t = (a - o) % (b - o);
       if (abs(t) > Point::eps) return t > 0;
-      return Dist(a, o) < Dist(b, o);
+      return Dist2(a, o) < Dist2(b, o);
     });
     ps.push_back(o);
     std::vector<Point> res = {ps[0], ps[1]};
@@ -302,7 +312,7 @@ struct Geometry {
           break;
         }
       }
-      if (i < n && Dist(c, res.back()) > Point::eps) {
+      if (i < n && Dist2(c, res.back()) > Point::eps) {
         res.push_back(c);
       }
     }
@@ -312,28 +322,48 @@ struct Geometry {
   }
 
   // Minkowski sum for two convex is also a convex
-  static Polygon Minkowski(const Polygon& a, const Polygon& b) {
+  static Polygon Minkowski(Polygon& a, Polygon& b) {
     assert(a.is_convex && b.is_convex);
     int n = a.ps.size(), m = b.ps.size();
-    std::vector<Point> aa(n), bb(m);
-    for (int i = 0; i < n; i++) {
-      aa[i] = a.ps[(i + 1) % n] - a.ps[i];
-    }
-    for (int i = 0; i < m; i++) {
-      bb[i] = b.ps[(i + 1) % m] - b.ps[i];
-    }
-    std::vector<Point> all;
-    std::merge(aa.begin(), aa.end(), bb.begin(), bb.end(),
-               std::back_inserter(all),
-               [](auto& u, auto& v) { return u % v > Point::eps; });
+    if (n == 0) return b;
+    if (m == 0) return a;
     std::vector<Point> res;
-    res.push_back(a.ps[0] + b.ps[0]);
-    for (auto& u : all) {
-      auto p = res.back() + u;
-      res.push_back(p);
+    if (std::min(n, m) <= 2) {
+      for (auto p1 : a.ps) {
+        for (auto p2 : b.ps) {
+          res.push_back(p1 + p2);
+        }
+      }
+    } else {
+      auto MinYCmp = [](auto& a, auto& b) {
+        if (abs(a.y - b.y) > Point::eps) return a.y < b.y;
+        return a.x < b.x;
+      };
+      std::rotate(a.ps.begin(),
+                  std::min_element(a.ps.begin(), a.ps.end(), MinYCmp),
+                  a.ps.end());
+      std::rotate(b.ps.begin(),
+                  std::min_element(b.ps.begin(), b.ps.end(), MinYCmp),
+                  b.ps.end());
+      std::vector<Point> aa(n), bb(m);
+      for (int i = 0; i < n; i++) {
+        aa[i] = a.ps[(i + 1) % n] - a.ps[i];
+      }
+      for (int i = 0; i < m; i++) {
+        bb[i] = b.ps[(i + 1) % m] - b.ps[i];
+      }
+      std::vector<Point> all;
+      std::merge(aa.begin(), aa.end(), bb.begin(), bb.end(),
+                 std::back_inserter(all),
+                 [](auto& u, auto& v) { return u % v >= -Point::eps; });
+      res.push_back(a.ps[0] + b.ps[0]);
+      for (auto& u : all) {
+        auto p = res.back() + u;
+        res.push_back(p);
+      }
+      assert(Dist2(res[0], res.back()) <= Point::eps);
+      res.pop_back();
     }
-    assert(Dist(res[0], res.back()) <= Point::eps);
-    res.pop_back();
     return GetConvex(res);
   }
 };

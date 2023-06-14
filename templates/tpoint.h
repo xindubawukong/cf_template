@@ -13,11 +13,28 @@ struct TPoint {
 
   T x, y;
   TPoint(T x_ = 0, T y_ = 0) : x(x_), y(y_) {}
-
-  T Length2() const { return x * x + y * y; }
-  T Length() const { return sqrt(Length2()); }
-  friend T Dist(const TPoint<T>& a, const TPoint<T>& b) {
-    auto x = a.x - b.x, y = a.y - b.y;
+  int Section() const {
+    assert(abs(x) > eps || abs(y) > eps);
+    if (x >= 0 && y >= 0) return 1;
+    if (x <= 0 && y >= 0) return 2;
+    if (x <= 0 && y <= 0) return 3;
+    if (x >= 0 && y <= 0) return 4;
+    assert(0);
+  }
+  template <typename Out = T>
+  Out Length2() const {
+    return (Out)x * x + (Out)y * y;
+  }
+  long double Length() const {
+    return sqrt((long double)x * x + (long double)y * y);
+  }
+  template <typename Out = T>
+  friend Out Dist2(const TPoint<T>& a, const TPoint<T>& b) {
+    Out x = a.x - b.x, y = a.y - b.y;
+    return x * x + y * y;
+  }
+  long double Dist(const TPoint<T>& a, const TPoint<T>& b) {
+    long double x = a.x - b.x, y = a.y - b.y;
     return sqrt(x * x + y * y);
   }
   TPoint<T>& operator+=(const TPoint<T>& b) {
@@ -62,7 +79,11 @@ struct TPoint {
   }
   bool operator==(const TPoint<T>& b) const { return x == b.x && y == b.y; }
   operator std::string() const {
-    return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+    if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>) {
+      return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+    } else {
+      return "Point(" + std::string(x) + ", " + std::string(y) + ")";
+    }
   }
   friend std::istream& operator>>(std::istream& input, TPoint<T>& a) {
     input >> a.x >> a.y;

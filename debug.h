@@ -12,9 +12,12 @@
 #include <stack>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include "int128.h"
 
 #define SHOULD_PRINT
 #define COLOR_PRINT
@@ -39,7 +42,14 @@ const std::string COLOR_END_STR = "";
 template <typename T>
 struct DebugPrinter {
   T x;
-  operator std::string() { return static_cast<std::string>(x); }
+  operator std::string() {
+    if constexpr (std::is_integral<T>::value ||
+                  std::is_floating_point<T>::value) {
+      return std::to_string(x);
+    } else {
+      return static_cast<std::string>(x);
+    }
+  }
 };
 
 template <typename A>
@@ -78,75 +88,9 @@ struct DebugPrinter<char> {
 };
 
 template <>
-struct DebugPrinter<short> {
-  short x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<unsigned short> {
-  unsigned short x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<int> {
-  int x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<unsigned int> {
-  unsigned int x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<long> {
-  long x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<unsigned long> {
-  unsigned long x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<long long> {
-  long long x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<unsigned long long> {
-  unsigned long long x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
 struct DebugPrinter<bool> {
   bool x;
   operator std::string() { return x ? "true" : "false"; }
-};
-
-template <>
-struct DebugPrinter<float> {
-  float x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<double> {
-  double x;
-  operator std::string() { return std::to_string(x); }
-};
-
-template <>
-struct DebugPrinter<long double> {
-  long double x;
-  operator std::string() { return std::to_string(x); }
 };
 
 template <size_t N>
@@ -160,7 +104,6 @@ struct DebugPrinter<std::bitset<N>> {
   }
 };
 
-#if __cplusplus >= 202001L
 template <typename T>
 struct DebugPrinter<std::optional<T>> {
   std::optional<T> x;
@@ -173,7 +116,6 @@ struct DebugPrinter<std::optional<T>> {
     return s;
   }
 };
-#endif
 
 template <typename A, typename B>
 struct DebugPrinter<std::pair<A, B>> {
@@ -298,9 +240,9 @@ struct DebugPrinter<std::set<T, Cmp>> {
   }
 };
 
-template <typename T>
-struct DebugPrinter<std::unordered_set<T>> {
-  std::unordered_set<T> x;
+template <typename T, typename Cmp>
+struct DebugPrinter<std::unordered_set<T, Cmp>> {
+  std::unordered_set<T, Cmp> x;
   operator std::string() {
     std::string s = "unordered_set[";
     for (auto it = x.begin(); it != x.end(); it++) {
@@ -312,9 +254,9 @@ struct DebugPrinter<std::unordered_set<T>> {
   }
 };
 
-template <typename T>
-struct DebugPrinter<std::multiset<T>> {
-  std::multiset<T> x;
+template <typename T, typename Cmp>
+struct DebugPrinter<std::multiset<T, Cmp>> {
+  std::multiset<T, Cmp> x;
   operator std::string() {
     std::string s = "multiset[";
     for (auto it = x.begin(); it != x.end(); it++) {

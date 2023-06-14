@@ -41,15 +41,10 @@
 
 using namespace std;
 
+// clang-format off
 using int64 = long long;
-#if _WIN64 || __x86_64__
-using int128 = __int128_t;
-using uint128 = __uint128_t;
-#endif
 using uint = unsigned int;
 using uint64 = unsigned long long;
-
-// clang-format off
 template <typename T> bool ckmin(T& a, T b) { return b < a ? a = b, 1 : 0; }
 template <typename T> bool ckmax(T& a, T b) { return b > a ? a = b, 1 : 0; }
 // clang-format on

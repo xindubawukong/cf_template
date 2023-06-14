@@ -74,10 +74,9 @@ struct MInt {
   friend MInt<P> operator*(long long x, const MInt<P>& b) { return b * x; }
   operator std::string() const { return std::to_string(x); }
   friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
-    output << string(a);
+    output << std::string(a);
     return output;
   }
-
   friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
     input >> a.x;
     return input;
