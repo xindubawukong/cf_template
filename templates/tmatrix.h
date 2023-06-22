@@ -2,6 +2,8 @@
 #define TMATRIX_H_
 
 #include <array>
+#include <string>
+#include <type_traits>
 
 template <typename T, int n>
 struct TMatrix {
@@ -30,6 +32,22 @@ struct TMatrix {
       }
     }
     return c;
+  }
+  operator std::string() const {
+    std::string res = "\n";
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if constexpr (std::is_integral<T>::value ||
+                      std::is_floating_point<T>::value) {
+          res += std::to_string(data[i][j]);
+        } else {
+          res += std::string(data[i][j]);
+        }
+        res += ' ';
+      }
+      res += '\n';
+    }
+    return res;
   }
 
  private:
