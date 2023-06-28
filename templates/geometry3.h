@@ -7,7 +7,7 @@
 
 /*
 using real = long double;
-using Point = TPoint<real>;
+using Point = TPoint3<real>;
 using geo = Geometry3<Point>;
 template <>
 const real Point::eps = 1e-7;
