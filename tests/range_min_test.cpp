@@ -34,7 +34,7 @@ TEST(RangeMinTest, DefaultConstructorTest) {
   for (int i = 0; i < iter; i++) {
     int l = rng() % n, r = rng() % n;
     if (l > r) swap(l, r);
-    EXPECT_EQ(rmq.Query(l, r), GetMinIndex(a, l, r));
+    EXPECT_EQ(rmq.QueryIndex(l, r), GetMinIndex(a, l, r));
   }
 }
 
@@ -50,6 +50,6 @@ TEST(RangeMinTest, RandomTest) {
   for (int i = 0; i < iter; i++) {
     int l = rng() % n, r = rng() % n;
     if (l > r) swap(l, r);
-    EXPECT_EQ(rmq.Query(l, r), GetMaxIndex(a, l, r));
+    EXPECT_EQ(rmq.QueryIndex(l, r), GetMaxIndex(a, l, r));
   }
 }

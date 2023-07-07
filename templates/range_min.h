@@ -33,11 +33,14 @@ struct RMQ {
     }
   }
 
-  // return the index of minimum value
-  int Query(int l, int r) {
+  int QueryIndex(int l, int r) {
     int len = r - l + 1;
     int t = log[len];
     return MinIndex(f[l][t], f[r - (1 << t) + 1][t]);
+  }
+
+  typename Seq::value_type QueryValue(int l, int r) {
+    return a[QueryIndex(l, r)];
   }
 
  private:

@@ -6,6 +6,8 @@
 
 template <int P0, int M0, int P1, int M1>
 struct DoubleHashingHelper {
+  static_assert(P0 > 0 && M0 > 0 && P1 > 0 && M1 > 0);
+
   struct HashString {
     DoubleHashingHelper* helper;
     int n;
@@ -31,18 +33,24 @@ struct DoubleHashingHelper {
 
   int maxn;
   std::vector<int> f0, f1;
-  DoubleHashingHelper(int maxn_) : maxn(maxn_) {
-    assert(P0 > 0 && M0 > 0 && P1 > 0 && M1 > 0);
-    f0.resize(maxn + 1);
-    f1.resize(maxn + 1);
-    f0[0] = f1[0] = 1;
-    for (int i = 1; i <= maxn; i++) {
+  DoubleHashingHelper() {
+    maxn = 0;
+    f0 = f1 = {1};
+  }
+
+  void Expand(int n) {
+    if (n <= maxn) return;
+    f0.resize(n + 1);
+    f1.resize(n + 1);
+    for (int i = maxn + 1; i <= n; i++) {
       f0[i] = (long long)f0[i - 1] * P0 % M0;
       f1[i] = (long long)f1[i - 1] * P1 % M1;
     }
+    maxn = n;
   }
 
   HashString Create(const std::string& s) {
+    Expand(s.length());
     HashString hh;
     hh.n = s.length();
     assert(hh.n <= maxn);

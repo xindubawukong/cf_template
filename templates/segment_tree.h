@@ -124,6 +124,7 @@ struct SegmentTree {
   template <typename F>
   void TranverseLeaf(Node* x, F f) {
     if (!x) return;
+    PushDown(x);
     if (x->l == x->r) {
       f(x->info);
       return;
@@ -135,6 +136,7 @@ struct SegmentTree {
   template <typename F>
   void TranverseAllNode(Node* x, F f) {
     if (!x) return;
+    PushDown(x);
     f(x->info);
     TranverseAllNode(x->lch, f);
     TranverseAllNode(x->rch, f);
