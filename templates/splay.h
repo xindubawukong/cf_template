@@ -1,9 +1,24 @@
 #ifndef SPLAY_H_
 #define SPLAY_H_
 
+#include <cassert>
+
+/*
+struct Info {
+  SplayTree<Info>::Node* Node() {
+    return reinterpret_cast<SplayTree<Info>::Node*>(this);
+  }
+  Info() {}
+  bool NeedPushDown() { return false; }
+  void PushDown() {}
+  void Update() {}
+};
+*/
+
 // clang-format off
 template <typename Info>
 struct SplayTree {
+  using info_t = Info;
   struct Node {
     Info info;
     Node *lch, *rch, *fa;
@@ -11,10 +26,18 @@ struct SplayTree {
   };
   Node* root;
   SplayTree() : root(nullptr) {}
+  Node* Update(Node* x) {
+    x->info.Update();
+    return x;
+  }
+  void PushDown(Node* x) {
+    if (x->info.NeedPushDown()) {
+      x->info.PushDown();
+    }
+  }
   void Zig(Node* t) {
     auto y = t->fa;
-    y->info.PushDown();
-    t->info.PushDown();
+    PushDown(y), PushDown(t);
     t->fa = y->fa;
     if (y->fa) {
       if (y == y->fa->lch) y->fa->lch = t;
@@ -24,13 +47,11 @@ struct SplayTree {
     if (t->rch) t->rch->fa = y;
     t->rch = y;
     y->fa = t;
-    y->info.Update();
-    t->info.Update();
+    Update(y), Update(t);
   }
   void Zag(Node* t) {
     auto y = t->fa;
-    y->info.PushDown();
-    t->info.PushDown();
+    PushDown(y), PushDown(t);
     t->fa = y->fa;
     if (y->fa) {
       if (y == y->fa->lch) y->fa->lch = t;
@@ -40,8 +61,7 @@ struct SplayTree {
     if (t->lch) t->lch->fa = y;
     t->lch = y;
     y->fa = t;
-    y->info.Update();
-    t->info.Update();
+    Update(y), Update(t);
   }
   // splay t under p
   void Splay(Node* t, Node* p = nullptr) {

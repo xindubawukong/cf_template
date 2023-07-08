@@ -42,8 +42,8 @@ TEST(BSTUtilsTest, BasicTest) {
     int t = i;
     auto x = bst::Search(treap, CmpVal(t));
     EXPECT_EQ(t, x->info.val);
-    auto [ok, path] = bst::SearchPath(treap, CmpVal(t));
-    EXPECT_TRUE(ok);
+    auto [dir, path] = bst::SearchPath(treap, CmpVal(t));
+    EXPECT_EQ(0, dir);
     EXPECT_FALSE(path.empty());
     EXPECT_EQ(treap.root, path[0]);
     EXPECT_EQ(x, path.back());

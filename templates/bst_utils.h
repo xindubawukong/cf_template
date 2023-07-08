@@ -39,24 +39,29 @@ typename Tree::Node* Search(Tree& tree, Cmp cmp) {
   return nullptr;
 }
 
+// return {0, path} if found
+// return {-1/1, path} if not found
 template <typename Tree, typename Cmp>
-std::pair<bool, std::vector<typename Tree::Node*>> SearchPath(Tree& tree,
-                                                              Cmp cmp) {
+std::pair<int, std::vector<typename Tree::Node*>> SearchPath(Tree& tree,
+                                                             Cmp cmp) {
   auto x = tree.root;
   std::vector<typename Tree::Node*> res;
+  int dir = -1;
   while (x) {
     tree.PushDown(x);
     res.push_back(x);
     int t = cmp(x->info);
     if (t < 0) {
       x = x->lch;
+      dir = -1;
     } else if (t == 0) {
-      return {true, res};
+      return {0, res};
     } else {
       x = x->rch;
+      dir = 1;
     }
   }
-  return {false, res};
+  return {dir, res};
 }
 
 template <typename Info>
