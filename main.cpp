@@ -54,15 +54,13 @@ template <typename T> bool ckmax(T& a, T b) { return b > a ? a = b, 1 : 0; }
 
 // ----------------------------------------------------------------------
 
-void Main() {}
-
 int main(int argc, char* argv[]) {
-  std::ios::sync_with_stdio(false);
-  std::cin.tie(nullptr);
 #ifdef LOCAL
   freopen("main.in", "r", stdin);
   // freopen("main.out", "w", stdout);
 #endif
-  Main();
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+
   return 0;
 }

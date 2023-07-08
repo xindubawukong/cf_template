@@ -96,7 +96,7 @@ struct SegmentTree {
         return x->l;
       }
     }
-    return r_range + 1;
+    return -1;
   }
 
   template <typename F>
@@ -118,7 +118,7 @@ struct SegmentTree {
         return x->l;
       }
     }
-    return l_range - 1;
+    return -1;
   }
 
   template <typename F>
