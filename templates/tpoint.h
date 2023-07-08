@@ -1,6 +1,8 @@
 #ifndef TPOINT_H_
 #define TPOINT_H_
 
+#include <cassert>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <type_traits>

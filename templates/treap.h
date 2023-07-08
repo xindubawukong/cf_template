@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "bst_utils.h"
+
 /*
 struct Info {
   Treap<Info>::Node* Node() {
@@ -21,6 +23,7 @@ struct Info {
 
 template <typename Info>
 struct Treap {
+  using info_t = Info;
   struct Node {
     Info info;
     unsigned int priority;
@@ -133,44 +136,7 @@ struct Treap {
     }
   }
 
-  auto SplitKth(Node* x, int k) {
-    return Split(x, [&k](Info& info) {
-      int left = info.Node()->lch ? info.Node()->lch->info.size : 0;
-      if (k <= left) return -1;
-      if (k == left + 1) return 0;
-      k -= left + 1;
-      return 1;
-    });
-  }
-
-  // return the path from root to the node
-  // the result is empty if not found
-  template <typename Cmp>
-  std::vector<Node*> Search(Cmp cmp) {
-    std::vector<Node*> res;
-    Node* x = root;
-    while (x) {
-      PushDown(x);
-      res.push_back(x);
-      auto d = cmp(x->info);
-      if (d == 0) return res;
-      if (d < 0) {
-        x = x->lch;
-      } else {
-        x = x->rch;
-      }
-    }
-    return {};
-  }
-
-  template <typename F>
-  void Tranverse(Node* x, F f) {
-    if (!x) return;
-    PushDown(x);
-    Tranverse(x->lch, f);
-    f(x->info);
-    Tranverse(x->rch, f);
-  }
+  auto SplitKth(Node* x, int k) { return Split(x, bst::KthCmp<Info>(k)()); }
 };
 
 #endif  // TREAP_H_

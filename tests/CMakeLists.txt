@@ -11,6 +11,7 @@ function(add_simple_test NAME PATH)
   gtest_discover_tests(${NAME})
 endfunction()
 
+add_simple_test(bst_utils_test bst_utils_test.cpp)
 add_simple_test(dijkstra_test graph/dijkstra_test.cpp)
 add_simple_test(flow_test graph/flow_test.cpp)
 add_simple_test(geometry_test geometry_test.cpp)

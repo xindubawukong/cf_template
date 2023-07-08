@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 
+#include "bst_utils.h"
 #include "gtest/gtest.h"
 
 struct Info {
@@ -43,24 +44,14 @@ TEST(TreapTest, BasicTest) {
       return 1;
     });
     ASSERT_EQ(t2, nullptr);
-    auto x = new Treap<Info>::Node(Info(a[i]));
-    treap.root = treap.Join(t1, x, t3);
+    t2 = new Treap<Info>::Node(Info(a[i]));
+    treap.root = treap.Join(t1, t2, t3);
   }
   EXPECT_EQ(n, treap.root->info.size);
-  std::vector<int> b;
-  treap.Tranverse(treap.root, [&](auto &info) { b.push_back(info.val); });
-  EXPECT_EQ(a, b);
 
-  for (int i = 0; i < n; i++) {
-    auto path = treap.Search([&](auto &info) {
-      if (a[i] < info.val) return -1;
-      if (a[i] == info.val) return 0;
-      return 1;
-    });
-    EXPECT_FALSE(path.empty());
-    for (int j = 0; j < path.size() - 1; j++) {
-      EXPECT_TRUE(path[j]->lch == path[j + 1] || path[j]->rch == path[j + 1]);
-    }
-    EXPECT_EQ(a[i], path.back()->info.val);
+  for (int k = 1; k <= n; k++) {
+    auto [t1, t2, t3] = treap.SplitKth(treap.root, k);
+    EXPECT_EQ(a[k - 1], t2->info.val);
+    treap.root = treap.Join(t1, t2, t3);
   }
 }

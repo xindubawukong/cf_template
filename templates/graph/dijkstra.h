@@ -2,6 +2,7 @@
 #define DIJKSTRA_H_
 
 #include <algorithm>
+#include <cassert>
 #include <limits>
 #include <queue>
 #include <tuple>

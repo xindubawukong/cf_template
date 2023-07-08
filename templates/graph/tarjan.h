@@ -2,6 +2,7 @@
 #define TARJAN_H_
 
 #include <algorithm>
+#include <cassert>
 #include <functional>
 #include <stack>
 #include <vector>
