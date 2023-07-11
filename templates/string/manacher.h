@@ -1,20 +1,24 @@
 #ifndef MANACHER_H_
 #define MANACHER_H_
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
-// s = "a     b     a     a     b"
-// t = [0, 0, 1, 0, 0, 2, 0, 0, 0]
+//    s: "a b a a a"
+//  odd: [0,1,0,1,0]
+// even: [0,0,1,1]
 template <typename Seq>
-std::vector<int> Manacher(const Seq& s) {
+std::pair<std::vector<int>, std::vector<int>> Manacher(const Seq& s) {
+  int n = s.size();
+  assert(*std::min_element(s.begin(), s.end()) >= 0);
   std::vector<int> t;
   std::vector<int> p;
-  t.reserve(s.size() * 2 + 1);
+  t.reserve(n * 2 + 1);
   t.push_back(-1);
-  for (int i = 0; i < s.size(); i++) {
+  for (int i = 0; i < n; i++) {
     t.push_back(s[i]);
-    if (i < s.size() - 1) t.push_back(-2);
+    if (i < n - 1) t.push_back(-2);
   }
   t.push_back(-3);
   p.resize(t.size());
@@ -32,14 +36,14 @@ std::vector<int> Manacher(const Seq& s) {
       right = i + p[i];
     }
   }
-  t.resize(s.size() * 2 - 1);
-  for (int i = 0; i < s.size(); i++) {
-    t[i * 2] = p[i * 2 + 1] / 2;
-    if (i < s.size() - 1) {
-      t[i * 2 + 1] = (p[i * 2 + 2] + 1) / 2;
+  std::vector<int> odd(n), even(n - 1);
+  for (int i = 0; i < n; i++) {
+    odd[i] = p[i * 2 + 1] / 2;
+    if (i < n - 1) {
+      even[i] = (p[i * 2 + 2] + 1) / 2;
     }
   }
-  return t;
+  return {odd, even};
 }
 
 #endif  // MANACHER_H_

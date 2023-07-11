@@ -22,7 +22,7 @@ struct SplayTree {
   struct Node {
     Info info;
     Node *lch, *rch, *fa;
-    Node(Info info_) : info(info_){};
+    Node(Info info_) :lch(nullptr),rch(nullptr), fa(nullptr), info(info_){};
   };
   Node* root;
   SplayTree() : root(nullptr) {}
@@ -35,6 +35,7 @@ struct SplayTree {
       x->info.PushDown();
     }
   }
+  // t == y->lch
   void Zig(Node* t) {
     auto y = t->fa;
     PushDown(y), PushDown(t);
@@ -49,6 +50,7 @@ struct SplayTree {
     y->fa = t;
     Update(y), Update(t);
   }
+  // t == y->rch
   void Zag(Node* t) {
     auto y = t->fa;
     PushDown(y), PushDown(t);
