@@ -11,8 +11,8 @@ struct Info {
     return reinterpret_cast<SplayTree<Info>::Node*>(this);
   }
   bool rev;
-  int id, faid;
-  Info() : rev(false), faid(-1) {}
+  int id, upid;
+  Info() : rev(false), upid(-1) {}
   void Reverse() {
     auto x = Node();
     swap(x->lch, x->rch);
@@ -21,8 +21,8 @@ struct Info {
   bool NeedPushDown() { return rev; }
   void PushDown() {
     auto lch = Node()->lch, rch = Node()->rch;
-    if (lch) lch->info.Reverse();
-    if (rch) rch->info.Reverse();
+    if (lch) lch->Reverse();
+    if (rch) rch->Reverse();
     rev = false;
   }
   void Update() {}
@@ -50,23 +50,17 @@ struct LCT {
     auto y = x;
     while (y->fa) y = y->fa;
     splay.Splay(x);
-    swap(x->info.faid, y->info.faid);
+    swap(x->upid, y->upid);
   }
   void Splay(int x) { Splay(node[x]); }
   void Access(Node* x) {
     for (Node* y = nullptr; x;
-         y = x, x = x->info.faid == -1 ? nullptr : node[x->info.faid]) {
+         y = x, x = x->upid == -1 ? nullptr : node[x->upid]) {
       Splay(x);
       splay.PushDown(x);
-      if (x->rch) {
-        x->rch->fa = nullptr;
-        x->rch->info.faid = x->info.id;
-      }
+      if (x->rch) x->rch->fa = nullptr, x->rch->upid = x->id;
       x->rch = y;
-      if (y) {
-        y->fa = x;
-        y->info.faid = -1;
-      }
+      if (y) y->fa = x, y->upid = -1;
       splay.Update(x);
     }
   }
@@ -81,16 +75,16 @@ struct LCT {
     Splay(x);
     return x;
   }
-  int GetRoot(int x) { return GetRoot(node[x])->info.id; }
+  int GetRoot(int x) { return GetRoot(node[x])->id; }
   void MakeRoot(Node* x) {
     Access(x);
     Splay(x);
-    x->info.Reverse();
+    x->Reverse();
   }
   void MakeRoot(int x) { MakeRoot(node[x]); }
   void Link(Node* x, Node* y) {
     MakeRoot(x);
-    x->info.faid = y->info.id;
+    x->upid = y->id;
   }
   void Link(int x, int y) { Link(node[x], node[y]); }
   void Cut(Node* x, Node* y) {
@@ -98,7 +92,7 @@ struct LCT {
     Access(y);
     Splay(y);
     x->fa = y->lch = nullptr;
-    x->info.faid = -1;
+    x->upid = -1;
   }
   void Cut(int x, int y) { Cut(node[x], node[y]); }
 };
