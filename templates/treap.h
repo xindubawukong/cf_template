@@ -24,42 +24,37 @@ struct Info {
 template <typename Info>
 struct Treap {
   using info_t = Info;
-  struct Node {
-    Info info;
+  struct Node : public Info {
     unsigned int priority;
     int ts;
     Node *lch, *rch;
-    Node(Info info_, int ts_ = 0)
-        : ts(ts_), lch(nullptr), rch(nullptr), info(info_) {
+    Node(Info info, int ts_ = 0)
+        : Info(info), ts(ts_), lch(nullptr), rch(nullptr) {
       static std::mt19937 rng(0);
       priority = rng();
     }
     // when copying a node, must be in persist mode
-    Node(Node* x, int ts_)
-        : priority(x->priority),
-          ts(ts_),
-          lch(x->lch),
-          rch(x->rch),
-          info(x->info) {}
+    Node(Node* x, int ts) {
+      *this = *x;
+      this->ts = ts;
+    }
   };
-
   Node* root;
   bool persist;
   int ts;  // plus version if persistence is wanted
   Treap(bool persist_ = false) : root(nullptr), persist(persist_), ts(0) {}
 
   Node* Update(Node* x) {
-    x->info.Update();
+    x->Update();
     return x;
   }
-
   void PushDown(Node* x) {
-    if (x->info.NeedPushDown()) {
+    if (x->NeedPushDown()) {
       if (persist) {
         if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
         if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
       }
-      x->info.PushDown();
+      x->PushDown();
     }
   }
 
@@ -118,7 +113,7 @@ struct Treap {
       if (x->ts != ts) x = new Node(x, ts);
     }
     PushDown(x);
-    auto d = cmp(x->info);
+    auto d = cmp(x);
     if (d == 0) {
       auto l = x->lch, r = x->rch;
       if (l && l->ts != ts) l = new Node(l, ts);

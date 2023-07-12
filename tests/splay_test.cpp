@@ -32,7 +32,7 @@ TEST(SplayTest, BasicTest) {
     info.val = val;
     auto x = new SplayTree<Info>::Node(info);
     auto [dir, path] =
-        bst::SearchPath(splay, [&](Info& info) { return val - info.val; });
+        bst::SearchPath(splay, [&](Info* info) { return val - info->val; });
     EXPECT_NE(0, dir);
     EXPECT_TRUE(dir == -1 || dir == 1);
     if (path.empty()) {
@@ -50,7 +50,7 @@ TEST(SplayTest, BasicTest) {
   }
 
   std::vector<int> b;
-  bst::Tranverse(splay, [&](Info& info) { b.push_back(info.val); });
+  bst::Tranverse(splay, [&](Info* info) { b.push_back(info->val); });
   for (int i = 0; i < n; i++) {
     EXPECT_EQ(i, b[i]);
   }

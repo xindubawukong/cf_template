@@ -19,20 +19,19 @@ struct Info {
 template <typename Info>
 struct SplayTree {
   using info_t = Info;
-  struct Node {
-    Info info;
+  struct Node: public Info {
     Node *lch, *rch, *fa;
-    Node(Info info_) :lch(nullptr),rch(nullptr), fa(nullptr), info(info_){};
+    Node(Info info) :Info(info), lch(nullptr),rch(nullptr), fa(nullptr){};
   };
   Node* root;
   SplayTree() : root(nullptr) {}
   Node* Update(Node* x) {
-    x->info.Update();
+    x->Update();
     return x;
   }
   void PushDown(Node* x) {
-    if (x->info.NeedPushDown()) {
-      x->info.PushDown();
+    if (x->NeedPushDown()) {
+      x->PushDown();
     }
   }
   // t == y->lch

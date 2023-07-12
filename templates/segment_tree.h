@@ -19,14 +19,15 @@ struct Info {
 
 template <typename Info>
 struct SegmentTree {
-  struct Node {
-    Info info;
+  struct Node : public Info {
     int l, r, ts;
     Node *lch, *rch;
     Node(int l_, int r_, int ts_ = 0)
         : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {}
-    Node(Node* x, int ts_)
-        : l(x->l), r(x->r), ts(ts_), lch(x->lch), rch(x->rch), info(x->info) {}
+    Node(Node* x, int ts) {
+      *this = *x;
+      this->ts = ts;
+    }
   };
 
   int l_range, r_range;
@@ -39,12 +40,12 @@ struct SegmentTree {
   }
 
   void PushDown(Node* x) {
-    if (x->info.NeedPushDown()) {
+    if (x->NeedPushDown()) {
       if (persist) {
         if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
         if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
       }
-      x->info.PushDown();
+      x->PushDown();
     }
   }
 
@@ -83,11 +84,11 @@ struct SegmentTree {
     assert(l_range <= p && p <= r_range);
     auto nodes = GetAllNodes(p, r_range);
     for (auto x : nodes) {
-      if (f(x->info)) {
+      if (f(x)) {
         while (x->r > x->l) {
-          assert(f(x->info));
+          assert(f(x));
           PushDown(x);
-          if (x->lch && f(x->lch->info)) {
+          if (x->lch && f(x->lch)) {
             x = x->lch;
           } else {
             x = x->rch;
@@ -105,11 +106,11 @@ struct SegmentTree {
     auto nodes = GetAllNodes(l_range, p);
     reverse(nodes.begin(), nodes.end());
     for (auto x : nodes) {
-      if (f(x->info)) {
+      if (f(x)) {
         while (x->r > x->l) {
-          assert(f(x->info));
+          assert(f(x));
           PushDown(x);
-          if (x->rch && f(x->rch->info)) {
+          if (x->rch && f(x->rch)) {
             x = x->rch;
           } else {
             x = x->lch;
@@ -126,7 +127,7 @@ struct SegmentTree {
     if (!x) return;
     PushDown(x);
     if (x->l == x->r) {
-      f(x->info);
+      f(x);
       return;
     }
     TranverseLeaf(x->lch, f);
@@ -137,7 +138,7 @@ struct SegmentTree {
   void TranverseAllNode(Node* x, F f) {
     if (!x) return;
     PushDown(x);
-    f(x->info);
+    f(x);
     TranverseAllNode(x->lch, f);
     TranverseAllNode(x->rch, f);
   }
@@ -146,13 +147,13 @@ struct SegmentTree {
   static Node* BuildTree(int l, int r, F f) {
     Node* x = new Node(l, r);
     if (l == r) {
-      f(l, x->info);
+      f(l, x);
       return x;
     }
     int m = l + (r - l) / 2;
     x->lch = BuildTree(l, m, f);
     x->rch = BuildTree(m + 1, r, f);
-    x->info.Update();
+    x->Update();
     return x;
   }
 
@@ -172,7 +173,7 @@ struct SegmentTree {
       x = new Node(x, ts);
     }
     if (from <= l && r <= to) {
-      f(x->info);
+      f(x);
       return x;
     }
     PushDown(x);
@@ -183,7 +184,7 @@ struct SegmentTree {
     if (to > m) {
       x->rch = Modify(x->rch, m + 1, r, from, to, f);
     }
-    x->info.Update();
+    x->Update();
     return x;
   }
 };

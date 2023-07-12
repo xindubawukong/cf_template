@@ -27,7 +27,7 @@ typename Tree::Node* Search(Tree& tree, Cmp cmp) {
   auto x = tree.root;
   while (x) {
     tree.PushDown(x);
-    int t = cmp(x->info);
+    int t = cmp(x);
     if (t < 0) {
       x = x->lch;
     } else if (t == 0) {
@@ -50,7 +50,7 @@ std::pair<int, std::vector<typename Tree::Node*>> SearchPath(Tree& tree,
   while (x) {
     tree.PushDown(x);
     res.push_back(x);
-    int t = cmp(x->info);
+    int t = cmp(x);
     if (t < 0) {
       x = x->lch;
       dir = -1;
@@ -69,9 +69,9 @@ struct KthCmp {
   KthCmp(int k_) : k(k_) {}
   int k;
   auto operator()() {
-    return [&](Info& info) {
-      auto x = info.Node();
-      int left = x->lch ? x->lch->info.size : 0;
+    return [&](Info* info) {
+      auto x = info->Node();
+      int left = x->lch ? x->lch->size : 0;
       if (k <= left) return -1;
       if (k == left + 1) return 0;
       k -= left + 1;
@@ -88,10 +88,9 @@ typename Tree::Node* SearchKth(Tree& tree, int k) {
 template <typename Tree, typename Cmp>
 int GetRank(Tree& tree, Cmp cmp) {
   int less = 0;
-  auto rank_cmp = [&](typename Tree::info_t& info) {
-    auto x = info.Node();
-    int left = x->lch ? x->lch->info.size : 0;
-    int t = cmp(info);
+  auto rank_cmp = [&](typename Tree::Node* x) {
+    int left = x->lch ? x->lch->size : 0;
+    int t = cmp(x);
     if (t == 0) {
       less += left;
     } else if (t > 0) {
@@ -109,7 +108,7 @@ void Tranverse(Tree& tree, F f) {
     if (!x) return;
     tree.PushDown(x);
     Go(x->lch);
-    f(x->info);
+    f(x);
     Go(x->rch);
   };
   Go(tree.root);

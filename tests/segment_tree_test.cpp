@@ -5,8 +5,8 @@
 #include "gtest/gtest.h"
 
 struct Info {
-  SegmentTree<Info>::Node *Node() {
-    return reinterpret_cast<SegmentTree<Info>::Node *>(this);
+  SegmentTree<Info>::Node* Node() {
+    return reinterpret_cast<SegmentTree<Info>::Node*>(this);
   }
   unsigned int sum, tag;
   Info() : sum(0), tag(0) {}
@@ -17,22 +17,14 @@ struct Info {
   }
   void PushDown() {
     assert(tag > 0);
-    if (Node()->lch) {
-      Node()->lch->info.Plus(tag);
-    }
-    if (Node()->rch) {
-      Node()->rch->info.Plus(tag);
-    }
+    if (Node()->lch) Node()->lch->Plus(tag);
+    if (Node()->rch) Node()->rch->Plus(tag);
     tag = 0;
   }
   void Update() {
     sum = 0;
-    if (Node()->lch) {
-      sum += Node()->lch->info.sum;
-    }
-    if (Node()->rch) {
-      sum += Node()->rch->info.sum;
-    }
+    if (Node()->lch) sum += Node()->lch->sum;
+    if (Node()->rch) sum += Node()->rch->sum;
   }
 };
 
@@ -45,8 +37,8 @@ TEST(SegmentTreeTest, BasicTest) {
   unsigned int sum = std::accumulate(a.begin(), a.end(), 0u);
   SegmentTree<Info> tree(0, n - 1, false);
   tree.root =
-      tree.BuildTree(0, n - 1, [&](int i, Info &info) { info.sum = a[i]; });
-  EXPECT_EQ(sum, tree.root->info.sum);
+      tree.BuildTree(0, n - 1, [&](int i, Info* info) { info->sum = a[i]; });
+  EXPECT_EQ(sum, tree.root->sum);
 
   int q = rng() % 1000 + 500;
   while (q--) {
@@ -54,7 +46,7 @@ TEST(SegmentTreeTest, BasicTest) {
     if (l > r) std::swap(l, r);
     unsigned int x = rng();
     for (int i = l; i <= r; i++) a[i] += x;
-    tree.Modify(l, r, [&](Info &info) { info.Plus(x); });
+    tree.Modify(l, r, [&](Info* info) { info->Plus(x); });
 
     l = rng() % n, r = rng() % n;
     if (l > r) std::swap(l, r);
@@ -62,7 +54,7 @@ TEST(SegmentTreeTest, BasicTest) {
     for (int i = l; i <= r; i++) x += a[i];
     unsigned int y = 0;
     for (auto node : tree.GetAllNodes(l, r)) {
-      y += node->info.sum;
+      y += node->sum;
     }
     EXPECT_EQ(x, y);
   }

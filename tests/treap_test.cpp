@@ -11,16 +11,16 @@ struct Info {
     return reinterpret_cast<Treap<Info>::Node *>(this);
   }
   int val, size;
-  Info(int val_) : val(val_), size(1) {}
+  Info(int val_ = 0) : val(val_), size(1) {}
   bool NeedPushDown() { return false; }
   void PushDown() {}
   void Update() {
     size = 1;
     if (Node()->lch) {
-      size += Node()->lch->info.size;
+      size += Node()->lch->size;
     }
     if (Node()->rch) {
-      size += Node()->rch->info.size;
+      size += Node()->rch->size;
     }
   }
 };
@@ -39,19 +39,19 @@ TEST(TreapTest, BasicTest) {
   Treap<Info> treap;
   for (int i = 0; i < n; i++) {
     auto [t1, t2, t3] = treap.Split(treap.root, [&](auto &info) {
-      if (a[i] < info.val) return -1;
-      if (a[i] == info.val) return 0;
+      if (a[i] < info->val) return -1;
+      if (a[i] == info->val) return 0;
       return 1;
     });
     ASSERT_EQ(t2, nullptr);
     t2 = new Treap<Info>::Node(Info(a[i]));
     treap.root = treap.Join(t1, t2, t3);
   }
-  EXPECT_EQ(n, treap.root->info.size);
+  EXPECT_EQ(n, treap.root->size);
 
   for (int k = 1; k <= n; k++) {
     auto [t1, t2, t3] = treap.SplitKth(treap.root, k);
-    EXPECT_EQ(a[k - 1], t2->info.val);
+    EXPECT_EQ(a[k - 1], t2->val);
     treap.root = treap.Join(t1, t2, t3);
   }
 }

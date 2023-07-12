@@ -21,8 +21,8 @@ struct Info {
   void Update() {
     size = 1;
     auto lch = Node()->lch, rch = Node()->rch;
-    if (lch) size += lch->info.size;
-    if (rch) size += rch->info.size;
+    if (lch) size += lch->size;
+    if (rch) size += rch->size;
   }
 };
 
@@ -35,13 +35,13 @@ TEST(BSTUtilsTest, BasicTest) {
   bst::BuildTree(treap, 0, n - 1, [&](int i, Info& info) { info.val = a[i]; });
 
   auto CmpVal = [](int val) {
-    return [=](Info& info) { return val - info.val; };
+    return [=](Info* info) { return val - info->val; };
   };
 
   for (int i = 0; i < n; i++) {
     int t = i;
     auto x = bst::Search(treap, CmpVal(t));
-    EXPECT_EQ(t, x->info.val);
+    EXPECT_EQ(t, x->val);
     auto [dir, path] = bst::SearchPath(treap, CmpVal(t));
     EXPECT_EQ(0, dir);
     EXPECT_FALSE(path.empty());
@@ -57,9 +57,10 @@ TEST(BSTUtilsTest, BasicTest) {
     int rank = bst::GetRank(treap, CmpVal(i));
     EXPECT_EQ(i + 1, rank);
     auto x = bst::SearchKth(treap, i + 1);
-    EXPECT_EQ(i, x->info.val);
+    EXPECT_EQ(i, x->val);
   }
 
   std::vector<int> b;
-  bst::Tranverse(treap, [&](Info& info) { b.push_back(info.val); });
+  bst::Tranverse(treap, [&](Info* info) { b.push_back(info->val); });
+  EXPECT_EQ(a, b);
 }
