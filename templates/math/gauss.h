@@ -17,17 +17,17 @@ std::vector<T> Gauss(int n, std::vector<std::vector<T>> a) {
       }
     }
     swap(a[i], a[id]);
-    assert(val > 1e-7);
+    if (abs(val) < 1e-7) continue;
     for (int j = i + 1; j < n; j++) {
       T t = a[j][i] / a[i][i];
       for (int k = i; k <= n; k++) a[j][k] -= t * a[i][k];
     }
   }
   std::vector<T> x(n);
-  x[n - 1] = a[n - 1][n] / a[n - 1][n - 1];
-  for (int i = n - 2; i >= 0; i--) {
+  for (int i = n - 1; i >= 0; i--) {
     T t = 0;
     for (int j = i + 1; j < n; j++) t += a[i][j] * x[j];
+    if (abs(a[i][i]) < 1e-7) continue;
     x[i] = (a[i][n] - t) / a[i][i];
   }
   return x;

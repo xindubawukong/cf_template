@@ -78,7 +78,7 @@ def run_problem(names, no_build):
         # generate problem_A_submit.cpp
         submit = f'{problem}/submit_{problem}.cpp'
         subprocess.call(
-            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E {problem}/{name}.cpp > {submit}', shell=True)
+            f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E -C {problem}/{name}.cpp > {submit}', shell=True)
         f = open('main.cpp', 'r')
         a = f.readlines()
         f.close()
