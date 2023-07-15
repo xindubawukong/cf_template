@@ -12,8 +12,7 @@ struct TComplex {
   }
   TComplex operator+(const TComplex& b) const {
     auto res = *this;
-    res += b;
-    return res;
+    return res += b;
   }
   TComplex& operator-=(const TComplex& b) {
     r -= b.r;
@@ -22,8 +21,7 @@ struct TComplex {
   }
   TComplex operator-(const TComplex& b) const {
     auto res = *this;
-    res -= b;
-    return res;
+    return res -= b;
   }
   TComplex& operator*=(const TComplex& b) {
     auto res = *this;

@@ -5,7 +5,7 @@
 #include <cassert>
 #include <vector>
 
-// mm = max{f(a[i])}
+// sort a[] by f(a[i])>=0 in O(max{f})
 template <typename Seq, typename F>
 void RadixSort(Seq& a, F f) {
   int n = a.size();

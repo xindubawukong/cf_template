@@ -1,6 +1,7 @@
 #ifndef GAUSS_H_
 #define GAUSS_H_
 
+#include <cassert>
 #include <vector>
 
 template <typename T>

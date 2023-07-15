@@ -1,13 +1,13 @@
 #ifndef HASH_STRING_H_
 #define HASH_STRING_H_
 
+#include <cassert>
 #include <string>
 #include <vector>
 
 template <int P0, int M0, int P1, int M1>
 struct DoubleHashingHelper {
   static_assert(P0 > 0 && M0 > 0 && P1 > 0 && M1 > 0);
-
   struct HashString {
     DoubleHashingHelper* helper;
     int n;
@@ -30,15 +30,13 @@ struct DoubleHashingHelper {
       return {h0, h1};
     }
   };
-
   int maxn;
   std::vector<int> f0, f1;
   DoubleHashingHelper() {
     maxn = 0;
     f0 = f1 = {1};
   }
-
-  void Expand(int n) {
+  void ExpandTo(int n) {
     if (n <= maxn) return;
     f0.resize(n + 1);
     f1.resize(n + 1);
@@ -48,9 +46,8 @@ struct DoubleHashingHelper {
     }
     maxn = n;
   }
-
   HashString Create(const std::string& s) {
-    Expand(s.length());
+    ExpandTo(s.length());
     HashString hh;
     hh.n = s.length();
     assert(hh.n <= maxn);
