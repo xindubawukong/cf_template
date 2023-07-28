@@ -32,7 +32,7 @@ TEST(BSTUtilsTest, BasicTest) {
   for (int i = 0; i < n; i++) a[i] = i;
 
   Treap<Info> treap;
-  bst::BuildTree(treap, 0, n - 1, [&](int i, Info& info) { info.val = a[i]; });
+  bst::BuildTree(treap, 0, n - 1, [&](int i, Info* info) { info->val = a[i]; });
 
   auto CmpVal = [](int val) {
     return [=](Info* info) { return val - info->val; };

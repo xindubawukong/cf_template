@@ -7,7 +7,6 @@
 #include <stack>
 #include <vector>
 
-template <typename T = int>
 struct Dsu {
   std::vector<int> fa;
   int n, cnt;

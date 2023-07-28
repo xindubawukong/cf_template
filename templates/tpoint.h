@@ -17,10 +17,10 @@ struct TPoint {
   TPoint(T x_ = 0, T y_ = 0) : x(x_), y(y_) {}
   int Section() const {
     assert(abs(x) > eps || abs(y) > eps);
-    if (x >= 0 && y >= 0) return 1;
-    if (x <= 0 && y >= 0) return 2;
-    if (x <= 0 && y <= 0) return 3;
-    if (x >= 0 && y <= 0) return 4;
+    if (x > 0 && y >= 0) return 1;
+    if (x <= 0 && y > 0) return 2;
+    if (x < 0 && y <= 0) return 3;
+    if (x >= 0 && y < 0) return 4;
     assert(0);
   }
   template <typename Out = T>

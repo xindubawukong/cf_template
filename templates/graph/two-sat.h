@@ -21,7 +21,7 @@ struct TwoSat {
     g.AddEdge({j * 2 + !y, i * 2 + x});
   }
 
-  void Solve() {
+  void Build() {
     TarjanDirected tj(g);
     auto& belong = tj.belong;
     ok = true;

@@ -110,7 +110,7 @@ struct MaxFlow {
 template <typename FlowGraph>
 struct MinCostMaxFlow {
   using flow_t = typename FlowGraph::flow_t;
-  using cost_t = decltype(std::declval<typename FlowGraph::edge_t>().cap);
+  using cost_t = decltype(std::declval<typename FlowGraph::edge_t>().cost);
   FlowGraph& graph;
   MinCostMaxFlow(FlowGraph& graph_) : graph(graph_) {}
 

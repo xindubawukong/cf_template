@@ -74,7 +74,7 @@ TEST(HeavyLightDecompositionTest, BasicTest) {
   EXPECT_EQ(dep, hld.dep);
   for (int tc = 0; tc < 1000; tc++) {
     int u = rng() % n;
-    auto [l, r] = hld.GetSubTreeInterval(u);
+    auto [l, r] = hld.SubTreeInterval(u);
     EXPECT_EQ(r - l + 1, size[u]);
     for (int i = l; i <= r; i++) {
       int v = hld.which[i];
@@ -85,7 +85,7 @@ TEST(HeavyLightDecompositionTest, BasicTest) {
 
   for (int tc = 0; tc < 1000; tc++) {
     int u = rng() % n, v = rng() % n;
-    auto intervals = hld.GetPathIntervals(u, v);
+    auto intervals = hld.PathIntervals(u, v);
     EXPECT_LT(intervals.size(), 30);
     std::set<int> s1;
     for (auto [l, r] : intervals) {

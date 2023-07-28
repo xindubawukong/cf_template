@@ -12,6 +12,7 @@ struct HeavyLightDecomposition {
 
   void Init(int n_) {
     n = n_;
+    go.resize(n);
     size.resize(n);
     dep.resize(n);
     pos.resize(n);
@@ -23,7 +24,6 @@ struct HeavyLightDecomposition {
 
   HeavyLightDecomposition(int n_) : n(n_) {
     assert(n > 0);
-    go.resize(n);
     Init(n);
   }
 
@@ -73,7 +73,7 @@ struct HeavyLightDecomposition {
     assert(cnt == n);
   }
 
-  std::vector<std::pair<int, int>> GetPathIntervals(int u, int v) {
+  std::vector<std::pair<int, int>> PathIntervals(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
     std::vector<std::pair<int, int>> intervals;
     while (up[u] != up[v]) {
@@ -86,7 +86,7 @@ struct HeavyLightDecomposition {
     return intervals;
   }
 
-  std::pair<int, int> GetSubTreeInterval(int u) {
+  std::pair<int, int> SubTreeInterval(int u) {
     return {pos[u], pos[u] + size[u] - 1};
   }
 
@@ -106,11 +106,19 @@ struct HeavyLightDecomposition {
   }
 
   int Jump(int u, int k) {
-    assert(0 <= u && u < n && k >= 0);
-    if (dep[u] < k) return -1;
+    assert(0 <= u && u < n && 0 <= k && k <= dep[u]);
     int d = dep[u] - k;
     while (dep[up[u]] > d) u = fa[up[u]];
     return which[pos[u] - dep[u] + d];
+  }
+
+  int RootedJump(int u, int v, int k) {
+    int d = Dist(u, v);
+    assert(k <= d);
+    int lca = Lca(u, v);
+    int d1 = dep[v] - dep[lca];
+    if (k <= d1) return Jump(v, k);
+    return Jump(u, d - k);
   }
 
   bool IsAncester(int u, int v) {

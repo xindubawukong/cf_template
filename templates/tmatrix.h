@@ -24,9 +24,9 @@ struct TMatrix {
   const std::array<T, n>& operator[](int i) const { return data[i]; }
   TMatrix<T, n> operator*(const TMatrix<T, n>& b) {
     TMatrix<T, n> c;
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
-        for (int k = 0; k < n; k++) {
+    for (int k = 0; k < n; k++) {
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
           c[i][j] += data[i][k] * b[k][j];
         }
       }
