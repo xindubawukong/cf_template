@@ -13,7 +13,7 @@ struct Matching {
   std::vector<std::vector<int>> go;
   std::vector<int> vt, pa, pb;
   Matching(int n_, int m_) : n(n_), m(m_) {
-    assert(n >= 0 && m >= 0);
+    assert(n > 0 && m > 0);
     go.resize(n);
     vt.resize(n, -1);
     pa.resize(n, -1);
@@ -41,7 +41,7 @@ struct Matching {
     }
     return false;
   }
-  int Solve() {
+  int Build() {
     for (int i = 0; i < n; i++) {
       if (pa[i] == -1) {
         ts++;
@@ -62,20 +62,22 @@ struct MaxFlow {
     assert(0 <= s && s < graph.n && 0 <= t && t < graph.n);
     std::vector<int> dep(graph.n);
     std::vector<int> cur(graph.n);
+    auto& go = graph.go;
+    auto& edges = graph.edges;
     auto Bfs = [&]() -> bool {
       std::fill(dep.begin(), dep.end(), -1);
       std::fill(cur.begin(), cur.end(), 0);
       dep[s] = 0;
-      std::queue<int> q;
-      q.push(s);
-      while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-        for (auto eid : graph.go[u]) {
-          auto& e = graph.edges[eid];
+      std::vector<int> q;
+      q.push_back(s);
+      for (int i = 0; i < q.size(); i++) {
+        int u = q[i];
+        for (auto eid : go[u]) {
+          auto& e = edges[eid];
           if (e.cap > graph.eps && dep[e.v] == -1) {
             dep[e.v] = dep[u] + 1;
-            q.push(e.v);
+            q.push_back(e.v);
+            if (e.v == t) return true;
           }
         }
       }
@@ -84,12 +86,13 @@ struct MaxFlow {
     std::function<flow_t(int, flow_t)> Dfs = [&](int u, flow_t flow) {
       if (u == t) return flow;
       flow_t res = 0;
-      for (int& i = cur[u]; i < graph.go[u].size(); i++) {
-        auto eid = graph.go[u][i];
-        auto& e = graph.edges[eid];
-        auto& back = graph.edges[eid ^ 1];
+      for (int& i = cur[u]; i < go[u].size(); i++) {
+        auto eid = go[u][i];
+        auto& e = edges[eid];
+        auto& back = edges[eid ^ 1];
         if (e.cap <= graph.eps || dep[e.v] != dep[u] + 1) continue;
         flow_t df = Dfs(e.v, std::min(e.cap, flow));
+        if (df <= graph.eps) dep[e.v] = -1;
         flow -= df;
         e.cap -= df;
         back.cap += df;
