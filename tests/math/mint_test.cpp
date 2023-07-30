@@ -1,4 +1,4 @@
-#include "mint.h"
+#include "math/mint.h"
 
 #include "gtest/gtest.h"
 

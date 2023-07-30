@@ -1,9 +1,9 @@
-#include "treap.h"
+#include "ds/treap.h"
 
 #include <random>
 #include <vector>
 
-#include "bst_utils.h"
+#include "ds/bst_utils.h"
 #include "gtest/gtest.h"
 
 struct Info {

@@ -1,0 +1,1 @@
+add_simple_test(radix_sort_test)

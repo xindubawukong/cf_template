@@ -1,4 +1,4 @@
-#include "segment_tree.h"
+#include "ds/segment_tree.h"
 
 #include <random>
 

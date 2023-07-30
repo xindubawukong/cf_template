@@ -1,10 +1,10 @@
-#include "splay.h"
+#include "ds/splay.h"
 
 #include <algorithm>
 #include <random>
 #include <vector>
 
-#include "bst_utils.h"
+#include "ds/bst_utils.h"
 #include "gtest/gtest.h"
 
 std::mt19937 rng(

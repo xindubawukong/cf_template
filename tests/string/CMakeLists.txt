@@ -1,0 +1,3 @@
+add_simple_test(hash_string_test)
+add_simple_test(kmp_test)
+add_simple_test(suffix_array_test)

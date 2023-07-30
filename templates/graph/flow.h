@@ -41,7 +41,7 @@ struct Matching {
     }
     return false;
   }
-  int Build() {
+  int Solve() {
     for (int i = 0; i < n; i++) {
       if (pa[i] == -1) {
         ts++;

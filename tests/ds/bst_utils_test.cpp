@@ -1,11 +1,11 @@
-#include "bst_utils.h"
+#include "ds/bst_utils.h"
 
 #include <algorithm>
 #include <random>
 #include <vector>
 
+#include "ds/treap.h"
 #include "gtest/gtest.h"
-#include "treap.h"
 
 std::mt19937 rng(
     std::chrono::high_resolution_clock::now().time_since_epoch().count());
