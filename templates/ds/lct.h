@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "splay.h"
+#include "ds/splay.h"
 
 /*
 struct Info {

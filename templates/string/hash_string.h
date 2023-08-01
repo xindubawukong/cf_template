@@ -14,7 +14,7 @@ struct DoubleHashingHelper {
     std::vector<int> a0, a1;
     HashString() : n(0) {}
     HashString(HashString&& h)
-        : n(h.n), a0(std::move(h.a0)), a1(std::move(h.a1)) {}
+        : helper(h.helper), n(h.n), a0(std::move(h.a0)), a1(std::move(h.a1)) {}
 
     std::pair<int, int> Hash() { return {a0[n - 1], a1[n - 1]}; }
 
