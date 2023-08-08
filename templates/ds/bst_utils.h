@@ -27,7 +27,7 @@ typename Tree::Node* Search(Tree& tree, Cmp cmp) {
   auto x = tree.root;
   while (x) {
     tree.PushDown(x);
-    int t = cmp(x);
+    auto t = cmp(x);
     if (t < 0) {
       x = x->lch;
     } else if (t == 0) {
@@ -50,7 +50,7 @@ std::pair<int, std::vector<typename Tree::Node*>> SearchPath(Tree& tree,
   while (x) {
     tree.PushDown(x);
     res.push_back(x);
-    int t = cmp(x);
+    auto t = cmp(x);
     if (t < 0) {
       x = x->lch;
       dir = -1;

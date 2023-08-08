@@ -68,12 +68,8 @@ struct SegmentTree {
           }
           PushDown(x);
           int m = l + (r - l) / 2;
-          if (from <= m) {
-            GetAllNodes(x->lch, l, m, from, to);
-          }
-          if (to > m) {
-            GetAllNodes(x->rch, m + 1, r, from, to);
-          }
+          if (from <= m) GetAllNodes(x->lch, l, m, from, to);
+          if (to > m) GetAllNodes(x->rch, m + 1, r, from, to);
         };
     GetAllNodes(root, l_range, r_range, from, to);
     return all;
@@ -178,12 +174,8 @@ struct SegmentTree {
     }
     PushDown(x);
     int m = l + (r - l) / 2;
-    if (from <= m) {
-      x->lch = Modify(x->lch, l, m, from, to, f);
-    }
-    if (to > m) {
-      x->rch = Modify(x->rch, m + 1, r, from, to, f);
-    }
+    if (from <= m) x->lch = Modify(x->lch, l, m, from, to, f);
+    if (to > m) x->rch = Modify(x->rch, m + 1, r, from, to, f);
     x->Update();
     return x;
   }

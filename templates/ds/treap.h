@@ -59,8 +59,8 @@ struct Treap {
   }
 
   Node* Join(Node* x, Node* y) {
-    if (x == nullptr) return y;
-    if (y == nullptr) return x;
+    if (!x) return y;
+    if (!y) return x;
     if (persist) {
       if (x->ts != ts) x = new Node(x, ts);
       if (y->ts != ts) y = new Node(y, ts);
@@ -77,10 +77,10 @@ struct Treap {
   }
 
   Node* Join(Node* x, Node* y, Node* z) {
-    if (x == nullptr) return Join(y, z);
-    if (y == nullptr) return Join(x, z);
-    if (z == nullptr) return Join(x, y);
-    assert(y->lch == nullptr && y->rch == nullptr);  // y must be single node
+    if (!x) return Join(y, z);
+    if (!y) return Join(x, z);
+    if (!z) return Join(x, y);
+    assert(!y->lch && !y->rch);  // y must be single node
     if (persist) {
       if (x->ts != ts) x = new Node(x, ts);
       if (y->ts != ts) y = new Node(y, ts);
@@ -106,9 +106,7 @@ struct Treap {
   // cmp(info) > 0: split rch
   template <typename Cmp>
   std::tuple<Node*, Node*, Node*> Split(Node* x, Cmp cmp) {
-    if (x == nullptr) {
-      return {nullptr, nullptr, nullptr};
-    }
+    if (!x) return {nullptr, nullptr, nullptr};
     if (persist) {
       if (x->ts != ts) x = new Node(x, ts);
     }
