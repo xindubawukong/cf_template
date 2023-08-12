@@ -11,9 +11,7 @@
 
 /*
 struct Info {
-  Treap<Info>::Node* Node() {
-    return reinterpret_cast<Treap<Info>::Node*>(this);
-  }
+  auto Node() { return reinterpret_cast<Treap<Info>::Node*>(this); }
   Info() {}
   bool NeedPushDown() { return false; }
   void PushDown() {}

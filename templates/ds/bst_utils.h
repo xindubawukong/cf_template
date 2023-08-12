@@ -13,8 +13,8 @@ void BuildTree(Tree& tree, int l, int r, F f) {
         if (l > r) return nullptr;
         int mid = (l + r) / 2;
         typename Tree::info_t info;
-        f(mid, &info);
         auto x = new typename Tree::Node(info);
+        f(mid, x);
         x->lch = Build(l, mid - 1);
         x->rch = Build(mid + 1, r);
         return tree.Update(x);

@@ -7,9 +7,7 @@
 
 /*
 struct Info {
-  SegmentTree<Info>::Node* Node() {
-    return reinterpret_cast<SegmentTree<Info>::Node*>(this);
-  }
+  auto Node() { return reinterpret_cast<SegmentTree<Info>::Node*>(this); }
   Info() {}
   bool NeedPushDown() { return false; }
   void PushDown() {}
@@ -24,9 +22,9 @@ struct SegmentTree {
     Node *lch, *rch;
     Node(int l_, int r_, int ts_ = 0)
         : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {}
-    Node(Node* x, int ts) {
+    Node(Node* x, int ts_ = 0) {
       *this = *x;
-      this->ts = ts;
+      this->ts = ts_;
     }
   };
 
@@ -52,7 +50,24 @@ struct SegmentTree {
   template <typename F>
   Node* Modify(int from, int to, F f) {
     assert(l_range <= from && from <= to && to <= r_range);
-    root = Modify(root, l_range, r_range, from, to, f);
+    std::function<Node*(Node*, int, int)> Modify = [&](Node* x, int l, int r) {
+      if (!x) {
+        x = new Node(l, r, ts);
+      } else if (persist && x->ts != ts) {
+        x = new Node(x, ts);
+      }
+      if (from <= x->l && x->r <= to) {
+        f(x);
+        return x;
+      }
+      PushDown(x);
+      int m = l + (r - l) / 2;
+      if (from <= m) x->lch = Modify(x->lch, l, m);
+      if (to > m) x->rch = Modify(x->rch, m + 1, r);
+      x->Update();
+      return x;
+    };
+    root = Modify(root, l_range, r_range);
     return root;
   }
 
@@ -121,11 +136,11 @@ struct SegmentTree {
   template <typename F>
   void TranverseLeaf(Node* x, F f) {
     if (!x) return;
-    PushDown(x);
     if (x->l == x->r) {
       f(x);
       return;
     }
+    PushDown(x);
     TranverseLeaf(x->lch, f);
     TranverseLeaf(x->rch, f);
   };
@@ -133,8 +148,8 @@ struct SegmentTree {
   template <typename F>
   void TranverseAllNode(Node* x, F f) {
     if (!x) return;
-    PushDown(x);
     f(x);
+    if (x->l < x->r) PushDown(x);
     TranverseAllNode(x->lch, f);
     TranverseAllNode(x->rch, f);
   }
@@ -158,26 +173,6 @@ struct SegmentTree {
     GC(x->lch);
     GC(x->rch);
     delete x;
-  }
-
- private:
-  template <typename F>
-  Node* Modify(Node* x, int l, int r, int from, int to, F f) {
-    if (!x) {
-      x = new Node(l, r, ts);
-    } else if (persist && x->ts != ts) {
-      x = new Node(x, ts);
-    }
-    if (from <= l && r <= to) {
-      f(x);
-      return x;
-    }
-    PushDown(x);
-    int m = l + (r - l) / 2;
-    if (from <= m) x->lch = Modify(x->lch, l, m, from, to, f);
-    if (to > m) x->rch = Modify(x->rch, m + 1, r, from, to, f);
-    x->Update();
-    return x;
   }
 };
 
