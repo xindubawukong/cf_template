@@ -13,7 +13,7 @@ auto Dijkstra(const Graph& g, int s, F f) {
   assert(g.IsDirected());
   using dist_t = std::invoke_result_t<F, typename Graph::edge_t>;
   std::vector<dist_t> dist(g.n, std::numeric_limits<dist_t>::max());
-  std::vector<int> from(g.n);
+  std::vector<int> from(g.n, -1);
   std::vector<bool> visit(g.n);
   dist[s] = 0;
   auto Cmp = [&](auto& p, auto& q) { return p.second > q.second; };

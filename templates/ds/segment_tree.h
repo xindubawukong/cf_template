@@ -20,7 +20,7 @@ struct SegmentTree {
   struct Node : public Info {
     int l, r, ts;
     Node *lch, *rch;
-    Node(int l_, int r_, int ts_ = 0)
+    Node(int l_ = 0, int r_ = 0, int ts_ = 0)
         : l(l_), r(r_), ts(ts_), lch(nullptr), rch(nullptr) {}
     Node(Node* x, int ts_ = 0) {
       *this = *x;
