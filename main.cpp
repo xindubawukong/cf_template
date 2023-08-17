@@ -32,13 +32,11 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-
 #ifdef LOCAL
 #include "debug.h"
 #else
 #define debug(...) 0
 #endif
-
 using namespace std;
 
 // clang-format off
