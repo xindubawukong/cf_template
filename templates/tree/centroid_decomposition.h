@@ -5,11 +5,11 @@
 #include <vector>
 
 template <typename Graph>
-struct TDC {
+struct CentroidDecomposition {
   int n;
   Graph& graph;
   std::vector<int> dep, boss;
-  TDC(Graph& graph_) : graph(graph_), n(graph_.n) {
+  CentroidDecomposition(Graph& graph_) : graph(graph_), n(graph_.n) {
     assert(n > 0);
     assert(!graph.IsDirected());
     assert(graph.edges.size() == n - 1);
