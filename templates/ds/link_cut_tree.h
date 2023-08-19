@@ -30,12 +30,12 @@ struct Info {
 */
 
 template <typename Info>
-struct LCT {
+struct LinkCutTree {
   using Node = typename SplayTree<Info>::Node;
   int n;
   std::vector<Node*> node;
   SplayTree<Info> splay;
-  LCT(int n_) : n(0) { ExpandTo(n_); }
+  LinkCutTree(int n_) : n(0) { ExpandTo(n_); }
   void ExpandTo(int m) {
     if (m <= n) return;
     node.resize(m);
@@ -92,6 +92,7 @@ struct LCT {
     Access(y);
     Splay(y);
     x->fa = y->lch = nullptr;
+    y->Update();
     x->upid = -1;
   }
   void Cut(int x, int y) { Cut(node[x], node[y]); }

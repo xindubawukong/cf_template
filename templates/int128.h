@@ -60,6 +60,15 @@ struct int128 {
     auto res = *this;
     return res /= b;
   }
+  int128& operator%=(const int128& b) {
+    assert(b.x != 0);
+    x %= b.x;
+    return *this;
+  }
+  int128 operator%(const int128& b) const {
+    auto res = *this;
+    return res %= b;
+  }
   bool operator<(const int128& b) const { return x < b.x; }
   bool operator<=(const int128& b) const { return x <= b.x; }
   bool operator>(const int128& b) const { return x > b.x; }

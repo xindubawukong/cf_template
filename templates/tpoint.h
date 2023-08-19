@@ -35,7 +35,7 @@ struct TPoint {
     Out x = a.x - b.x, y = a.y - b.y;
     return x * x + y * y;
   }
-  long double Dist(const TPoint<T>& a, const TPoint<T>& b) {
+  friend long double Dist(const TPoint<T>& a, const TPoint<T>& b) {
     long double x = a.x - b.x, y = a.y - b.y;
     return sqrt(x * x + y * y);
   }
