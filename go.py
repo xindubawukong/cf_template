@@ -21,7 +21,7 @@ def init_problem(name):
     subprocess.call(f'mkdir -p problem_{name}', shell=True)
     subprocess.call(
         f'touch problem_{name}/{name}.cpp && touch problem_{name}/{name}.in', shell=True)
-    with open('main.cpp', 'r') as f:
+    with open('./templates/main.cpp', 'r') as f:
         template = f.read()
     # template = template.replace('main.in', f'../problem_{name}/{name}.in')
     # template = template.replace('main.out', f'../problem_{name}/{name}.out')
@@ -74,7 +74,7 @@ def run_problem(names, no_build):
     submit = f'{problem}/submit_{name}.cpp'
     subprocess.call(
         f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E {temp} > {submit}', shell=True)
-    f = open('main.cpp', 'r')
+    f = open('./templates/main.cpp', 'r')
     a = f.readlines()
     f.close()
     id = -1
