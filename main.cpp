@@ -35,10 +35,9 @@
 #ifdef LOCAL
 #include "debug.h"
 #else
-#define debug(...) 0
+#define debug(...)
 #endif
 using namespace std;
-
 // clang-format off
 using int64 = long long;
 using uint = unsigned int;
@@ -47,16 +46,9 @@ template <typename T> bool ckmin(T& a, T b) { return b < a ? a = b, 1 : 0; }
 template <typename T> bool ckmax(T& a, T b) { return b > a ? a = b, 1 : 0; }
 // clang-format on
 
-// mt19937 rng(0);
-// mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
-
 // ----------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
-#ifdef LOCAL
-  freopen("main.in", "r", stdin);
-  // freopen("main.out", "w", stdout);
-#endif
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
