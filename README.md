@@ -4,7 +4,7 @@ https://github.com/xindubawukong/cf_template
 
 Templates for writing competitive programming problems in C++.
 
-## Dependencies
+<!-- ## Dependencies
 
 - Cmake >= 3.15
 - gcc 12 or clang 14
@@ -64,4 +64,4 @@ $ ctest
 
 - <a href="https://clist.by/coder/xindubawukong/">xindubawukong (CLIST)</a>
 - <a href="https://codeforces.com/profile/xindubawukong">xindubawukong (Codeforces)</a>
-- <a href="https://atcoder.jp/users/xindubawukong">xindubawukong (AtCoder)</a>
+- <a href="https://atcoder.jp/users/xindubawukong">xindubawukong (AtCoder)</a> -->

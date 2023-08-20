@@ -93,7 +93,6 @@ def run_problem(names, no_build):
     for line in now:
         if not line.startswith('#include'):
             b.append(line)
-    print(b)
     f = open(f'{submit}', 'w')
     for i in range(len(b)):
         if i < len(b) - 1 and b[i] == '\n' and b[i + 1] == '\n':
