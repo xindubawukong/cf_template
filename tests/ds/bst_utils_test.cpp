@@ -47,7 +47,7 @@ TEST(BSTUtilsTest, BasicTest) {
     EXPECT_FALSE(path.empty());
     EXPECT_EQ(treap.root, path[0]);
     EXPECT_EQ(x, path.back());
-    for (int i = 0; i < path.size() - 1; i++) {
+    for (int i = 0; i < (int)path.size() - 1; i++) {
       auto x = path[i], y = path[i + 1];
       EXPECT_TRUE(y == x->lch || y == x->rch);
     }

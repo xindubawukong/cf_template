@@ -11,21 +11,23 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_compile_options(-DLOCAL)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+set(WarningOptions
+-Wall -Wextra -pedantic -O2
+-Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
+-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
+-fsanitize=address -fsanitize=undefined -fno-sanitize-recover -fstack-protector
+)
+add_compile_options(${WarningOptions})
+add_link_options(${WarningOptions})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(templates)
 
-option(XdbwkCfTemplate_BuildTest "" ON)
-if(${XdbwkCfTemplate_BuildTest})
-  enable_testing()
-  add_subdirectory(googletest)
-  add_subdirectory(tests)
-endif()
-
-option(XdbwkCfTemplate_IncludeParlay "" OFF)
-if(${XdbwkCfTemplate_IncludeParlay})
-  add_subdirectory(parlaylib)
-endif()
+enable_testing()
+add_subdirectory(googletest)
+# add_subdirectory(parlaylib)
+add_subdirectory(tests)
 
 file(GLOB problems true problem_*)
 foreach(problem ${problems})

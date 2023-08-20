@@ -195,9 +195,8 @@ struct Geometry {
       return sum <= Point::eps;
     }
     bool IsConvex() {
-      assert(this->ps.size() >= 2);
-      auto& ps = this->ps;
-      if (this->IsClockwise()) {
+      assert(ps.size() >= 2);
+      if (IsClockwise()) {
         std::reverse(ps.begin(), ps.end());
       }
       int n = ps.size();

@@ -116,7 +116,7 @@ struct FlowGraph : public DirectedGraph<Edge> {
   using flow_t = decltype(std::declval<Edge>().cap);
   FlowGraph(int n_) : DirectedGraph<Edge>(n_) {}
   static const flow_t eps = (flow_t)1e-7;
-  virtual void AddEdge(Edge e) { assert(false); }
+  virtual void AddEdge(Edge) { assert(false); }
   void AddFlowEdge(Edge e) {
     DirectedGraph<Edge>::AddEdge(e);
     std::swap(e.u, e.v);

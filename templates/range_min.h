@@ -14,7 +14,7 @@ struct RMQ {
   RMQ(const Seq& a_, const Less& less_ = {}) : a(a_), less(less_), n(a.size()) {
     log.resize(n + 1);
     log[1] = 0;
-    for (int i = 2, x = 0; i <= n; i++) {
+    for (int i = 2; i <= n; i++) {
       if (i == (i & -i)) {
         log[i] = log[i - 1] + 1;
       } else {

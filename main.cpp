@@ -48,7 +48,7 @@ template <typename T> bool ckmax(T& a, T b) { return b > a ? a = b, 1 : 0; }
 
 // ----------------------------------------------------------------------
 
-int main(int argc, char* argv[]) {
+int main(int, char**) {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 

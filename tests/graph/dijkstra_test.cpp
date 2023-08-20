@@ -11,7 +11,7 @@ struct Edge {
 };
 
 TEST(DijkstraTest, BasicTest) {
-  int n = 4, m = 6, s = 0;
+  int n = 4, s = 0;
   std::vector<std::array<int, 3>> edges = {{0, 1, 2}, {1, 2, 2}, {1, 3, 1},
                                            {0, 2, 5}, {2, 3, 3}, {0, 3, 4}};
   DirectedGraph<Edge> g(n);

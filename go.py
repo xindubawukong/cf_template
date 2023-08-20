@@ -27,14 +27,7 @@ def init_problem(name):
     # template = template.replace('main.out', f'../problem_{name}/{name}.out')
     with open(f'problem_{name}/{name}.cpp', 'w') as f:
         f.write(template)
-    cmake_content = f'''
-        cmake_minimum_required(VERSION 3.15.0)
-        project(problem_{name} VERSION 0.1.0)
-
-        add_executable(problem_{name} {name}.cpp)
-        if(${{XdbwkCfTemplate_IncludeParlay}})
-            target_link_libraries(problem_{name} PUBLIC parlay)
-        endif()
+    cmake_content = f'''cmake_minimum_required(VERSION 3.15.0)\nproject(problem_{name} VERSION 0.1.0)\nadd_executable(problem_{name} {name}.cpp)
     '''
     with open(f'problem_{name}/CMakeLists.txt', 'w') as f:
         f.write(cmake_content)
@@ -52,6 +45,14 @@ def run_problem(names, no_build):
     if outfile != '':
         outfile = '>' + f'{problem}/' + outfile
     subprocess.call(f'mkdir -p build', shell=True)
+
+    # build and run
+    make_str = f'cmake .. && make -j8 {problem}'
+    if no_build:
+        make_str = ':'
+    run_str = f'/usr/local/bin/time -v ./build/{problem}/{problem} {infile} {outfile} 2> ./build/{problem}/{problem}_run.txt'
+    subprocess.call(
+        f'cd build && {make_str} && cd .. && {run_str}', shell=True)
 
     # generate submit_A.cpp
     f = open(f'./{problem}/{name}.cpp', 'r')
@@ -99,14 +100,6 @@ def run_problem(names, no_build):
             continue
         f.write(b[i])
     f.close()
-
-    # build and run
-    make_str = f'cmake .. && make -j8 {problem}'
-    if no_build:
-        make_str = ':'
-    subprocess.call(f'cd build && {make_str}', shell=True)
-    run_str = f'/usr/local/bin/time -v ./build/{problem}/{problem} {infile} {outfile} 2> ./build/{problem}/{problem}_run.txt'
-    subprocess.call(f'{run_str}', shell=True)
 
     # print time and memory
     if not no_build:

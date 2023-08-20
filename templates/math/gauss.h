@@ -6,8 +6,8 @@
 
 template <typename T>
 std::vector<T> Gauss(int n, std::vector<std::vector<T>> a) {
-  assert(n > 0 && a.size() == n);
-  for (int i = 0; i < n; i++) assert(a[i].size() == n + 1);
+  assert(n > 0 && (int)a.size() == n);
+  for (int i = 0; i < n; i++) assert((int)a[i].size() == n + 1);
   for (int i = 0; i < n; i++) {
     int id = i;
     T val = abs(a[i][i]);

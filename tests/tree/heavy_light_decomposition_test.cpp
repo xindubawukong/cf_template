@@ -26,7 +26,7 @@ auto Bfs(int n, auto &go, int root) {
   fa[root] = -1;
   dep[root] = 0;
   que.push_back(root);
-  for (int i = 0; i < que.size(); i++) {
+  for (int i = 0; i < (int)que.size(); i++) {
     int u = que[i];
     for (int v : go[u]) {
       if (v == fa[u]) continue;
@@ -35,7 +35,7 @@ auto Bfs(int n, auto &go, int root) {
       que.push_back(v);
     }
   }
-  assert(que.size() == n);
+  assert((int)que.size() == n);
   for (int i = n - 1; i >= 0; i--) {
     int u = que[i];
     size[u] = 1;

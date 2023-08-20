@@ -70,7 +70,7 @@ struct MaxFlow {
       dep[s] = 0;
       std::vector<int> q;
       q.push_back(s);
-      for (int i = 0; i < q.size(); i++) {
+      for (int i = 0; i < (int)q.size(); i++) {
         int u = q[i];
         for (auto eid : go[u]) {
           auto& e = edges[eid];
@@ -86,7 +86,7 @@ struct MaxFlow {
     std::function<flow_t(int, flow_t)> Dfs = [&](int u, flow_t flow) {
       if (u == t) return flow;
       flow_t res = 0;
-      for (int& i = cur[u]; i < go[u].size(); i++) {
+      for (int& i = cur[u]; i < (int)go[u].size(); i++) {
         auto eid = go[u][i];
         auto& e = edges[eid];
         auto& back = edges[eid ^ 1];

@@ -10,15 +10,15 @@ struct uint128 {
   uint128(__uint128_t x_ = 0) : x(x_) {}
   operator std::string() const {
     if (x == 0) return "0";
-    auto t = x;
-    std::vector<int> a;
-    while (t > 0) {
-      a.push_back(t % 10);
-      t /= 10;
+    auto y = x;
+    std::vector<char> a;
+    while (y > 0) {
+      a.push_back(y % 10);
+      y /= 10;
     }
     reverse(a.begin(), a.end());
     std::string s;
-    for (int t : a) s += '0' + t;
+    for (auto t : a) s += '0' + t;
     return s;
   }
 };
@@ -91,7 +91,7 @@ struct int128 {
     int i = 0, sign = 1;
     if (s[0] == '-') sign = -1, i = 1;
     a.x = 0;
-    while (i < s.length()) {
+    while (i < (int)s.length()) {
       a.x = a.x * 10 + s[i] - '0';
       i++;
     }

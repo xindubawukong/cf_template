@@ -29,12 +29,13 @@ void SAPreProcess(Seq& a) {
 
 template <typename Seq>
 Seq SAComputeHeight(const Seq& a, const Seq& sa, const Seq& rank) {
-  int n = sa.size();
+  int n = a.size();
+  assert((int)sa.size() == n && (int)rank.size() == n);
   Seq lcp(n);
   for (int i = 0, p = 0; i < n; i++) {
     if (rank[i] == 0) continue;
     int j = sa[rank[i] - 1];
-    while (a[i + p] == a[j + p]) p++;
+    while (i + p < n && j + p < n && a[i + p] == a[j + p]) p++;
     lcp[rank[i]] = p;
     if (p) p--;
   }
@@ -93,7 +94,7 @@ std::vector<int> SuffixArrayDC3(const Seq& s) {
   RadixSort(a12, [&](auto i) { return ss[i + 1]; });
   RadixSort(a12, [&](auto i) { return ss[i]; });
   std::vector<int> same(a12.size());
-  for (int i = 0; i < a12.size(); i++) {
+  for (int i = 0; i < (int)a12.size(); i++) {
     if (i == 0) {
       same[i] = 1;
     } else {
@@ -102,18 +103,18 @@ std::vector<int> SuffixArrayDC3(const Seq& s) {
           ss[p] != ss[q] || ss[p + 1] != ss[q + 1] || ss[p + 2] != ss[q + 2];
     }
   }
-  for (int i = 1; i < same.size(); i++) same[i] += same[i - 1];
+  for (int i = 1; i < (int)same.size(); i++) same[i] += same[i - 1];
   auto sum = same.back();
   // if can not sort by 3 characters, call DC3 recursively
   if (sum < m / 3 * 2) {
     auto tao = std::vector<int>(m);
-    for (int i = 0; i < a12.size(); i++) tao[a12[i]] = same[i];
+    for (int i = 0; i < (int)a12.size(); i++) tao[a12[i]] = same[i];
     for (int i = 0; i < m / 3; i++) {
       a12[i] = tao[i * 3 + 1];
       a12[i + m / 3] = tao[i * 3 + 2];
     }
     a12 = SuffixArrayDC3(a12);
-    for (int i = 0; i < a12.size(); i++) {
+    for (int i = 0; i < (int)a12.size(); i++) {
       if (a12[i] < m / 3) {
         a12[i] = a12[i] * 3 + 1;
       } else {
@@ -122,7 +123,7 @@ std::vector<int> SuffixArrayDC3(const Seq& s) {
     }
   }
   std::vector<int> rank(m);
-  for (int i = 0; i < a12.size(); i++) rank[a12[i]] = i;
+  for (int i = 0; i < (int)a12.size(); i++) rank[a12[i]] = i;
   std::vector<int> a0(m / 3);
   for (int i = 0; i < m / 3; i++) a0[i] = i * 3;
   RadixSort(a0, [&](auto i) { return rank[i + 1]; });
@@ -142,8 +143,8 @@ std::vector<int> SuffixArrayDC3(const Seq& s) {
   auto Push = [&](int x) {
     if (x < n) a.push_back(x);
   };
-  for (int i = 0, j = 0; i < a0.size() || j < a12.size();) {
-    if (j == a12.size() || (i < a0.size() && cmp(a0[i], a12[j]))) {
+  for (int i = 0, j = 0; i < (int)a0.size() || j < (int)a12.size();) {
+    if (j == (int)a12.size() || (i < (int)a0.size() && cmp(a0[i], a12[j]))) {
       Push(a0[i++]);
     } else {
       Push(a12[j++]);

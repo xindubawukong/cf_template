@@ -17,8 +17,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "int128.h"
-
 #define SHOULD_PRINT
 #define COLOR_PRINT
 
@@ -324,7 +322,7 @@ std::string PrintTupleElements(const T& t, const Args&... rest) {
 }
 
 template <typename T, std::size_t... Is>
-std::string PrintTuple(const T& a, index_seq<Is...> s) {
+std::string PrintTuple(const T& a, index_seq<Is...>) {
   return PrintTupleElements(std::get<Is>(a)...);
 }
 

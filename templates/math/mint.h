@@ -71,7 +71,7 @@ struct MInt {
     auto res = *this;
     return res /= b;
   }
-  friend MInt<P> operator*(long long x, const MInt<P>& b) { return b * x; }
+  friend MInt<P> operator*(long long t, const MInt<P>& b) { return b * t; }
   operator std::string() const { return std::to_string(x); }
   friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
     output << std::string(a);

@@ -25,19 +25,19 @@ struct Edge {
 };
 
 TEST(FlowTest, MaxFlowTest) {
-  int n = 4, m = 5, s = 3, t = 2;
+  int n = 4, s = 3, t = 2;
   std::vector<std::array<int, 3>> edges = {
       {3, 1, 30}, {3, 2, 20}, {1, 2, 20}, {1, 0, 30}, {0, 2, 30}};
   FlowGraph<Edge> graph(n);
   for (auto [u, v, cap] : edges) {
-    graph.AddFlowEdge(Edge{u, v, cap});
+    graph.AddFlowEdge(Edge{u, v, cap, 0});
   }
   MaxFlow mf(graph);
   EXPECT_EQ(50, mf.Solve(s, t, 1000));
 }
 
 TEST(FlowTest, MinCostMaxFlowTest) {
-  int n = 4, m = 5, s = 3, t = 2;
+  int n = 4, s = 3, t = 2;
   std::vector<std::array<int, 4>> edges = {{3, 1, 30, 2},
                                            {3, 2, 20, 3},
                                            {1, 2, 20, 1},
