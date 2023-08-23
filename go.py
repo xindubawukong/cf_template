@@ -80,7 +80,7 @@ def run_problem(names, no_build):
     f.close()
     id = -1
     for i in range(len(now)):
-        if '--------------------------' in now[i]:
+        if 'using namespace std;' in now[i]:
             id = i
             break
     assert id >= 0
@@ -99,7 +99,7 @@ def run_problem(names, no_build):
     f.close()
     id = -1
     for i in range(len(a)):
-        if '--------------------------' in a[i]:
+        if 'using namespace std;' in a[i]:
             id = i
             break
     assert id >= 0
