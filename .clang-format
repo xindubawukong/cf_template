@@ -1,4 +1,6 @@
 BasedOnStyle: Google
-BreakTemplateDeclarations: MultiLine
-ReferenceAlignment: Left
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AlwaysBreakTemplateDeclarations: MultiLine
 PointerAlignment: Left
+ReferenceAlignment: Left
+
