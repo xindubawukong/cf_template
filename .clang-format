@@ -1,3 +1,4 @@
 BasedOnStyle: Google
+BreakTemplateDeclarations: MultiLine
 ReferenceAlignment: Left
 PointerAlignment: Left
