@@ -5,32 +5,31 @@
 #include <iostream>
 #include <vector>
 
-template <typename T>
-T QuickPower(T a, long long b) {
+template <typename T> T QuickPower(T a, long long b) {
   T res = 1;
   while (b) {
-    if (b & 1) res = res * a;
+    if (b & 1)
+      res = res * a;
     a = a * a;
     b = b >> 1;
   }
   return res;
 }
 
-template <int P>
-struct MInt {
+template <int P> struct MInt {
   static_assert(P > 0);
   int x;
   MInt() : x(0) {}
   MInt(int x_) { x = Adjust(x_ % P); }
   MInt(long long x_) { x = Adjust(x_ % P); }
 
-  int Adjust(int x) {
-    if (x < 0) {
-      x += P;
-    } else if (x >= P) {
-      x -= P;
+  int Adjust(int t) {
+    if (t < 0) {
+      t += P;
+    } else if (t >= P) {
+      t -= P;
     }
-    return x;
+    return t;
   }
 
   MInt<P> Inverse() const {
@@ -38,53 +37,52 @@ struct MInt {
     return QuickPower(*this, P - 2);
   }
 
-  bool operator==(const MInt<P>& b) const { return x == b.x; }
-  MInt<P>& operator+=(const MInt<P>& b) {
+  bool operator==(const MInt<P> &b) const { return x == b.x; }
+  MInt<P> &operator+=(const MInt<P> &b) {
     x = Adjust(x + b.x);
     return *this;
   }
-  MInt<P>& operator-=(const MInt<P>& b) {
+  MInt<P> &operator-=(const MInt<P> &b) {
     x = Adjust(x - b.x);
     return *this;
   }
-  MInt<P>& operator*=(const MInt<P>& b) {
+  MInt<P> &operator*=(const MInt<P> &b) {
     x = (long long)x * b.x % P;
     return *this;
   }
-  MInt<P>& operator/=(const MInt<P>& b) {
+  MInt<P> &operator/=(const MInt<P> &b) {
     (*this) *= b.Inverse();
     return *this;
   }
-  MInt<P> operator+(const MInt<P>& b) const {
+  MInt<P> operator+(const MInt<P> &b) const {
     auto res = *this;
     return res += b;
   }
-  MInt<P> operator-(const MInt<P>& b) const {
+  MInt<P> operator-(const MInt<P> &b) const {
     auto res = *this;
     return res -= b;
   }
-  MInt<P> operator*(const MInt<P>& b) const {
+  MInt<P> operator*(const MInt<P> &b) const {
     auto res = *this;
     return res *= b;
   }
-  MInt<P> operator/(const MInt<P>& b) const {
+  MInt<P> operator/(const MInt<P> &b) const {
     auto res = *this;
     return res /= b;
   }
-  friend MInt<P> operator*(long long t, const MInt<P>& b) { return b * t; }
+  friend MInt<P> operator*(long long t, const MInt<P> &b) { return b * t; }
   operator std::string() const { return std::to_string(x); }
-  friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
+  friend std::ostream &operator<<(std::ostream &output, const MInt<P> &a) {
     output << std::string(a);
     return output;
   }
-  friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
+  friend std::istream &operator>>(std::istream &input, MInt<P> &a) {
     input >> a.x;
     return input;
   }
 };
 
-template <typename mint>
-struct Combination {
+template <typename mint> struct Combination {
   int maxn;
   std::vector<mint> fact, factinv, inv;
   Combination(int maxn_) : maxn(maxn_) {
@@ -102,9 +100,10 @@ struct Combination {
     }
   }
   mint operator()(int n, int m) {
-    if (m > n || m < 0) return 0;
+    if (m > n || m < 0)
+      return 0;
     return fact[n] * factinv[n - m] * factinv[m];
   }
 };
 
-#endif  // MINT_H_
+#endif // MINT_H_

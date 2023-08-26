@@ -15,8 +15,7 @@ struct Info {
 };
 */
 
-template <typename Info>
-struct SegmentTree {
+template <typename Info> struct SegmentTree {
   struct Node : public Info {
     int l, r, ts;
     Node *lch, *rch;
@@ -47,8 +46,7 @@ struct SegmentTree {
     }
   }
 
-  template <typename F>
-  Node* Modify(int from, int to, F f) {
+  template <typename F> Node* Modify(int from, int to, F f) {
     assert(l_range <= from && from <= to && to <= r_range);
     std::function<Node*(Node*, int, int)> Modify = [&](Node* x, int l, int r) {
       if (!x) {
@@ -90,8 +88,7 @@ struct SegmentTree {
     return all;
   }
 
-  template <typename F>
-  int GetFirstAfter(int p, F f) {
+  template <typename F> int GetFirstAfter(int p, F f) {
     assert(l_range <= p && p <= r_range);
     auto nodes = GetAllNodes(p, r_range);
     for (auto x : nodes) {
@@ -111,8 +108,7 @@ struct SegmentTree {
     return -1;
   }
 
-  template <typename F>
-  int GetLastBefore(int p, F f) {
+  template <typename F> int GetLastBefore(int p, F f) {
     assert(l_range <= p && p <= r_range);
     auto nodes = GetAllNodes(l_range, p);
     reverse(nodes.begin(), nodes.end());
@@ -133,8 +129,7 @@ struct SegmentTree {
     return -1;
   }
 
-  template <typename F>
-  void TranverseLeaf(Node* x, F f) {
+  template <typename F> void TranverseLeaf(Node* x, F f) {
     if (!x) return;
     if (x->l == x->r) {
       f(x);
@@ -145,8 +140,7 @@ struct SegmentTree {
     TranverseLeaf(x->rch, f);
   };
 
-  template <typename F>
-  void TranverseAllNode(Node* x, F f) {
+  template <typename F> void TranverseAllNode(Node* x, F f) {
     if (!x) return;
     f(x);
     if (x->l < x->r) PushDown(x);
@@ -154,8 +148,7 @@ struct SegmentTree {
     TranverseAllNode(x->rch, f);
   }
 
-  template <typename F>
-  static Node* BuildTree(int l, int r, F f) {
+  template <typename F> static Node* BuildTree(int l, int r, F f) {
     Node* x = new Node(l, r);
     if (l == r) {
       f(l, x);
