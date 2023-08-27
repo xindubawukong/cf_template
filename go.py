@@ -20,7 +20,8 @@ def clean():
     subprocess.call(f'rm -rf ./submit/*', shell=True)
     subprocess.call(f'rm -rf *.in', shell=True)
     subprocess.call(f'rm -rf *.out', shell=True)
-    subprocess.call(f'touch 1.in', shell=True)
+    subprocess.call(f'rm -rf in', shell=True)
+    subprocess.call(f'touch in', shell=True)
 
 
 def run_problem(name, no_build):
