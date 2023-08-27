@@ -1,7 +1,7 @@
 struct Fenwick {
   int n;
   vector<int> a;
-  Fenwick(int n_) : n(n_) { a.resize(n); }
+  Fenwick(int n_) : n(n_ + 1) { a.resize(n); }
   void Change(int x, int dx) {
     while (x < n) {
       a[x] += dx;
