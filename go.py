@@ -17,7 +17,7 @@ def clean():
         subprocess.call(
             f'cp {file} ./.history/{folder}', shell=True)
         subprocess.call(f'rm -rf {file}', shell=True)
-    subprocess.call(f'rm -rf ./submit/*', shell=True)
+    subprocess.call(f'rm -rf ./zzz/*', shell=True)
     subprocess.call(f'rm -rf *.in', shell=True)
     subprocess.call(f'rm -rf *.out', shell=True)
     subprocess.call(f'rm -rf in', shell=True)
@@ -76,7 +76,7 @@ def run_problem(name, no_build):
         if line.startswith('#include'):
             f.write(line)
     f.close()
-    submit = f'./submit/submit_{name}.cpp'
+    submit = f'./zzz/submit_{name}.cpp'
     subprocess.call(
         f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E {temp} > {submit}', shell=True)
     f = open('./main.cpp', 'r')
