@@ -15,19 +15,19 @@ struct FastInput {
   int p1, p2;
   char buf[n];
   FastInput() : p1(0), p2(0) {}
-  inline char GetChar() {
+  inline char ReadChar() {
     return p1 == p2 && (p2 = (p1 = 0) + fread(buf, 1, n, stdin), p1 == p2)
                ? EOF
                : buf[p1++];
   }
   int ReadInt() {
     int x = 0, f = 1;
-    char c = GetChar();
+    char c = ReadChar();
     while (!isdigit(c)) {
       if (c == '-') f = -1;
-      c = GetChar();
+      c = ReadChar();
     }
-    while (isdigit(c)) x = x * 10 + (c ^ 48), c = GetChar();
+    while (isdigit(c)) x = x * 10 + (c ^ 48), c = ReadChar();
     return x * f;
   }
 };
