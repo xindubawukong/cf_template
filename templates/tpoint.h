@@ -81,10 +81,10 @@ struct TPoint {
   }
   bool operator==(const TPoint<T>& b) const { return x == b.x && y == b.y; }
   operator std::string() const {
-    if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>) {
-      return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
-    } else {
+    if constexpr (std::is_convertible_v<T, std::string>) {
       return "Point(" + std::string(x) + ", " + std::string(y) + ")";
+    } else {
+      return "Point(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     }
   }
   friend std::istream& operator>>(std::istream& input, TPoint<T>& a) {

@@ -24,7 +24,7 @@ std::pair<std::vector<int>, std::vector<int>> Manacher(const Seq& s) {
   p.resize(t.size());
   p[0] = 0;
   int now = 0, right = 0;
-  for (int i = 1; i < p.size() - 1; i++) {
+  for (int i = 1; i < (int)p.size() - 1; i++) {
     if (right > i) {
       p[i] = std::min(p[now * 2 - i], right - i);
     } else {

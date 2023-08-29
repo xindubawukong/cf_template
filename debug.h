@@ -41,11 +41,10 @@ template <typename T>
 struct DebugPrinter {
   T x;
   operator std::string() {
-    if constexpr (std::is_integral<T>::value ||
-                  std::is_floating_point<T>::value) {
-      return std::to_string(x);
-    } else {
+    if (std::is_convertible_v<T, std::string>) {
       return static_cast<std::string>(x);
+    } else {
+      return std::to_string(x);
     }
   }
 };
