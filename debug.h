@@ -41,7 +41,7 @@ template <typename T>
 struct DebugPrinter {
   T x;
   operator std::string() {
-    if (std::is_convertible_v<T, std::string>) {
+    if constexpr (std::is_convertible_v<T, std::string>) {
       return static_cast<std::string>(x);
     } else {
       return std::to_string(x);
