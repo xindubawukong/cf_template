@@ -6,7 +6,8 @@
 #include <vector>
 
 template <typename T>
-T QuickPower(T a, long long b) {
+T Power(T a, long long b) {
+  if (b < 0) return T(1) / Power(a, -b);
   T res = 1;
   while (b) {
     if (b & 1) res = res * a;
@@ -35,49 +36,53 @@ struct MInt {
 
   MInt<P> Inverse() const {
     assert(x > 0);
-    return QuickPower(*this, P - 2);
+    return Power(*this, P - 2);
   }
 
-  bool operator==(const MInt<P> &b) const { return x == b.x; }
-  MInt<P> &operator+=(const MInt<P> &b) {
+  bool operator==(const MInt<P>& b) const { return x == b.x; }
+  MInt<P>& operator+=(const MInt<P>& b) {
     x = Adjust(x + b.x);
     return *this;
   }
-  MInt<P> &operator-=(const MInt<P> &b) {
+  MInt<P>& operator-=(const MInt<P>& b) {
     x = Adjust(x - b.x);
     return *this;
   }
-  MInt<P> &operator*=(const MInt<P> &b) {
+  MInt<P>& operator*=(const MInt<P>& b) {
     x = (long long)x * b.x % P;
     return *this;
   }
-  MInt<P> &operator/=(const MInt<P> &b) {
+  MInt<P>& operator/=(const MInt<P>& b) {
     (*this) *= b.Inverse();
     return *this;
   }
-  MInt<P> operator+(const MInt<P> &b) const {
+  MInt<P> operator+(const MInt<P>& b) const {
     auto res = *this;
     return res += b;
   }
-  MInt<P> operator-(const MInt<P> &b) const {
+  MInt<P> operator-(const MInt<P>& b) const {
     auto res = *this;
     return res -= b;
   }
-  MInt<P> operator*(const MInt<P> &b) const {
+  MInt<P> operator*(const MInt<P>& b) const {
     auto res = *this;
     return res *= b;
   }
-  MInt<P> operator/(const MInt<P> &b) const {
+  MInt<P> operator/(const MInt<P>& b) const {
     auto res = *this;
     return res /= b;
   }
-  friend MInt<P> operator*(long long t, const MInt<P> &b) { return b * t; }
+  friend MInt<P> operator*(long long t, const MInt<P>& b) { return b * t; }
+  MInt<P> operator-() {
+    auto res = *this;
+    return res *= -1;
+  }
   operator std::string() const { return std::to_string(x); }
-  friend std::ostream &operator<<(std::ostream &output, const MInt<P> &a) {
+  friend std::ostream& operator<<(std::ostream& output, const MInt<P>& a) {
     output << std::string(a);
     return output;
   }
-  friend std::istream &operator>>(std::istream &input, MInt<P> &a) {
+  friend std::istream& operator>>(std::istream& input, MInt<P>& a) {
     input >> a.x;
     return input;
   }

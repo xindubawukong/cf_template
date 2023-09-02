@@ -26,8 +26,7 @@ struct Treap {
     unsigned int priority;
     int ts;
     Node *lch, *rch;
-    Node(Info info, int ts_ = 0)
-        : Info(info), ts(ts_), lch(nullptr), rch(nullptr) {
+    Node(int ts_ = 0) : ts(ts_), lch(nullptr), rch(nullptr) {
       static std::mt19937 rng(0);
       priority = rng();
     }
@@ -36,7 +35,12 @@ struct Treap {
       *this = *x;
       this->ts = ts;
     }
+    void Set(const Info& info) { (Info&)(*this) = info; }
   };
+
+  Node* Create() { return new Node(ts); }
+  Node* Copy(Node* x) { return new Node(x, ts); }
+
   Node* root;
   bool persist;
   int ts;  // plus version if persistence is wanted

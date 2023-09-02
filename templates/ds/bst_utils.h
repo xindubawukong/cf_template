@@ -39,6 +39,17 @@ typename Tree::Node* Search(Tree& tree, Cmp cmp) {
   return nullptr;
 }
 
+template <typename Tree>
+typename Tree::Node* SearchLast(Tree& tree) {
+  auto x = tree.root, y = x;
+  while (x) {
+    tree.PushDown(x);
+    y = x;
+    x = x->rch;
+  }
+  return y;
+}
+
 // return {0, path} if found
 // return {-1/1, path} if not found
 template <typename Tree, typename Cmp>
