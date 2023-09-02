@@ -5,14 +5,14 @@
 #include <functional>
 #include <vector>
 
+template <typename Graph>
 struct HeavyLightDecomposition {
   int n, root;
-  std::vector<std::vector<int>> go;
+  Graph* tree;
   std::vector<int> size, dep, pos, which, heavy, fa, up;
 
   void Init(int n_) {
     n = n_;
-    go.resize(n);
     size.resize(n);
     dep.resize(n);
     pos.resize(n);
@@ -22,15 +22,10 @@ struct HeavyLightDecomposition {
     up.resize(n);
   }
 
-  HeavyLightDecomposition(int n_) : n(n_) {
-    assert(n > 0);
+  HeavyLightDecomposition(Graph& tree_) : n(tree_.n), tree(&tree_) {
+    assert(!tree->IsDirected());
+    assert((int)tree->edges.size() == n - 1);
     Init(n);
-  }
-
-  void AddEdge(int u, int v) {
-    assert(0 <= u && u < n && 0 <= v && v < n);
-    go[u].push_back(v);
-    go[v].push_back(u);
   }
 
   void Build(int root_) {
@@ -38,7 +33,7 @@ struct HeavyLightDecomposition {
     std::function<void(int)> Dfs1 = [&](int u) {
       heavy[u] = -1;
       size[u] = 1;
-      for (int v : go[u]) {
+      for (int v : tree->Neighbors(u)) {
         if (v == fa[u]) continue;
         fa[v] = u;
         dep[v] = dep[u] + 1;
@@ -61,7 +56,7 @@ struct HeavyLightDecomposition {
       if (heavy[u] == -1) return;
       up[heavy[u]] = up[u];
       Dfs2(heavy[u]);
-      for (int v : go[u]) {
+      for (int v : tree->Neighbors(u)) {
         if (v == fa[u] || v == heavy[u]) continue;
         up[v] = v;
         Dfs2(v);

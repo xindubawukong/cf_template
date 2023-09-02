@@ -1,17 +1,15 @@
-#ifndef TARJAN_H_
-#define TARJAN_H_
+#ifndef TARJAN_DIRECTED_H_
+#define TARJAN_DIRECTED_H_
 
 #include <algorithm>
 #include <cassert>
 #include <functional>
-#include <stack>
 #include <vector>
 
 template <typename Graph>
 struct TarjanDirected {
-  std::vector<int> dfn, low, belong;
-  std::vector<bool> visit;
-  std::stack<int> sta;
+  std::vector<int> dfn, low, belong, sta;
+  std::vector<bool> vt;
   int ts, scc_cnt;
   TarjanDirected(Graph& g) {
     assert(g.IsDirected());
@@ -19,16 +17,16 @@ struct TarjanDirected {
     low.resize(g.n);
     belong.resize(g.n);
     std::fill(belong.begin(), belong.end(), -1);
-    visit.resize(g.n);
+    vt.resize(g.n);
     ts = 0;
     scc_cnt = 0;
     std::function<void(int)> Dfs = [&](int u) {
       dfn[u] = low[u] = ++ts;
-      visit[u] = true;
-      sta.push(u);
+      vt[u] = true;
+      sta.push_back(u);
       for (int eid : g.go[u]) {
         auto& e = g.edges[eid];
-        if (!visit[e.v]) {
+        if (!vt[e.v]) {
           Dfs(e.v);
           low[u] = std::min(low[u], low[e.v]);
         } else if (belong[e.v] == -1) {
@@ -37,20 +35,20 @@ struct TarjanDirected {
       }
       if (low[u] == dfn[u]) {
         while (!sta.empty()) {
-          int v = sta.top();
+          int v = sta.back();
           belong[v] = scc_cnt;
-          sta.pop();
+          sta.pop_back();
           if (v == u) break;
         }
         scc_cnt++;
       }
     };
     for (int i = 0; i < g.n; i++) {
-      if (!visit[i]) {
+      if (!vt[i]) {
         Dfs(i);
       }
     }
   }
 };
 
-#endif  // TARJAN_H_
+#endif  // TARJAN_DIRECTED_H_

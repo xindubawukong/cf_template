@@ -28,7 +28,7 @@ struct GraphNeighborsRange {
     }
     bool operator!=(const Iterator& other) { return id != other.id; }
     int operator*() {
-      assert(id < g->go[u].size());
+      assert(id < (int)g->go[u].size());
       auto& e = g->edges[g->go[u][id]];
       if (is_directed) {
         return e.v;
