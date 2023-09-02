@@ -44,7 +44,8 @@ TEST(TreapTest, BasicTest) {
       return 1;
     });
     ASSERT_EQ(t2, nullptr);
-    t2 = new Treap<Info>::Node(Info(a[i]));
+    t2 = treap.Create();
+    t2->val = a[i];
     treap.root = treap.Join(t1, t2, t3);
   }
   EXPECT_EQ(n, treap.root->size);

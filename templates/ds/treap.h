@@ -19,21 +19,31 @@ struct Info {
 };
 */
 
-template <typename Info>
+template <bool>
+struct TreapNodeBase {};
+template <>
+struct TreapNodeBase<false> {};
+template <>
+struct TreapNodeBase<true> {
+  int ts;
+};
+
+template <typename Info, bool persist = false>
 struct Treap {
   using info_t = Info;
-  struct Node : public Info {
+
+  struct Node : public Info, public TreapNodeBase<persist> {
     unsigned int priority;
-    int ts;
     Node *lch, *rch;
-    Node(int ts_ = 0) : ts(ts_), lch(nullptr), rch(nullptr) {
+    Node(int ts_ = 0) : lch(nullptr), rch(nullptr) {
       static std::mt19937 rng(0);
       priority = rng();
+      if constexpr (persist) this->ts = ts_;
     }
     // when copying a node, must be in persist mode
     Node(Node* x, int ts) {
       *this = *x;
-      this->ts = ts;
+      if constexpr (persist) this->ts = ts;
     }
     void Set(const Info& info) { (Info&)(*this) = info; }
   };
@@ -42,9 +52,8 @@ struct Treap {
   Node* Copy(Node* x) { return new Node(x, ts); }
 
   Node* root;
-  bool persist;
   int ts;  // plus version if persistence is wanted
-  Treap(bool persist_ = false) : root(nullptr), persist(persist_), ts(0) {}
+  Treap() : root(nullptr), ts(0) {}
 
   Node* Update(Node* x) {
     x->Update();
@@ -52,7 +61,7 @@ struct Treap {
   }
   void PushDown(Node* x) {
     if (x->NeedPushDown()) {
-      if (persist) {
+      if constexpr (persist) {
         if (x->lch && x->lch->ts != ts) x->lch = new Node(x->lch, ts);
         if (x->rch && x->rch->ts != ts) x->rch = new Node(x->rch, ts);
       }
@@ -63,7 +72,7 @@ struct Treap {
   Node* Join(Node* x, Node* y) {
     if (!x) return y;
     if (!y) return x;
-    if (persist) {
+    if constexpr (persist) {
       if (x->ts != ts) x = new Node(x, ts);
       if (y->ts != ts) y = new Node(y, ts);
     }
@@ -83,7 +92,7 @@ struct Treap {
     if (!y) return Join(x, z);
     if (!z) return Join(x, y);
     assert(!y->lch && !y->rch);  // y must be single node
-    if (persist) {
+    if constexpr (persist) {
       if (x->ts != ts) x = new Node(x, ts);
       if (y->ts != ts) y = new Node(y, ts);
       if (z->ts != ts) z = new Node(z, ts);
@@ -109,15 +118,17 @@ struct Treap {
   template <typename Cmp>
   std::tuple<Node*, Node*, Node*> Split(Node* x, Cmp cmp) {
     if (!x) return {nullptr, nullptr, nullptr};
-    if (persist) {
+    if constexpr (persist) {
       if (x->ts != ts) x = new Node(x, ts);
     }
     PushDown(x);
     auto d = cmp(x);
     if (d == 0) {
       auto l = x->lch, r = x->rch;
-      if (l && l->ts != ts) l = new Node(l, ts);
-      if (r && r->ts != ts) r = new Node(r, ts);
+      if constexpr (persist) {
+        if (l && l->ts != ts) l = new Node(l, ts);
+        if (r && r->ts != ts) r = new Node(r, ts);
+      }
       x->lch = x->rch = nullptr;
       return {l, Update(x), r};
     } else if (d < 0) {

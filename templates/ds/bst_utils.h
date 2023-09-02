@@ -13,7 +13,7 @@ void BuildTree(Tree& tree, int l, int r, F f) {
         if (l > r) return nullptr;
         int mid = (l + r) / 2;
         typename Tree::info_t info;
-        auto x = new typename Tree::Node(info);
+        auto x = new typename Tree::Node();
         f(mid, x);
         x->lch = Build(l, mid - 1);
         x->rch = Build(mid + 1, r);
@@ -37,6 +37,17 @@ typename Tree::Node* Search(Tree& tree, Cmp cmp) {
     }
   }
   return nullptr;
+}
+
+template <typename Tree>
+typename Tree::Node* SearchFirst(Tree& tree) {
+  auto x = tree.root, y = x;
+  while (x) {
+    tree.PushDown(x);
+    y = x;
+    x = x->Lch;
+  }
+  return y;
 }
 
 template <typename Tree>
