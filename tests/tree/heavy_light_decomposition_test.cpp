@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 
+#include "graph/graph.h"
 #include "gtest/gtest.h"
 
 std::vector<std::vector<int>> GetTree(int n) {
@@ -19,6 +20,17 @@ std::vector<std::vector<int>> GetTree(int n) {
     std::shuffle(go[i].begin(), go[i].end(), rng);
   }
   return go;
+}
+
+auto GetGraph(auto &go) {
+  int n = go.size();
+  UndirectedGraph<EdgeBase> graph(n);
+  for (int i = 0; i < n; i++) {
+    for (int j : go[i]) {
+      if (i < j) graph.AddEdge({i, j});
+    }
+  }
+  return graph;
 }
 
 auto Bfs(int n, auto &go, int root) {
@@ -61,25 +73,25 @@ TEST(HeavyLightDecompositionTest, BasicTest) {
       std::chrono::high_resolution_clock::now().time_since_epoch().count());
   int n = rng() % 1000 + 500;
   auto go = GetTree(n);
-
-  HeavyLightDecomposition hld(n);
-  hld.go = go;
+  auto graph = GetGraph(go);
+  HeavyLightDecomposition hld(graph);
   for (int i = 0; i < 10; i++) {
     hld.Build(rng() % n);
   }
-
-  auto [fa, size, dep] = Bfs(n, go, hld.root);
-  EXPECT_EQ(fa, hld.fa);
-  EXPECT_EQ(size, hld.size);
-  EXPECT_EQ(dep, hld.dep);
-  for (int tc = 0; tc < 1000; tc++) {
-    int u = rng() % n;
-    auto [l, r] = hld.SubTreeInterval(u);
-    EXPECT_EQ(r - l + 1, size[u]);
-    for (int i = l; i <= r; i++) {
-      int v = hld.which[i];
-      EXPECT_TRUE(hld.IsAncester(u, v));
-      EXPECT_EQ(u, hld.Jump(v, dep[v] - dep[u]));
+  {
+    auto [fa, size, dep] = Bfs(n, go, hld.root);
+    EXPECT_EQ(fa, hld.fa);
+    EXPECT_EQ(size, hld.size);
+    EXPECT_EQ(dep, hld.dep);
+    for (int tc = 0; tc < 1000; tc++) {
+      int u = rng() % n;
+      auto [l, r] = hld.SubTreeInterval(u);
+      EXPECT_EQ(r - l + 1, size[u]);
+      for (int i = l; i <= r; i++) {
+        int v = hld.which[i];
+        EXPECT_TRUE(hld.IsAncester(u, v));
+        EXPECT_EQ(u, hld.Jump(v, dep[v] - dep[u]));
+      }
     }
   }
 
@@ -108,9 +120,8 @@ TEST(HeavyLightDecompositionTest, LcaTest) {
       std::chrono::high_resolution_clock::now().time_since_epoch().count());
   int n = rng() % 1000 + 500;
   auto go = GetTree(n);
-
-  HeavyLightDecomposition hld(n);
-  hld.go = go;
+  auto graph = GetGraph(go);
+  HeavyLightDecomposition hld(graph);
   for (int i = 0; i < 10; i++) {
     hld.Build(rng() % n);
   }
@@ -133,9 +144,8 @@ TEST(HeavyLightDecompositionTest, RootedTest) {
       std::chrono::high_resolution_clock::now().time_since_epoch().count());
   int n = rng() % 1000 + 500;
   auto go = GetTree(n);
-
-  HeavyLightDecomposition hld(n);
-  hld.go = go;
+  auto graph = GetGraph(go);
+  HeavyLightDecomposition hld(graph);
   for (int i = 0; i < 10; i++) {
     hld.Build(rng() % n);
   }

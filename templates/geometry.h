@@ -229,7 +229,7 @@ struct Geometry {
         return false;
       auto it = std::lower_bound(
           ps.begin(), ps.end(), p,
-          [&](auto& a, auto& b) { return (a - o) % (p - o) >= -Point::eps; });
+          [&](auto& a, auto& b) { return (a - o) % (b - o) >= -Point::eps; });
       int t = it - ps.begin() - 1;
       auto& a = ps[t];
       auto& b = ps[(t + 1) % ps.size()];

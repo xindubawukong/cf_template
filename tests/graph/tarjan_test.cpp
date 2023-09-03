@@ -1,4 +1,4 @@
-#include "graph/tarjan.h"
+#include "graph/tarjan_directed.h"
 
 #include "graph/graph.h"
 #include "gtest/gtest.h"

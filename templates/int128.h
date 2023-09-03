@@ -51,6 +51,7 @@ struct int128 {
     auto res = *this;
     return res *= b;
   }
+  friend int128 operator*(const long long t, const int128& a) { return a * t; }
   int128& operator/=(const int128& b) {
     assert(b.x != 0);
     x /= b.x;

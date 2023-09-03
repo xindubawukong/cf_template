@@ -32,12 +32,12 @@ struct TPoint {
   }
   template <typename Out = T>
   friend Out Dist2(const TPoint<T>& a, const TPoint<T>& b) {
-    Out x = a.x - b.x, y = a.y - b.y;
-    return x * x + y * y;
+    Out dx = a.x - b.x, dy = a.y - b.y;
+    return dx * dx + dy * dy;
   }
   friend long double Dist(const TPoint<T>& a, const TPoint<T>& b) {
-    long double x = a.x - b.x, y = a.y - b.y;
-    return sqrt(x * x + y * y);
+    long double dx = a.x - b.x, dy = a.y - b.y;
+    return sqrt(dx * dx + dy * dy);
   }
   TPoint<T>& operator+=(const TPoint<T>& b) {
     x += b.x, y += b.y;

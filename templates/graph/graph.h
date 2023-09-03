@@ -58,7 +58,7 @@ struct GraphEdgesRange {
     }
     bool operator!=(const Iterator& other) { return id != other.id; }
     typename Graph::edge_t& operator*() {
-      assert(id < g->go[u].size());
+      assert(id < (int)g->go[u].size());
       return g->edges[g->go[u][id]];
     }
   };
