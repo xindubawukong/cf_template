@@ -70,8 +70,8 @@ struct Treap {
   }
 
   Node* Join(Node* x, Node* y) {
-    if (!x) return y;
-    if (!y) return x;
+    if (!x) return y ? Update(y) : nullptr;
+    if (!y) return Update(x);
     if constexpr (persist) {
       if (x->ts != ts) x = new Node(x, ts);
       if (y->ts != ts) y = new Node(y, ts);
