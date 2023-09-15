@@ -17,9 +17,22 @@ struct TMatrix {
     }
   }
   TMatrix(const TMatrix& b) = default;
-  TMatrix(TMatrix&& b) { data = std::move(b.data); }
+  TMatrix(TMatrix&& b) { (*this) = std::move(b); }
+  template <typename X>
+  TMatrix(std::initializer_list<std::initializer_list<X>> init) {
+    int i = 0;
+    for (auto it1 = init.begin(); it1 != init.end(); i++, it1++) {
+      int j = 0;
+      for (auto it2 = it1->begin(); it2 != it1->end(); j++, it2++) {
+        data[i][j] = *it2;
+      }
+    }
+  }
   TMatrix& operator=(const TMatrix& b) = default;
-  TMatrix& operator=(TMatrix&& b) = default;
+  TMatrix& operator=(TMatrix&& b) {
+    data = std::move(b.data);
+    return *this;
+  }
   std::array<T, n>& operator[](int i) { return data[i]; }
   const std::array<T, n>& operator[](int i) const { return data[i]; }
   TMatrix<T, n> operator*(const TMatrix<T, n>& b) {

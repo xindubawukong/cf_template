@@ -7,7 +7,7 @@
 
 template <typename T>
 T Power(T a, long long b) {
-  if (b < 0) return T(1) / Power(a, -b);
+  assert(b >= 0);
   T res = 1;
   while (b) {
     if (b & 1) res = res * a;
