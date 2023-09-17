@@ -10,9 +10,9 @@ std::string ReadLine() {
   return s;
 }
 
-template <int n>
+template <unsigned int n = 1000000>
 struct FastInput {
-  int p1, p2;
+  unsigned int p1, p2;
   char buf[n];
   FastInput() : p1(0), p2(0) {}
   inline char ReadChar() {
@@ -32,7 +32,7 @@ struct FastInput {
   }
 };
 
-template <unsigned int n>
+template <unsigned int n = 1000000>
 struct FastOutput {
   unsigned int p;
   char buf[n];
