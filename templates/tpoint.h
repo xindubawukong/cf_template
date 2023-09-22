@@ -9,7 +9,7 @@
 
 template <typename T>
 struct TPoint {
-  using real = T;
+  using type = T;
   using dim = std::integral_constant<int, 2>;
   static const T eps;
 

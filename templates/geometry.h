@@ -7,10 +7,10 @@
 #include <string>
 
 /*
-using real = long double;
-using Point = TPoint<real>;
+using flt = long double;
+using Point = TPoint<flt>;
 template <>
-const real Point::eps = 1e-7;
+const flt Point::eps = 1e-7;
 using geo = Geometry<Point>;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
@@ -18,36 +18,36 @@ using geo = Geometry<Point>;
 
 template <typename Point>
 struct Geometry {
-  using real = typename Point::real;
+  using T = typename Point::type;
   using point_t = Point;
   static_assert(Point::dim::value == 2);
 
   static constexpr long double pi = 3.1415926535897932385;
 
-  static Point Rotate(const Point& v, real alpha) {
-    real c = cos(alpha);
-    real s = sin(alpha);
+  static Point Rotate(const Point& v, T alpha) {
+    T c = cos(alpha);
+    T s = sin(alpha);
     return Point(v.x * c - v.y * s, v.x * s + v.y * c);
   }
 
   // 0 - pi
-  static real GetAngle(const Point& u, const Point& v) {
+  static T GetAngle(const Point& u, const Point& v) {
     auto ul = u.Length(), vl = v.Length();
     if (ul <= Point::eps || vl <= Point::eps) return 0;
-    real alpha = u * v / ul / vl;
+    T alpha = u * v / ul / vl;
     return acos(alpha);
   }
 
   // [0, 2pi)
-  static real GetAngleFromX(const Point& P) {
+  static T GetAngleFromX(const Point& P) {
     double ans = atan2(P.y, P.x);
     if (ans < 0.0) ans += 2.0 * pi;
     return ans;
   }
 
   // 0 - pi
-  static real GetTriangularAngle(real a, real b, real c) {
-    real t = (a * a + b * b - c * c) / (2 * a * b);
+  static T GetTriangularAngle(T a, T b, T c) {
+    T t = (a * a + b * b - c * c) / (2 * a * b);
     if (t < -1) t = -1;
     if (t > 1) t = 1;
     return acos(t);
@@ -56,10 +56,8 @@ struct Geometry {
   static bool IsTriangularSame(const std::vector<Point>& a,
                                const std::vector<Point>& b) {
     assert(a.size() == 3 && b.size() == 3);
-    std::vector<real> p = {Dist(a[0], a[1]), Dist(a[1], a[2]),
-                           Dist(a[0], a[2])};
-    std::vector<real> q = {Dist(b[0], b[1]), Dist(b[1], b[2]),
-                           Dist(b[0], b[2])};
+    std::vector<T> p = {Dist(a[0], a[1]), Dist(a[1], a[2]), Dist(a[0], a[2])};
+    std::vector<T> q = {Dist(b[0], b[1]), Dist(b[1], b[2]), Dist(b[0], b[2])};
     sort(p.begin(), p.end());
     sort(q.begin(), q.end());
     for (int i = 0; i < 3; i++) {
@@ -121,8 +119,8 @@ struct Geometry {
 
   struct Circle {
     Point c;
-    real r;
-    Circle(Point c_ = Point(), real r_ = 1) : c(c_), r(r_) {
+    T r;
+    Circle(Point c_ = Point(), T r_ = 1) : c(c_), r(r_) {
       assert(r > Point::eps);
     }
     operator std::string() const {
@@ -130,25 +128,25 @@ struct Geometry {
     }
   };
 
-  static Point Inverse(const Point& o, real r, const Point& a) {
-    real da = Dist(o, a);
+  static Point Inverse(const Point& o, T r, const Point& a) {
+    T da = Dist(o, a);
     assert(da > Point::eps);
-    real db = r * r / da;
+    T db = r * r / da;
     return o + (a - o) * db / da;
   }
 
-  static Circle InverseToCircle(const Point& o, real r, const Circle& a) {
-    real da = Dist(o, a.c);
+  static Circle InverseToCircle(const Point& o, T r, const Circle& a) {
+    T da = Dist(o, a.c);
     assert(da - a.r > Point::eps);
-    real rb = 0.5 * ((1 / (da - a.r)) - (1 / (da + a.r))) * r * r;
-    real db = da * rb / a.r;
-    real bx = o.x + (a.c.x - o.x) * db / da;
-    real by = o.y + (a.c.y - o.y) * db / da;
+    T rb = 0.5 * ((1 / (da - a.r)) - (1 / (da + a.r))) * r * r;
+    T db = da * rb / a.r;
+    T bx = o.x + (a.c.x - o.x) * db / da;
+    T by = o.y + (a.c.y - o.y) * db / da;
     return Circle(Point(bx, by), rb);
   }
 
-  static Line InverseToLine(const Point& o, real r, const Circle& a) {
-    real da = Dist(o, a.c);
+  static Line InverseToLine(const Point& o, T r, const Circle& a) {
+    T da = Dist(o, a.c);
     assert(abs(da - a.r) <= Point::eps);
     Point v = a.c - o;
     Point p = o + v * 2;
@@ -156,7 +154,7 @@ struct Geometry {
     return Line(p_, Rotate(v, pi / 2));
   }
 
-  static Circle InverseToCircle(const Point& o, real r, const Line& l) {
+  static Circle InverseToCircle(const Point& o, T r, const Line& l) {
     Point p = GetProjectionPoint(o, l);
     assert(Dist(o, p) > Point::eps);
     Point p_ = Inverse(o, r, p);
@@ -178,9 +176,9 @@ struct Geometry {
       s += "]";
       return s;
     }
-    real GetArea() const {
+    T GetArea() const {
       assert(ps.size() > 0);
-      real sum = 0;
+      T sum = 0;
       for (int i = 0; i < ps.size(); i++) {
         sum += 0.5 * ps[i] % ps[(i + 1) % ps.size()];
       }
@@ -188,7 +186,7 @@ struct Geometry {
     }
     bool IsClockwise() const {
       assert(ps.size() > 0);
-      real sum = 0;
+      T sum = 0;
       for (int i = 0; i < ps.size(); i++) {
         sum += 0.5 * ps[i] % ps[(i + 1) % ps.size()];
       }
@@ -256,8 +254,8 @@ struct Geometry {
       s += "])";
       return s;
     }
-    real GetArea() const {
-      real res = out.GetArea();
+    T GetArea() const {
+      T res = out.GetArea();
       for (auto& polygon : ins) {
         res -= polygon.GetArea();
       }
