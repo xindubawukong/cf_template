@@ -10,15 +10,14 @@ struct TarjanUndirected {
   int n, ts;
   std::vector<int> dfn, low, sta;
   std::vector<std::vector<int>> bcc;
-  std::vector<bool> cutv;
+  std::vector<bool> cut;
   TarjanUndirected(Graph& g) {
     assert(!g.IsDirected());
     n = g.n;
     ts = 0;
     dfn.assign(n, -1);
     low.resize(n);
-    cutv.resize(n);
-
+    cut.resize(n);
     std::function<void(int)> Dfs = [&](int u) {
       dfn[u] = low[u] = ts++;
       sta.push_back(u);
@@ -56,7 +55,7 @@ struct TarjanUndirected {
     for (auto& b : bcc) {
       for (int x : b) {
         if (!vt[x]) vt[x] = true;
-        else cutv[x] = true;
+        else cut[x] = true;
       }
     }
   }

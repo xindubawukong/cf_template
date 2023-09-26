@@ -4,6 +4,7 @@
 .history/
 .DS_Store
 build/
+temp/
 
 CMakeLists.txt.user
 CMakeCache.txt
