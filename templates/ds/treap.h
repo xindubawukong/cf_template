@@ -143,6 +143,13 @@ struct Treap {
   }
 
   auto SplitKth(Node* x, int k) { return Split(x, bst::KthCmp<Info>(k)()); }
+
+  void GC(Node* x) {
+    if (!x) return;
+    GC(x->lch);
+    GC(x->rch);
+    delete x;
+  }
 };
 
 #endif  // TREAP_H_

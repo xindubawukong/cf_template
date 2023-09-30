@@ -20,6 +20,7 @@ def clean():
     subprocess.call(f'rm -rf ./zzz/*', shell=True)
     subprocess.call(f'rm -rf *.in', shell=True)
     subprocess.call(f'rm -rf *.out', shell=True)
+    subprocess.call(f'rm -rf out', shell=True)
     subprocess.call(f'rm -rf in', shell=True)
     subprocess.call(f'touch in', shell=True)
 

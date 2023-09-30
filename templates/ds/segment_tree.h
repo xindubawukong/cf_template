@@ -71,10 +71,32 @@ struct SegmentTree {
     return root;
   }
 
+  template <typename F>
+  Node* ModifyPath(int p, F f) {
+    assert(l_range <= p && p <= r_range);
+    std::function<Node*(Node*, int, int)> Dfs = [&](Node* x, int l, int r) {
+      if (!x) {
+        x = new Node(l, r, ts);
+      } else if (persist && x->ts != ts) {
+        x = new Node(x, ts);
+      }
+      f(x);
+      if (x->l == x->r) return x;
+      PushDown(x);
+      int m = l + (r - l) / 2;
+      if (p <= m) x->lch = Dfs(x->lch, l, m);
+      else x->rch = Dfs(x->rch, m + 1, r);
+      x->Update();
+      return x;
+    };
+    root = Dfs(root, l_range, r_range);
+    return root;
+  }
+
   std::vector<Node*> GetAllNodes(int from, int to) {
     assert(l_range <= from && from <= to && to <= r_range);
     std::vector<Node*> all;
-    std::function<void(Node*, int, int, int, int)> GetAllNodes =
+    std::function<void(Node*, int, int, int, int)> Dfs =
         [&](Node* x, int l, int r, int from, int to) {
           if (!x) return;
           if (from <= l && r <= to) {
@@ -83,10 +105,10 @@ struct SegmentTree {
           }
           PushDown(x);
           int m = l + (r - l) / 2;
-          if (from <= m) GetAllNodes(x->lch, l, m, from, to);
-          if (to > m) GetAllNodes(x->rch, m + 1, r, from, to);
+          if (from <= m) Dfs(x->lch, l, m, from, to);
+          if (to > m) Dfs(x->rch, m + 1, r, from, to);
         };
-    GetAllNodes(root, l_range, r_range, from, to);
+    Dfs(root, l_range, r_range, from, to);
     return all;
   }
 
