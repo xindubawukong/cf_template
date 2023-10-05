@@ -156,24 +156,24 @@ struct SegmentTree {
   }
 
   template <typename F>
-  void TranverseLeaf(Node* x, F f) {
+  void TraverseLeaf(Node* x, F f) {
     if (!x) return;
     if (x->l == x->r) {
       f(x);
       return;
     }
     PushDown(x);
-    TranverseLeaf(x->lch, f);
-    TranverseLeaf(x->rch, f);
+    TraverseLeaf(x->lch, f);
+    TraverseLeaf(x->rch, f);
   };
 
   template <typename F>
-  void TranverseAllNode(Node* x, F f) {
+  void TraverseAllNode(Node* x, F f) {
     if (!x) return;
     f(x);
     if (x->l < x->r) PushDown(x);
-    TranverseAllNode(x->lch, f);
-    TranverseAllNode(x->rch, f);
+    TraverseAllNode(x->lch, f);
+    TraverseAllNode(x->rch, f);
   }
 
   template <typename F>

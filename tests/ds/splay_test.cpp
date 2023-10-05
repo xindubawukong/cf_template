@@ -50,7 +50,7 @@ TEST(SplayTest, BasicTest) {
   }
 
   std::vector<int> b;
-  bst::Tranverse(splay, [&](Info* info) { b.push_back(info->val); });
+  bst::Traverse(splay, [&](Info* info) { b.push_back(info->val); });
   for (int i = 0; i < n; i++) {
     EXPECT_EQ(i, b[i]);
   }

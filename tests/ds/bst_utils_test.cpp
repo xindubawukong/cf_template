@@ -61,6 +61,6 @@ TEST(BSTUtilsTest, BasicTest) {
   }
 
   std::vector<int> b;
-  bst::Tranverse(treap, [&](Info* info) { b.push_back(info->val); });
+  bst::Traverse(treap, [&](Info* info) { b.push_back(info->val); });
   EXPECT_EQ(a, b);
 }

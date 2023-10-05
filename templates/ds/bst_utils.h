@@ -125,7 +125,7 @@ int GetRank(Tree& tree, Cmp cmp) {
 }
 
 template <typename Tree, typename F>
-void Tranverse(Tree& tree, F f) {
+void Traverse(Tree& tree, F f) {
   std::function<void(typename Tree::Node*)> Go = [&](typename Tree::Node* x) {
     if (!x) return;
     tree.PushDown(x);
