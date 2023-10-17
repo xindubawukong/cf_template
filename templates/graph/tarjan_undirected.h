@@ -40,7 +40,6 @@ struct TarjanUndirected {
         }
       }
     };
-
     for (int i = 0; i < n; i++) {
       if (dfn[i] == -1) {
         sta.clear();
@@ -50,7 +49,6 @@ struct TarjanUndirected {
         }
       }
     }
-
     std::vector<bool> vt(n);
     for (auto& b : bcc) {
       for (int x : b) {
