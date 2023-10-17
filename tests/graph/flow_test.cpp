@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "graph/graph.h"
+#include "graph/matching.h"
 #include "gtest/gtest.h"
 
 TEST(FlowTest, MatchingTest) {

@@ -44,9 +44,7 @@ struct TarjanDirected {
       }
     };
     for (int i = 0; i < g.n; i++) {
-      if (!vt[i]) {
-        Dfs(i);
-      }
+      if (!vt[i]) Dfs(i);
     }
   }
 };
