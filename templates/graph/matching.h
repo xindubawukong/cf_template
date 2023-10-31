@@ -4,6 +4,7 @@
 #include <cassert>
 #include <vector>
 
+// O(V * E)
 struct Matching {
   int n, m, res = 0, ts = 0;
   std::vector<std::vector<int>> go;
@@ -48,6 +49,7 @@ struct Matching {
   }
 };
 
+// O(sqrt(V) * E)
 struct HopcroftKarp {
   int n, m, res = 0;
   std::vector<std::vector<int>> go;
