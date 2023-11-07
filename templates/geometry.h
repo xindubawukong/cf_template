@@ -179,7 +179,7 @@ struct Geometry {
     T GetArea() const {
       assert(ps.size() > 0);
       T sum = 0;
-      for (int i = 0; i < ps.size(); i++) {
+      for (int i = 0; i < (int)ps.size(); i++) {
         sum += 0.5 * ps[i] % ps[(i + 1) % ps.size()];
       }
       return abs(sum);

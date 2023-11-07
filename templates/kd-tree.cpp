@@ -1,60 +1,3 @@
-#if __APPLE__ && __clang__
-#define LOCAL
-#endif
-
-#if __cplusplus >= 202001L
-#include <any>
-#include <bit>
-#include <optional>
-#endif
-
-#include <algorithm>
-#include <array>
-#include <bitset>
-#include <cassert>
-#include <climits>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <list>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <stack>
-#include <string>
-#include <thread>
-#include <tuple>
-#include <type_traits>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-
-#ifdef LOCAL
-#include "../debug.h"
-#else
-#define debug(...) 19980723
-#endif
-
-using namespace std;
-
-using int64 = long long;
-#if _WIN64 || __x86_64__
-using int128 = __int128_t;
-#endif
-using uint = unsigned int;
-using uint64 = unsigned long long;
-
-// ----------------------------------------------------------------------
-
 // https://www.luogu.com.cn/problem/P4148
 
 const double alpha = 0.75;
@@ -204,5 +147,154 @@ int main() {
   // freopen("../problem_A/A.out", "w", stdout);
 #endif
   Main();
+  return 0;
+}
+
+// https://codeforces.com/group/BXTLKO2eOg/contest/484219/problem/A
+
+#include <bits/stdc++.h>
+#ifdef LOCAL
+#include "debug.h"
+#else
+#define debug(...)
+#endif
+using int64 = long long;
+using uint = unsigned int;
+using uint64 = unsigned long long;
+bool ckmin(auto& a, auto b) { return b < a ? a = b, 1 : 0; }
+bool ckmax(auto& a, auto b) { return b > a ? a = b, 1 : 0; }
+using namespace std;
+
+using rea = double;
+
+template <int D>
+struct KDTree {
+  using Point = array<rea, D>;
+
+  struct Node {
+    Node* lch;
+    Node* rch;
+    Point p;
+    rea minn[D], maxx[D];
+    Node() : lch(nullptr), rch(nullptr) {}
+    void Update() {
+      for (int i = 0; i < D; i++) minn[i] = maxx[i] = p[i];
+      if (lch) {
+        for (int i = 0; i < D; i++) {
+          ckmin(minn[i], lch->minn[i]);
+          ckmax(maxx[i], lch->maxx[i]);
+        }
+      }
+      if (rch) {
+        for (int i = 0; i < D; i++) {
+          ckmin(minn[i], rch->minn[i]);
+          ckmax(maxx[i], rch->maxx[i]);
+        }
+      }
+    }
+    rea Try(Point a) {
+      rea t = 0;
+      for (int i = 0; i < D; i++) {
+        if (a[i] < minn[i]) t += (a[i] - minn[i]) * (a[i] - minn[i]);
+        if (a[i] > maxx[i]) t += (a[i] - maxx[i]) * (a[i] - maxx[i]);
+      }
+      return sqrt(t);
+    }
+  };
+
+  Node* root;
+  array<function<bool(const Point&, const Point&)>, D> cmp;
+
+  KDTree() {
+    for (int i = 0; i < D; i++) {
+      cmp[i] = [=](const Point& a, const Point& b) { return a[i] < b[i]; };
+    }
+  }
+
+  Node* BuildTree(vector<Point>& ps, int l, int r) {
+    if (l > r) return nullptr;
+    double var[D];
+    for (int d = 0; d < D; d++) {
+      double t1 = 0, t2 = 0;
+      for (int i = l; i <= r; i++) {
+        t1 += 1.0 * ps[i][d] * ps[i][d];
+        t2 += ps[i][d];
+      }
+      var[d] = t1 - t2 * t2 / (r - l + 1);
+    }
+    int d = max_element(var, var + D) - var;
+    int mid = (l + r) / 2;
+    nth_element(ps.begin() + l, ps.begin() + mid, ps.begin() + r + 1, cmp[d]);
+    Node* x = new Node();
+    x->p = ps[mid];
+    x->lch = BuildTree(ps, l, mid - 1);
+    x->rch = BuildTree(ps, mid + 1, r);
+    x->Update();
+    return x;
+  }
+};
+
+template <int D>
+rea Dist(const array<rea, D>& a, const array<rea, D>& b) {
+  rea t = 0;
+  for (int i = 0; i < D; i++) t += (a[i] - b[i]) * (a[i] - b[i]);
+  return sqrt(t);
+}
+
+template <int D>
+void Work(int n) {
+  using Point = array<rea, D>;
+  vector<array<rea, D>> a(n);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < D; j++) cin >> a[i][j];
+  }
+
+  KDTree<D> kdtree;
+  kdtree.root = kdtree.BuildTree(a, 0, n - 1);
+
+  int m;
+  cin >> m;
+  while (m--) {
+    Point p;
+    int k;
+    cin >> k;
+    for (int i = 0; i < D; i++) cin >> p[i];
+    auto Cmp = [&](const Point& a, const Point& b) {
+      rea d1 = Dist<D>(a, p);
+      rea d2 = Dist<D>(b, p);
+      return d1 < d2;
+    };
+    priority_queue<Point, vector<Point>, decltype(Cmp)> s(Cmp);
+    auto Query = [&](auto self, KDTree<D>::Node* node) {
+      if (!node) return;
+      if ((int)s.size() == k && node->Try(p) >= Dist<D>(p, s.top())) return;
+      s.push(node->p);
+      if ((int)s.size() > k) s.pop();
+      auto left = node->lch ? node->lch->Try(p) : 0;
+      auto right = node->rch ? node->rch->Try(p) : 0;
+      if (left < right) {
+        self(self, node->lch);
+        self(self, node->rch);
+      } else {
+        self(self, node->rch);
+        self(self, node->lch);
+      }
+    };
+    Query(Query, kdtree.root);
+    cout << fixed << setprecision(10) << Dist<D>(s.top(), p) << '\n';
+  }
+}
+
+int main() {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int n, D;
+  cin >> n >> D;
+  if (D == 2) Work<2>(n);
+  if (D == 3) Work<3>(n);
+  if (D == 4) Work<4>(n);
+  if (D == 5) Work<5>(n);
+
   return 0;
 }
