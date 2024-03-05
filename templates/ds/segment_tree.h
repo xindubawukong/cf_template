@@ -96,19 +96,32 @@ struct SegmentTree {
   std::vector<Node*> GetAllNodes(int from, int to) {
     assert(l_range <= from && from <= to && to <= r_range);
     std::vector<Node*> all;
-    std::function<void(Node*, int, int, int, int)> Dfs =
-        [&](Node* x, int l, int r, int from, int to) {
-          if (!x) return;
-          if (from <= l && r <= to) {
-            all.push_back(x);
-            return;
-          }
-          PushDown(x);
-          int m = l + (r - l) / 2;
-          if (from <= m) Dfs(x->lch, l, m, from, to);
-          if (to > m) Dfs(x->rch, m + 1, r, from, to);
-        };
-    Dfs(root, l_range, r_range, from, to);
+    std::function<void(Node*, int, int)> Dfs = [&](Node* x, int l, int r) {
+      if (!x) return;
+      if (from <= l && r <= to) {
+        all.push_back(x);
+        return;
+      }
+      PushDown(x);
+      int m = l + (r - l) / 2;
+      if (from <= m) Dfs(x->lch, l, m);
+      if (to > m) Dfs(x->rch, m + 1, r);
+    };
+    Dfs(root, l_range, r_range);
+    return all;
+  }
+
+  std::vector<Node*> GetPathNodes(int i) {
+    assert(l_range <= i && i <= r_range);
+    std::vector<Node*> all;
+    Node* x = root;
+    while (x) {
+      all.push_back(x);
+      if (x->l == x->r) break;
+      int mid = (x->l + x->r) / 2;
+      if (i <= mid) x = x->lch;
+      else x = x->rch;
+    }
     return all;
   }
 
@@ -165,7 +178,7 @@ struct SegmentTree {
     PushDown(x);
     TraverseLeaf(x->lch, f);
     TraverseLeaf(x->rch, f);
-  };
+  }
 
   template <typename F>
   void TraverseAllNode(Node* x, F f) {
