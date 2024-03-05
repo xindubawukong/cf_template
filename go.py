@@ -3,6 +3,14 @@ import os
 import re
 import subprocess
 import datetime
+from sys import platform
+
+
+def time():
+    if platform.startswith('darwin'):
+        return '/usr/local/bin/time'
+    else:
+        return '/home/xdbwk/local/time-1.9/time'
 
 
 def clean():
@@ -34,7 +42,7 @@ def run_problem(name, no_build):
     make_str = f'cmake .. && make -j8 {name}'
     if no_build:
         make_str = ':'
-    run_str = f'/home/xdbwk/local/time-1.9/time -v ./build/{name} 2> ./build/{name}_run.txt'
+    run_str = f'{time()} -v ./build/{name} 2> ./build/{name}_run.txt'
     subprocess.call(
         f'cd build && {make_str} && cd .. && {run_str}', shell=True)
 
