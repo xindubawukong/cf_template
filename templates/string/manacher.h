@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-//    s: "a b a a a"
-//  odd: [0,1,0,1,0]
-// even: [0,0,1,1]
+//    s: "a a b a a a a"
+//  odd: [0,0,2,0,1,1,0]
+// even: [1,0,0,1,2,1]
 template <typename Seq>
 std::pair<std::vector<int>, std::vector<int>> Manacher(const Seq& s) {
   int n = s.size();
