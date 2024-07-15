@@ -10,7 +10,9 @@
 struct Dsu {
   std::vector<int> fa;
   int n, cnt;
-  Dsu(int n_) : n(n_) {
+  Dsu(int n_) { Init(n_); }
+  void Init(int n_) {
+    n = n_;
     fa.resize(n);
     for (int i = 0; i < n; i++) fa[i] = -1;
     cnt = n;

@@ -102,7 +102,7 @@ def run_problem(name, no_build):
     b = f.readlines()
     f.close()
     for i in range(len(b)):
-        if re.match('# \d+.*', b[i]) is not None:
+        if re.match('# \\d+.*', b[i]) is not None:
             b[i] = '\n'
     b = a + b
     for line in now:
