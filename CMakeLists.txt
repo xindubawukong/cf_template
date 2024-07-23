@@ -15,11 +15,11 @@ add_compile_options(-DLOCAL)
 set(WarningOptions
 -O2
 -Wall -Wextra -pedantic
--Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
--D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
--fsanitize=address
--fno-sanitize-recover
--fstack-protector
+# -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
+# -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
+# -fsanitize=address
+# -fno-sanitize-recover
+# -fstack-protector
 )
 add_compile_options(${WarningOptions})
 add_link_options(${WarningOptions})

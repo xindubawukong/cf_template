@@ -12,7 +12,12 @@ struct SparseTable {
   std::vector<int> log;
   std::vector<std::vector<T>> table;
 
-  SparseTable(const Seq& a, F f_) : f(f_), n(a.size()) {
+  SparseTable() {}
+  SparseTable(const Seq& a, F f_) { Build(a, f_); }
+
+  void Build(const Seq& a, F f_) {
+    f = f_;
+    n = a.size();
     log.resize(n + 1);
     log[1] = 0;
     for (int i = 2; i <= n; i++) {
@@ -39,6 +44,21 @@ struct SparseTable {
     int len = r - l + 1;
     int t = log[len];
     return f(table[l][t], table[r - (1 << t) + 1][t]);
+  }
+
+  T QueryAll() const { return Query(0, n - 1); }
+
+  // update a[t] to x
+  // O(n)
+  void Update(int t, T x) {
+    // [i, i + 2^j - 1] contains t
+    // t - 2^j + 1 <= i <= t
+    table[t][0] = x;
+    for (int j = 1; j <= log[n]; j++) {
+      for (int i = t - (1 << j) + 1; i <= t; i++) {
+        table[i][j] = f(table[i][j - 1], table[i + (1 << (j - 1))][j - 1]);
+      }
+    }
   }
 };
 
