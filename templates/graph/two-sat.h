@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "graph.h"
-#include "tarjan.h"
+#include "tarjan_directed.h"
 
 struct TwoSat {
   int n;
