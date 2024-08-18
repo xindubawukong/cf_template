@@ -12,8 +12,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_compile_options(-DLOCAL)
 
-set(WarningOptions
--O2
+set(OPTIONS
+-O3
 -Wall -Wextra -pedantic
 # -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
 # -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
@@ -21,8 +21,8 @@ set(WarningOptions
 # -fno-sanitize-recover
 # -fstack-protector
 )
-add_compile_options(${WarningOptions})
-add_link_options(${WarningOptions})
+add_compile_options(${OPTIONS})
+add_link_options(${OPTIONS})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(templates)

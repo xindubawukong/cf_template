@@ -116,6 +116,7 @@ struct SegmentTree {
     std::vector<Node*> all;
     Node* x = root;
     while (x) {
+      PushDown(x);
       all.push_back(x);
       if (x->l == x->r) break;
       int mid = (x->l + x->r) / 2;
