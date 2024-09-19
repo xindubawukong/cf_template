@@ -14,7 +14,7 @@ struct AhoCorasickAutomaton {
   std::vector<int> fail;
   AhoCorasickAutomaton() : tot(1) { Expand(); }
   int Insert(const std::string& s, int now = 0) {
-    for (int i = 0; i < s.length(); i++) {
+    for (int i = 0; i < (int)s.length(); i++) {
       int c = s[i] - offset;
       if (!son[now][c]) {
         Expand();

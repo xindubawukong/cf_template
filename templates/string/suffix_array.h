@@ -16,7 +16,7 @@ void SAPreProcess(Seq& a) {
   int minx = *std::min_element(a.begin(), a.end());
   int maxx = *std::max_element(a.begin(), a.end());
   if (minx >= 1 && maxx <= n) return;
-  if (minx == 0 && maxx < n) {
+  if (minx >= 0 && maxx < n) {
     for (int i = 0; i < n; i++) a[i]++;
     return;
   }
@@ -27,11 +27,11 @@ void SAPreProcess(Seq& a) {
   }
 }
 
-template <typename Seq>
-Seq SAComputeHeight(const Seq& a, const Seq& sa, const Seq& rank) {
+std::vector<int> SAComputeHeight(const auto& a, const auto& sa,
+                                 const auto& rank) {
   int n = a.size();
   assert((int)sa.size() == n && (int)rank.size() == n);
-  Seq lcp(n);
+  std::vector<int> lcp(n);
   for (int i = 0, p = 0; i < n; i++) {
     if (rank[i] == 0) continue;
     int j = sa[rank[i] - 1];

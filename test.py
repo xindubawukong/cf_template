@@ -21,7 +21,7 @@ def test(A, B, C):
 if __name__ == '__main__':
     subprocess.call('cd build && cmake .. && make -j8', shell=True)
     for i in range(1000000):
-        res = test('A', 'B', 'C')
+        res = test('A', 'B', 'D')
         print(i, res)
         if not res:
             break

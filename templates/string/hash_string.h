@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-template <int P0, int M0, int P1, int M1>
+template <int P0 = 29, int M0 = 1000000007, int P1 = 31, int M1 = 1000000009>
 struct DoubleHashingHelper {
   static_assert(P0 > 0 && M0 > 0 && P1 > 0 && M1 > 0);
   struct HashString {
