@@ -33,10 +33,18 @@ struct TMatrix {
     data = std::move(b.data);
     return *this;
   }
+  bool operator==(const TMatrix& b) const {
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (data[i][j] != b[i][j]) return false;
+      }
+    }
+    return true;
+  }
   std::array<T, n>& operator[](int i) { return data[i]; }
   const std::array<T, n>& operator[](int i) const { return data[i]; }
   TMatrix<T, n> operator*(const TMatrix<T, n>& b) {
-    TMatrix<T, n> c;
+    TMatrix<T, n> c(false);
     for (int k = 0; k < n; k++) {
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {

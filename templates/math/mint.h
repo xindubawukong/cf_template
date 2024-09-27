@@ -73,7 +73,7 @@ struct MInt {
     return res /= b;
   }
   friend MInt<P> operator*(long long t, const MInt<P>& b) { return b * t; }
-  MInt<P> operator-() {
+  MInt<P> operator-() const {
     auto res = *this;
     return res *= -1;
   }

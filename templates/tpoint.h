@@ -39,6 +39,12 @@ struct TPoint {
     long double dx = a.x - b.x, dy = a.y - b.y;
     return sqrt(dx * dx + dy * dy);
   }
+  TPoint<T> operator-() {
+    auto res = *this;
+    res.x = -res.x;
+    res.y = -res.y;
+    return res;
+  }
   TPoint<T>& operator+=(const TPoint<T>& b) {
     x += b.x, y += b.y;
     return *this;

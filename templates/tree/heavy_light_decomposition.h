@@ -107,6 +107,7 @@ struct HeavyLightDecomposition {
     return which[pos[u] - dep[u] + d];
   }
 
+  // u is the root
   int RootedJump(int u, int v, int k) {
     int d = Dist(u, v);
     assert(k <= d);
@@ -121,6 +122,7 @@ struct HeavyLightDecomposition {
     return pos[u] <= pos[v] && pos[v] <= pos[u] + size[u] - 1;
   }
 
+  // u is the root
   int RootedFather(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
     if (u == v) return -1;
@@ -129,6 +131,7 @@ struct HeavyLightDecomposition {
     return Jump(u, d);
   }
 
+  // u is the root
   int RootedSize(int u, int v) {
     assert(0 <= u && u < n && 0 <= v && v < n);
     if (u == v) return n;

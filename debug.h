@@ -30,9 +30,10 @@ const std::string COLOR_END_STR = "";
 #endif
 
 #ifdef SHOULD_PRINT
-#define debug(...)                                     \
-  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__ \
-            << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR << '\n'
+#define debug(...)                                                   \
+  std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__               \
+            << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR \
+            << std::endl
 #else
 #define debug(...) 0
 #endif
