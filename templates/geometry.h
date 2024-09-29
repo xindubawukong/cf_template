@@ -275,6 +275,7 @@ struct Geometry {
   static Polygon GetConvex(const std::vector<Point>& ps_) {
     auto ps = ps_;
     if (ps.size() <= 2) {
+      if (ps.size() == 2 && Dist(ps[0], ps[1]) <= Point::eps) ps.pop_back();
       Polygon poly(ps);
       poly.is_convex = true;
       return poly;
