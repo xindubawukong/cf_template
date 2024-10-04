@@ -13,26 +13,6 @@ def time():
         return '/home/xdbwk/local/time-1.9/time'
 
 
-def clean():
-    folder = str(datetime.datetime.now())
-    folder = folder.replace(' ', '_')
-    subprocess.call(f'mkdir -p ./.history/{folder}', shell=True)
-    for file in os.listdir('.'):
-        if not file.endswith('.cpp'):
-            continue
-        if file == 'main.cpp':
-            continue
-        subprocess.call(
-            f'cp {file} ./.history/{folder}', shell=True)
-        subprocess.call(f'rm -rf {file}', shell=True)
-    subprocess.call(f'rm -rf ./zzz/*', shell=True)
-    subprocess.call(f'rm -rf *.in', shell=True)
-    subprocess.call(f'rm -rf *.out', shell=True)
-    subprocess.call(f'rm -rf out', shell=True)
-    subprocess.call(f'rm -rf in', shell=True)
-    subprocess.call(f'touch in', shell=True)
-
-
 def run_problem(name, no_build):
     if not os.path.exists(f'./{name}.cpp'):
         subprocess.call(f'cp main.cpp {name}.cpp', shell=True)
@@ -114,6 +94,28 @@ def run_problem(name, no_build):
             continue
         f.write(b[i])
     f.close()
+
+
+def clean():
+    folder = str(datetime.datetime.now())
+    folder = folder.replace(' ', '_')
+    subprocess.call(f'mkdir -p ./.history/{folder}', shell=True)
+    for file in os.listdir('.'):
+        if not file.endswith('.cpp'):
+            continue
+        if file == 'main.cpp':
+            continue
+        subprocess.call(
+            f'cp {file} ./.history/{folder}', shell=True)
+        subprocess.call(f'rm -rf {file}', shell=True)
+    subprocess.call(f'rm -rf ./zzz/*', shell=True)
+    subprocess.call(f'rm -rf *.in', shell=True)
+    subprocess.call(f'rm -rf *.out', shell=True)
+    subprocess.call(f'rm -rf out', shell=True)
+    subprocess.call(f'rm -rf in', shell=True)
+    subprocess.call(f'touch in', shell=True)
+
+    run_problem('A', False)
 
 
 def main():
