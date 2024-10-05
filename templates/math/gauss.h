@@ -2,6 +2,7 @@
 #define GAUSS_H_
 
 #include <cassert>
+#include <cmath>
 #include <vector>
 
 template <typename T>
