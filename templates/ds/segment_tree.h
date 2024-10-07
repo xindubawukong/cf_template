@@ -119,8 +119,8 @@ struct SegmentTree {
       PushDown(x);
       all.push_back(x);
       if (x->l == x->r) break;
-      int mid = (x->l + x->r) / 2;
-      if (i <= mid) x = x->lch;
+      int m = x->l + (x->r - x->l) / 2;
+      if (i <= m) x = x->lch;
       else x = x->rch;
     }
     return all;

@@ -1,6 +1,7 @@
 #ifndef INT128_H_
 #define INT128_H_
 
+#include <cassert>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -102,7 +103,7 @@ struct int128 {
 };
 
 int128 abs(int128 x) {
-  if (x < 0) x *= -1;
+  if (x < (int128)0) x *= -1;
   return x;
 }
 

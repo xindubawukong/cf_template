@@ -7,10 +7,10 @@
 #include <string>
 
 /*
-using flt = long double;
-using Point = TPoint<flt>;
+using rea = long double;
+using Point = TPoint<rea>;
 template <>
-const flt Point::eps = 1e-7;
+const rea Point::eps = 1e-7;
 using geo = Geometry<Point>;
 
 // cout << fixed << setprecision(5) << 1 << '\n';
@@ -275,7 +275,7 @@ struct Geometry {
   static Polygon GetConvex(const std::vector<Point>& ps_) {
     auto ps = ps_;
     if (ps.size() <= 2) {
-      if (ps.size() == 2 && Dist(ps[0], ps[1]) <= Point::eps) ps.pop_back();
+      if (ps.size() == 2 && Dist2(ps[0], ps[1]) <= Point::eps) ps.pop_back();
       Polygon poly(ps);
       poly.is_convex = true;
       return poly;
