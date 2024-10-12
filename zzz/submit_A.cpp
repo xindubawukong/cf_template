@@ -4,9 +4,6 @@
 #else
 #define debug(...)
 #endif
-using int64 = long long;
-using uint = unsigned int;
-using uint64 = unsigned long long;
 bool ckmin(auto& a, auto b) { return b < a ? a = b, 1 : 0; }
 bool ckmax(auto& a, auto b) { return b > a ? a = b, 1 : 0; }
 using namespace std;
