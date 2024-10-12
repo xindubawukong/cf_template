@@ -1,9 +1,9 @@
-#ifndef SHAWK_H_
-#define SHAWK_H_
+#ifndef SMAWK_H_
+#define SMAWK_H_
 
 #include <vector>
 
-namespace shawk_internal {
+namespace smawk_internal {
 
 template <typename F>
 std::vector<int> Work(F f, const std::vector<int>& row,
@@ -56,11 +56,11 @@ std::vector<int> Work(F f, const std::vector<int>& row,
 // Matrix A is convex totally monotone in row:
 // For a < b and c < d, if A(a,c) >= A(a,d), then A(b,c) >= A(b,d).
 template <typename A>
-std::vector<int> SHAWK(int n, int m, A a) {
+std::vector<int> SMAWK(int n, int m, A a) {
   std::vector<int> row(n), col(m);
   for (int i = 0; i < n; i++) row[i] = i;
   for (int j = 0; j < m; j++) col[j] = j;
-  return shawk_internal::Work(a, row, col);
+  return smawk_internal::Work(a, row, col);
 }
 
-#endif  // SHAWK_H_
+#endif  // SMAWK_H_
