@@ -16,12 +16,13 @@ struct TwoSat {
   TwoSat(int n_) : n(n_), g(2 * n_) {}
 
   void Add(int i, bool x, int j, bool y) {
+    debug(i, x, j, y);
     assert(0 <= i && i < n && 0 <= j && j < n);
     g.AddEdge({i * 2 + !x, j * 2 + y});
     g.AddEdge({j * 2 + !y, i * 2 + x});
   }
 
-  void Build() {
+  void Solve() {
     TarjanDirected tj(g);
     auto& belong = tj.belong;
     ok = true;
