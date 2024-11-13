@@ -3,14 +3,16 @@ import os
 import re
 import subprocess
 import datetime
-from sys import platform
-
 
 def time():
-    if platform.startswith('darwin'):
-        return '/usr/local/bin/time'
-    else:
+    import platform
+    info = platform.platform().lower()
+    if info.startswith('linux'):
         return '/home/xdbwk/local/time-1.9/time'
+    elif info.startswith('macos-13'):
+        return '/usr/local/bin/time'
+    elif info.startswith('macos-15'):
+        return '/Users/xdbwk/local/time-1.9/time'
 
 
 def run_problem(name, no_build):

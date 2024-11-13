@@ -9,13 +9,13 @@
 
 struct Dsu {
   std::vector<int> fa;
-  int n, cnt;
+  int n, cc_cnt;
   Dsu(int n_) { Init(n_); }
   void Init(int n_) {
     n = n_;
     fa.resize(n);
     for (int i = 0; i < n; i++) fa[i] = -1;
-    cnt = n;
+    cc_cnt = n;
   }
   int Find(int x) {
     assert(0 <= x && x < n);
@@ -30,7 +30,7 @@ struct Dsu {
     if (fa[x] < fa[y]) std::swap(x, y);
     fa[y] += fa[x];
     fa[x] = y;
-    cnt--;
+    cc_cnt--;
   }
 };
 
