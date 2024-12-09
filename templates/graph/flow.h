@@ -66,64 +66,6 @@ struct MaxFlow {
 };
 
 template <typename FlowGraph>
-struct ISAP {
-  using flow_t = typename FlowGraph::flow_t;
-  FlowGraph& graph;
-  ISAP(FlowGraph& graph_) : graph(graph_) { assert(graph.IsDirected()); }
-  flow_t Solve(int s, int t, flow_t new_flow) {
-    int n = graph.n;
-    assert(0 <= s && s < n && 0 <= t && t < n);
-    std::vector<int> dep(n), cur(n), gap(n);
-    auto& go = graph.go;
-    auto& edges = graph.edges;
-    auto Bfs = [&]() {
-      std::fill(dep.begin(), dep.end(), -1);
-      std::vector<int> que;
-      que.push_back(t);
-      dep[t] = 0;
-      gap[0]++;
-      for (int i = 0; i < (int)que.size(); i++) {
-        int u = que[i];
-        for (int v : graph.Neighbors(u)) {
-          if (dep[v] != -1) continue;
-          dep[v] = dep[u] + 1;
-          gap[dep[v]]++;
-          que.push_back(v);
-        }
-      }
-    };
-    std::function<flow_t(int, flow_t)> Dfs = [&](int u, flow_t flow) {
-      if (u == t) return flow;
-      flow_t res = 0;
-      for (int& i = cur[u]; i < (int)go[u].size(); i++) {
-        auto eid = go[u][i];
-        auto& e = edges[eid];
-        auto& back = edges[eid ^ 1];
-        if (e.cap <= graph.eps || dep[e.v] + 1 != dep[u]) continue;
-        flow_t df = Dfs(e.v, std::min(e.cap, flow));
-        flow -= df;
-        e.cap -= df;
-        back.cap += df;
-        res += df;
-        if (flow <= graph.eps) return res;
-      }
-      gap[dep[u]]--;
-      if (!gap[dep[u]]) dep[s] = n + 1;
-      dep[u]++;
-      if (dep[u] < n) gap[dep[u]]++;
-      return res;
-    };
-    Bfs();
-    flow_t ans = 0;
-    while (dep[s] < n) {
-      std::fill(cur.begin(), cur.end(), 0);
-      ans += Dfs(s, new_flow - ans);
-    }
-    return ans;
-  }
-};
-
-template <typename FlowGraph>
 struct MinCostMaxFlow {
   using flow_t = typename FlowGraph::flow_t;
   using cost_t = decltype(std::declval<typename FlowGraph::edge_t>().cost);

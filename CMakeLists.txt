@@ -17,7 +17,7 @@ set(OPTIONS
 # -Wall -Wextra -pedantic
 -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
-# -fsanitize=address
+-fsanitize=address
 -fno-sanitize-recover
 -fstack-protector
 )
