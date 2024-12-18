@@ -17,6 +17,8 @@ struct CentroidDecomposition {
     boss.resize(n, -1);
     Build(0, -1);
   }
+
+ private:
   int GetCore(int u, int dep0) {
     static std::vector<int> size;
     size.resize(n);

@@ -22,14 +22,12 @@ struct HeavyLightDecomposition {
     up.resize(n);
   }
 
-  HeavyLightDecomposition(Graph& tree_) : n(tree_.n), tree(&tree_) {
+  HeavyLightDecomposition(Graph& tree_, int root_ = 0)
+      : n(tree_.n), tree(&tree_), root(root_) {
     assert(!tree->IsDirected());
     assert((int)tree->edges.size() == n - 1);
     Init(n);
-  }
 
-  void Build(int root_) {
-    root = root_;
     std::function<void(int)> Dfs1 = [&](int u) {
       heavy[u] = -1;
       size[u] = 1;
