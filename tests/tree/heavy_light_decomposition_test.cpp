@@ -22,7 +22,7 @@ std::vector<std::vector<int>> GetTree(int n) {
   return go;
 }
 
-auto GetGraph(auto &go) {
+auto GetGraph(auto& go) {
   int n = go.size();
   UndirectedGraph<EdgeBase> graph(n);
   for (int i = 0; i < n; i++) {
@@ -33,7 +33,7 @@ auto GetGraph(auto &go) {
   return graph;
 }
 
-auto Bfs(int n, auto &go, int root) {
+auto Bfs(int n, auto& go, int root) {
   std::vector<int> fa(n), size(n), dep(n), que;
   fa[root] = -1;
   dep[root] = 0;
@@ -59,7 +59,7 @@ auto Bfs(int n, auto &go, int root) {
   return std::make_tuple(fa, size, dep);
 }
 
-int GetLca(int n, auto &fa, int u, int v) {
+int GetLca(int n, auto& fa, int u, int v) {
   std::vector<bool> vt(n, false);
   for (int i = u; i != -1; i = fa[i]) vt[i] = true;
   for (int i = v; i != -1; i = fa[i]) {
@@ -75,9 +75,6 @@ TEST(HeavyLightDecompositionTest, BasicTest) {
   auto go = GetTree(n);
   auto graph = GetGraph(go);
   HeavyLightDecomposition hld(graph);
-  for (int i = 0; i < 10; i++) {
-    hld.Build(rng() % n);
-  }
   {
     auto [fa, size, dep] = Bfs(n, go, hld.root);
     EXPECT_EQ(fa, hld.fa);
@@ -122,10 +119,6 @@ TEST(HeavyLightDecompositionTest, LcaTest) {
   auto go = GetTree(n);
   auto graph = GetGraph(go);
   HeavyLightDecomposition hld(graph);
-  for (int i = 0; i < 10; i++) {
-    hld.Build(rng() % n);
-  }
-
   auto [fa, size, dep] = Bfs(n, go, hld.root);
   for (int tc = 0; tc < 1000; tc++) {
     int u = rng() % n, v = rng() % n;
@@ -146,10 +139,6 @@ TEST(HeavyLightDecompositionTest, RootedTest) {
   auto go = GetTree(n);
   auto graph = GetGraph(go);
   HeavyLightDecomposition hld(graph);
-  for (int i = 0; i < 10; i++) {
-    hld.Build(rng() % n);
-  }
-
   for (int tc = 0; tc < 1000; tc++) {
     int u = rng() % n, v = rng() % n, w = rng() % n;
     EXPECT_EQ(-1, hld.RootedFather(u, u));

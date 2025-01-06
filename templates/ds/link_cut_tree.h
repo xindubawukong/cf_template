@@ -7,40 +7,54 @@
 
 /*
 struct Info {
-  SplayTree<Info>::Node* Node() {
-    return reinterpret_cast<SplayTree<Info>::Node*>(this);
-  }
-  bool rev;
-  int id, upid;
-  Info() : rev(false), upid(-1) {}
-  void Reverse() {
-    auto x = Node();
-    swap(x->lch, x->rch);
-    rev ^= 1;
-  }
-  bool NeedPushDown() { return rev; }
-  void PushDown() {
-    auto lch = Node()->lch, rch = Node()->rch;
-    if (lch) lch->Reverse();
-    if (rch) rch->Reverse();
-    rev = false;
-  }
-  void Update() {}
+  Info() {}
+  bool NeedPushDown() { return false; }
+  void PushDown() {}
+  void Update(Info* a, Info* b) {}
 };
 */
 
 template <typename Info>
 struct LinkCutTree {
-  using Node = typename SplayTree<Info>::Node;
+  struct SplayInfo : public Info {
+    SplayTree<SplayInfo>::Node* Node() {
+      return reinterpret_cast<SplayTree<SplayInfo>::Node*>(this);
+    }
+    bool rev;
+    int id, upid;
+    SplayInfo() : rev(false), upid(-1) {}
+    void Reverse() {
+      auto x = Node();
+      swap(x->lch, x->rch);
+      rev ^= 1;
+    }
+    bool NeedPushDown() { return rev || Info::NeedPushDown(); }
+    void PushDown() {
+      auto lch = Node()->lch, rch = Node()->rch;
+      if (rev) {
+        if (lch) lch->Reverse();
+        if (rch) rch->Reverse();
+        rev = false;
+      }
+      if (Info::NeedPushDown()) Info::PushDown();
+    }
+    void Update() {
+      auto lch = Node()->lch, rch = Node()->rch;
+      Info::Update(lch ? (Info*)lch : nullptr, rch ? (Info*)rch : nullptr);
+    }
+  };
+
+  using Node = typename SplayTree<SplayInfo>::Node;
+
   int n;
   std::vector<Node*> node;
-  SplayTree<Info> splay;
+  SplayTree<SplayInfo> splay;
   LinkCutTree(int n_) : n(0) { ExpandTo(n_); }
   void ExpandTo(int m) {
     if (m <= n) return;
     node.resize(m);
     for (int i = n; i < m; i++) {
-      Info info;
+      SplayInfo info;
       info.id = i;
       node[i] = new Node(info);
     }
@@ -51,6 +65,7 @@ struct LinkCutTree {
     while (y->fa) y = y->fa;
     splay.Splay(x);
     swap(x->upid, y->upid);
+    x->Update();
   }
   void Splay(int x) { Splay(node[x]); }
   void Access(Node* x) {
