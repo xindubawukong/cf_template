@@ -1,12 +1,15 @@
 #ifndef CARTESIAN_TREE_H_
 #define CARTESIAN_TREE_H_
 
+#include <cassert>
 #include <vector>
 
+// root is the minimum element
 template <typename Seq>
 struct CartesianTree {
   int n, root;
   std::vector<int> lch, rch, fa;
+  std::vector<int> l, r;
   CartesianTree(const Seq& a) {
     n = a.size();
     root = -1;
@@ -35,6 +38,12 @@ struct CartesianTree {
       }
     }
     assert((int)b.size() == n);
+    l.resize(n), r.resize(n);
+    for (int i = n - 1; i >= 0; i--) {
+      int x = b[i];
+      l[x] = lch[x] == -1 ? x : l[lch[x]];
+      r[x] = rch[x] == -1 ? x : r[rch[x]];
+    }
   }
 };
 
