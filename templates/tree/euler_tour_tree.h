@@ -4,26 +4,29 @@
 #include <map>
 #include <vector>
 
-#include "splay.h"
+#include "ds/splay.h"
 
+/*
+struct Info {
+  int u, v;
+  int64_t val, sum;
+  SplayTree<Info>::Node* Node() {
+    return reinterpret_cast<SplayTree<Info>::Node*>(this);
+  }
+  Info(int u_, int v_) : u(u_), v(v_), val(0), sum(0) {}
+  bool NeedPushDown() { return false; }
+  void PushDown() {}
+  void Update() {
+    auto lch = Node()->lch, rch = Node()->rch;
+    sum = val;
+    if (lch) sum += lch->sum;
+    if (rch) sum += rch->sum;
+  }
+};
+*/
+
+template <typename Info>
 struct EulerTourTree {
-  struct Info {
-    int u, v;
-    int64_t val, sum;
-    SplayTree<Info>::Node* Node() {
-      return reinterpret_cast<SplayTree<Info>::Node*>(this);
-    }
-    Info(int u_, int v_) : u(u_), v(v_), val(0), sum(0) {}
-    bool NeedPushDown() { return false; }
-    void PushDown() {}
-    void Update() {
-      auto lch = Node()->lch, rch = Node()->rch;
-      sum = val;
-      if (lch) sum += lch->sum;
-      if (rch) sum += rch->sum;
-    }
-  };
-
   using Node = SplayTree<Info>::Node;
 
   Node* CreateNode(int u, int v) { return new Node(Info(u, v)); }

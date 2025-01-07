@@ -8,6 +8,7 @@
 /*
 struct Info {
   Info() {}
+  void Reverse() {}
   bool NeedPushDown() { return false; }
   void PushDown() {}
   void Update(Info* a, Info* b) {}
@@ -25,8 +26,9 @@ struct LinkCutTree {
     SplayInfo() : rev(false), upid(-1) {}
     void Reverse() {
       auto x = Node();
-      swap(x->lch, x->rch);
+      std::swap(x->lch, x->rch);
       rev ^= 1;
+      Info::Reverse();
     }
     bool NeedPushDown() { return rev || Info::NeedPushDown(); }
     void PushDown() {
@@ -36,7 +38,9 @@ struct LinkCutTree {
         if (rch) rch->Reverse();
         rev = false;
       }
-      if (Info::NeedPushDown()) Info::PushDown();
+      if (Info::NeedPushDown()) {
+        Info::PushDown(lch ? (Info*)lch : nullptr, rch ? (Info*)rch : nullptr);
+      }
     }
     void Update() {
       auto lch = Node()->lch, rch = Node()->rch;
@@ -64,7 +68,7 @@ struct LinkCutTree {
     auto y = x;
     while (y->fa) y = y->fa;
     splay.Splay(x);
-    swap(x->upid, y->upid);
+    std::swap(x->upid, y->upid);
     x->Update();
   }
   void Splay(int x) { Splay(node[x]); }

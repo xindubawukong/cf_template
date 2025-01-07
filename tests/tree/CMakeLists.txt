@@ -1,1 +1,3 @@
+
+add_simple_test(path_add_path_sum_test)
 add_simple_test(heavy_light_decomposition_test)
