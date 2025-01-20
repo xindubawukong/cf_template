@@ -204,6 +204,11 @@ struct SegmentTree {
     return x;
   }
 
+  template <typename F>
+  void BuildTree(F f) {
+    root = BuildTree(l_range, r_range, f);
+  }
+
   void GC(Node* x) {
     if (!x) return;
     GC(x->lch);
