@@ -30,12 +30,18 @@ const std::string COLOR_END_STR = "";
 #endif
 
 #ifdef SHOULD_PRINT
+
 #define debug(...)                                                   \
   std::cout << COLOR_START_STR << "[ " << #__VA_ARGS__               \
             << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR \
             << std::endl
+
+#define lndebug(...) std::cout << std::endl, debug(#__VA_ARGS__)
 #else
+
 #define debug(...) 0
+#define lndebug(...) 0
+
 #endif
 
 template <typename T>
