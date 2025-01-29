@@ -36,7 +36,11 @@ const std::string COLOR_END_STR = "";
             << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR \
             << std::endl
 
-#define lndebug(...) std::cout << std::endl, debug(#__VA_ARGS__)
+#define lndebug(...)                                                 \
+  std::cout << std::endl                                             \
+            << COLOR_START_STR << "[ " << #__VA_ARGS__               \
+            << " ]: " << ToDebugString(__VA_ARGS__) << COLOR_END_STR \
+            << std::endl
 #else
 
 #define debug(...) 0
