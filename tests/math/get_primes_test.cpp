@@ -1,5 +1,6 @@
 #include "math/get_primes.h"
 
+#include <algorithm>
 #include <vector>
 
 #include "gtest/gtest.h"

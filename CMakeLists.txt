@@ -13,13 +13,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_compile_options(-DLOCAL)
 
 set(OPTIONS
-# -O2
-# -Wall -Wextra -pedantic
+-O2
+-Wall -Wextra -pedantic
 -Wshadow -Wformat=2 -Wfloat-equal -Wcast-qual -Wcast-align
 -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC
--fsanitize=address
--fno-sanitize-recover
--fstack-protector
+# -fsanitize=address
+# -fno-sanitize-recover
+# -fstack-protector
 )
 add_compile_options(${OPTIONS})
 add_link_options(${OPTIONS})

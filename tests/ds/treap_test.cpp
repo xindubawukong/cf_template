@@ -1,5 +1,6 @@
 #include "ds/treap.h"
 
+#include <algorithm>
 #include <random>
 #include <vector>
 
@@ -7,8 +8,8 @@
 #include "gtest/gtest.h"
 
 struct Info {
-  Treap<Info>::Node *Node() {
-    return reinterpret_cast<Treap<Info>::Node *>(this);
+  Treap<Info>::Node* Node() {
+    return reinterpret_cast<Treap<Info>::Node*>(this);
   }
   int val, size;
   Info(int val_ = 0) : val(val_), size(1) {}
@@ -38,7 +39,7 @@ TEST(TreapTest, BasicTest) {
 
   Treap<Info> treap;
   for (int i = 0; i < n; i++) {
-    auto [t1, t2, t3] = treap.Split(treap.root, [&](auto &info) {
+    auto [t1, t2, t3] = treap.Split(treap.root, [&](auto& info) {
       if (a[i] < info->val) return -1;
       if (a[i] == info->val) return 0;
       return 1;

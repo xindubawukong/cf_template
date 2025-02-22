@@ -1,5 +1,6 @@
 #include "tree/heavy_light_decomposition.h"
 
+#include <algorithm>
 #include <random>
 #include <vector>
 
