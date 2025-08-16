@@ -59,4 +59,8 @@ struct TarjanUndirected {
   }
 };
 
+/*
+如果要找割边，把每条边都拆成一个点和两条边，然后直接调用找割点的算法就行了
+*/
+
 #endif  // TARJAN_UNDIRECTED_H_
