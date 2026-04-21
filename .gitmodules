@@ -4,3 +4,6 @@
 [submodule "parlaylib"]
 	path = third_party/parlaylib
 	url = git@github.com:cmuparlay/parlaylib.git
+[submodule "third_party/testlib"]
+	path = third_party/testlib
+	url = git@github.com:MikeMirzayanov/testlib.git
