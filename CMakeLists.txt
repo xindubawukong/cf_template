@@ -33,12 +33,28 @@ enable_testing()
 add_subdirectory(third_party/googletest)
 add_subdirectory(tests)
 
-file(GLOB problems true *.cpp)
-foreach(problem ${problems})
-  string(LENGTH ${problem} len)
-  string(FIND ${problem} "/" pos REVERSE)
-  math(EXPR pos "${pos}+1")
-  math(EXPR len "${len}-${pos}-4")
-  string(SUBSTRING ${problem} ${pos} ${len} name)
-  add_executable(${name} ${name}.cpp)
+file(GLOB problem_entries RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CONFIGURE_DEPENDS "problem_*")
+foreach(problem_name ${problem_entries})
+  if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${problem_name})
+    continue()
+  endif()
+
+  set(problem_main ${CMAKE_CURRENT_SOURCE_DIR}/${problem_name}/main.cpp)
+  if(NOT EXISTS ${problem_main})
+    continue()
+  endif()
+
+  set(problem_binary_dir ${CMAKE_CURRENT_BINARY_DIR}/${problem_name})
+  set(problem_main_target ${problem_name}_main)
+
+  add_executable(${problem_main_target} ${problem_main})
+  set_target_properties(
+    ${problem_main_target}
+    PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${problem_binary_dir}
+      OUTPUT_NAME main
+  )
+
+  add_custom_target(${problem_name} ALL)
+  add_dependencies(${problem_name} ${problem_main_target})
 endforeach()
