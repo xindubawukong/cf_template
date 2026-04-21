@@ -21,7 +21,7 @@ def run_problem(name, no_build):
     subprocess.call(f'mkdir -p build', shell=True)
 
     # build and run
-    make_str = f'cmake .. && make -j8 {name}'
+    make_str = f'cmake .. -G Ninja && ninja {name}'
     if no_build:
         make_str = ':'
     run_str = f'{time()} -v ./build/{name} 2> ./build/{name}_run.txt'
@@ -69,7 +69,7 @@ def run_problem(name, no_build):
     f.close()
     submit = f'./zzz/submit_{name}.cpp'
     subprocess.call(
-        f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Iparlaylib/include -E {temp} > {submit}', shell=True)
+        f'g++ -std=c++20 -Iutils/system_headers -Itemplates -Ithird_party/parlaylib/include -E {temp} > {submit}', shell=True)
     f = open('./main.cpp', 'r')
     a = f.readlines()
     f.close()

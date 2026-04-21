@@ -1,3 +1,4 @@
+.codex
 .cache
 .vscode/**
 !.vscode/launch.json

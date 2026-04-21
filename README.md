@@ -8,7 +8,7 @@ Templates for writing competitive programming problems in C++.
 
 - Cmake >= 3.15
 - gcc 12 or clang 14
-- googletest and parlaylib (included as git submodules)
+- googletest and parlaylib in `third_party/` (included as git submodules)
 
 ## Usage
 
@@ -55,8 +55,8 @@ For custom structs, you can debug it if it can be auto converted to `std::string
 
 ```shell
 $ cd build
-$ cmake ..
-$ make
+$ cmake .. -G Ninja
+$ ninja
 $ ctest
 ```
 

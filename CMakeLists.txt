@@ -25,12 +25,12 @@ add_compile_options(${OPTIONS})
 add_link_options(${OPTIONS})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/parlaylib/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/parlaylib/include)
 include_directories(templates)
 include_directories(utils)
 
 enable_testing()
-add_subdirectory(googletest)
+add_subdirectory(third_party/googletest)
 add_subdirectory(tests)
 
 file(GLOB problems true *.cpp)
