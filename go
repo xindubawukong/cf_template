@@ -2,6 +2,7 @@
 
 import argparse
 import pathlib
+import platform
 import re
 import shutil
 import subprocess
@@ -10,7 +11,7 @@ import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent
 BUILD_DIR = ROOT / "build"
-TEMPLATE_MAIN = ROOT / "main.cpp"
+TEMPLATE_MAIN = ROOT / "templates" / "main.cpp"
 INCLUDE_DIRS = [
     ROOT,
     ROOT / "templates",
@@ -125,11 +126,73 @@ def build(problem_target: str) -> None:
     )
 
 
+def get_gnu_time() -> str:
+    info = platform.platform().lower()
+    candidates = []
+    if info.startswith("linux"):
+        candidates.extend(
+            [
+                "/home/xdbwk/local/time-1.9/time",
+                "/usr/bin/time",
+            ]
+        )
+    elif info.startswith("macos-13"):
+        candidates.extend(
+            [
+                "/usr/local/bin/time",
+                "/opt/homebrew/bin/gtime",
+            ]
+        )
+    elif info.startswith("macos-15"):
+        candidates.extend(
+            [
+                "/Users/xdbwk/local/time-1.9/time",
+                "/opt/homebrew/bin/gtime",
+            ]
+        )
+
+    for candidate in candidates:
+        if pathlib.Path(candidate).exists():
+            return candidate
+
+    raise FileNotFoundError("GNU time is not installed")
+
+
+def print_time_stats(problem_name: str, stats_path: pathlib.Path) -> None:
+    lines = stats_path.read_text().splitlines()
+    time_value = 0.0
+    memory_value = 0.0
+    bad = ""
+    for line in lines:
+        if "User time" in line:
+            time_value = float(line.split()[-1])
+        if "Maximum resident set size" in line:
+            memory_value = float(line.split()[-1]) / 1000
+        if "Command terminated by signal" in line:
+            bad = line
+    if bad:
+        for line in lines:
+            if not line.startswith("\t"):
+                print(line)
+    print(f"[{problem_name}] time = {time_value} s, memory = {memory_value} MB")
+
+
 def run_binary(problem_dir: pathlib.Path) -> None:
     binary = BUILD_DIR / problem_dir.name / "main"
     input_file = problem_dir / "input.txt"
+    stats_file = BUILD_DIR / f"{problem_dir.name}_run.txt"
+    time_bin = get_gnu_time()
     with input_file.open("r") as stdin:
-        subprocess.run([str(binary)], stdin=stdin, check=True)
+        with stats_file.open("w") as stderr:
+            result = subprocess.run(
+                [time_bin, "-v", str(binary)],
+                stdin=stdin,
+                stderr=stderr,
+                check=False,
+            )
+    print_time_stats(problem_dir.name, stats_file)
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, [time_bin, "-v", str(binary)])
 
 
 def main() -> None:
