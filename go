@@ -136,17 +136,10 @@ def get_gnu_time() -> str:
                 "/usr/bin/time",
             ]
         )
-    elif info.startswith("macos-13"):
+    elif info.startswith("macos"):
         candidates.extend(
             [
                 "/usr/local/bin/time",
-                "/opt/homebrew/bin/gtime",
-            ]
-        )
-    elif info.startswith("macos-15"):
-        candidates.extend(
-            [
-                "/Users/xdbwk/local/time-1.9/time",
                 "/opt/homebrew/bin/gtime",
             ]
         )
