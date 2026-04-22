@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import pathlib
 import platform
 import re
@@ -35,6 +36,97 @@ def ensure_problem(name: str) -> pathlib.Path:
     return problem_dir
 
 
+def find_compilers() -> tuple[str, str]:
+    clang = shutil.which("clang")
+    clangxx = shutil.which("clang++")
+    if clang and clangxx:
+        return clang, clangxx
+
+    gcc = shutil.which("gcc")
+    gxx = shutil.which("g++")
+    if gcc and gxx:
+        return gcc, gxx
+
+    raise FileNotFoundError(
+        "Neither clang/clang++ nor gcc/g++ is available"
+    )
+
+
+def read_cached_compiler(cache_path: pathlib.Path, key: str) -> str | None:
+    if not cache_path.exists():
+        return None
+
+    pattern = re.compile(rf"^{re.escape(key)}(?::[^=]+)?=(.*)$")
+    for line in cache_path.read_text().splitlines():
+        match = pattern.match(line)
+        if match:
+            return match.group(1)
+    return None
+
+
+def same_compiler(first: str | None, second: str) -> bool:
+    if not first:
+        return False
+    return pathlib.Path(first).resolve() == pathlib.Path(second).resolve()
+
+
+def reset_cmake_cache_if_needed(cc_compiler: str, cxx_compiler: str) -> None:
+    cache_path = BUILD_DIR / "CMakeCache.txt"
+    cached_cc = read_cached_compiler(cache_path, "CMAKE_C_COMPILER")
+    cached_cxx = read_cached_compiler(cache_path, "CMAKE_CXX_COMPILER")
+
+    if same_compiler(cached_cc, cc_compiler) and same_compiler(cached_cxx, cxx_compiler):
+        return
+
+    if cache_path.exists():
+        cache_path.unlink()
+
+    cmake_files_dir = BUILD_DIR / "CMakeFiles"
+    if cmake_files_dir.exists():
+        shutil.rmtree(cmake_files_dir)
+
+
+def remove_path(path: pathlib.Path) -> None:
+    if path.is_dir():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+
+def clean() -> None:
+    targets = []
+    targets.extend(
+        sorted(path for path in ROOT.glob("problem_*") if path.is_dir())
+    )
+    if BUILD_DIR.exists():
+        targets.extend(sorted(BUILD_DIR.glob("problem_*")))
+
+        cmake_files_dir = BUILD_DIR / "CMakeFiles"
+        if cmake_files_dir.exists():
+            targets.extend(sorted(cmake_files_dir.glob("problem_*")))
+
+    if not targets:
+        print("Nothing to clean.")
+        return
+
+    try:
+        answer = input(
+            "Clean all problem_* directories and corresponding build files? [y/N] "
+        )
+    except EOFError:
+        answer = ""
+
+    if answer.strip().lower() not in {"y", "yes"}:
+        print("Aborted.")
+        return
+
+    for path in targets:
+        if path.exists():
+            remove_path(path)
+
+    print(f"Removed {len(targets)} path(s).")
+
+
 def read_lines(path: pathlib.Path) -> list[str]:
     return path.read_text().splitlines(keepends=True)
 
@@ -58,7 +150,7 @@ def collapse_blank_lines(lines: list[str]) -> list[str]:
     return result
 
 
-def preprocess_includes(include_lines: list[str]) -> list[str]:
+def preprocess_includes(include_lines: list[str], cxx_compiler: str) -> list[str]:
     if not include_lines:
         return []
 
@@ -66,7 +158,7 @@ def preprocess_includes(include_lines: list[str]) -> list[str]:
         temp_path = pathlib.Path(temp_dir) / "submit_includes.cpp"
         temp_path.write_text("".join(include_lines))
 
-        cmd = ["g++", "-std=c++20"]
+        cmd = [cxx_compiler, "-std=c++20"]
         for include_dir in INCLUDE_DIRS:
             cmd.extend(["-I", str(include_dir)])
         cmd.extend(["-E", str(temp_path)])
@@ -88,7 +180,7 @@ def preprocess_includes(include_lines: list[str]) -> list[str]:
     return collapse_blank_lines(cleaned)
 
 
-def generate_submit(problem_dir: pathlib.Path) -> None:
+def generate_submit(problem_dir: pathlib.Path, cxx_compiler: str) -> None:
     source_path = problem_dir / "main.cpp"
     output_path = problem_dir / "submit.cpp"
 
@@ -103,18 +195,23 @@ def generate_submit(problem_dir: pathlib.Path) -> None:
 
     include_lines = [line for line in source_body if line.startswith("#include")]
     body_lines = [line for line in source_body if not line.startswith("#include")]
-    expanded_includes = preprocess_includes(include_lines)
+    expanded_includes = preprocess_includes(include_lines, cxx_compiler)
 
     output_lines = collapse_blank_lines(template_prefix + expanded_includes + body_lines)
     output_path.write_text("".join(output_lines))
 
 
-def configure() -> None:
+def configure(cc_compiler: str, cxx_compiler: str) -> None:
     BUILD_DIR.mkdir(exist_ok=True)
+    reset_cmake_cache_if_needed(cc_compiler, cxx_compiler)
+    env = os.environ.copy()
+    env["CC"] = cc_compiler
+    env["CXX"] = cxx_compiler
     subprocess.run(
         ["cmake", "..", "-G", "Ninja"],
         cwd=BUILD_DIR,
         check=True,
+        env=env,
     )
 
 
@@ -192,10 +289,15 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("name")
     args = parser.parse_args()
+    cc_compiler, cxx_compiler = find_compilers()
+
+    if args.name == "clean":
+        clean()
+        return
 
     problem_dir = ensure_problem(args.name)
-    generate_submit(problem_dir)
-    configure()
+    generate_submit(problem_dir, cxx_compiler)
+    configure(cc_compiler, cxx_compiler)
     build(problem_dir.name)
     run_binary(problem_dir)
 
