@@ -1,1 +1,3 @@
+add_simple_test(delayed_sequence_test)
 add_simple_test(radix_sort_test)
+add_simple_test(range_min_test)

@@ -14,5 +14,4 @@ add_subdirectory(tree)
 add_subdirectory(utils)
 
 add_simple_test(geometry_test)
-add_simple_test(range_min_test)
 add_simple_test(tpoint_test tpoint_test.cpp)
